@@ -4,7 +4,7 @@ from alpha_vantage.timeseries import TimeSeries
 import matplotlib.pyplot as plt
 import pandas as pd
 
-ALPHA_VANTAGE_API_KEY = 'LT1IUQOKM93D6TVP'
+ALPHA_VANTAGE_API_KEY = ''
 
 # Initialize the TimeSeries class with key and output format
 ts = TimeSeries(key=ALPHA_VANTAGE_API_KEY, output_format='pandas')
