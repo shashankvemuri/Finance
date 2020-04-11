@@ -9,7 +9,7 @@ import datetime
 from pylab import rcParams
 
 # Import data
-s = 'NIO'
+s = 'MSFT'
 start_date = datetime.datetime(2019,1,1)
 end_date = datetime.date.today()
 
