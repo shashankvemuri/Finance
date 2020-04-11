@@ -16,15 +16,16 @@ pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 100)
 
 
-n = 8 #number of stocks  
+n = 6 #number of stocks  
 start = datetime.datetime.now() - datetime.timedelta(days=365)
 end = datetime.date.today()
 
-sort_by_sharpe = pd.read_csv('/Users/shashank/Downloads/csv/sp_ratios.csv')
+data = pd.read_csv('/Users/shashank/Downloads/Code/top_stocks_data(1).csv')
 
-data = sort_by_sharpe
-data.set_index('Company')
+#data = data.set_index(['Company'])
+data = data.sort_values('Sharpe Ratio', ascending = True)
 data = data.tail(n)
+data = data.reset_index()
 data = data['Company']
 data = data.values.tolist()
 
