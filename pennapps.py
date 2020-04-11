@@ -2,8 +2,8 @@
 import requests
 import json
 
-client_id = r'***REMOVED***'
-client_secret = r'***REMOVED***'
+client_id = r''
+client_secret = r''
 
 auth_data = {
     'grant_type'    : 'client_credentials',
