@@ -18,11 +18,11 @@ stocklist = si.tickers_nasdaq()
 
 final = []
 index = []
-n = 805
+n = -1
 
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 
-for stock in stocklist[806:]:
+for stock in stocklist:
     n += 1
     time.sleep(1)
     
@@ -58,8 +58,7 @@ for stock in stocklist[806:]:
         smaUsed = [50, 150, 200]
         for x in smaUsed:
             sma = x
-            df["SMA_"+str(sma)] = round(df.iloc[:,
-                                                4].rolling(window=sma).mean(), 2)
+            df["SMA_"+str(sma)] = round(df.iloc[:,4].rolling(window=sma).mean(), 2)
 
         currentClose = df["Adj Close"][-1]
         moving_average_50 = df["SMA_50"][-1]
@@ -76,48 +75,48 @@ for stock in stocklist[806:]:
 
         # Condition 1: Current Price > 150 SMA and > 200 SMA
         if(currentClose > moving_average_150 > moving_average_200):
-            cond_1 = True
+            condition_1 = True
         else:
-            cond_1 = False
+            condition_1 = False
         # Condition 2: 150 SMA and > 200 SMA
         if(moving_average_150 > moving_average_200):
-            cond_2 = True
+            condition_2 = True
         else:
-            cond_2 = False
+            condition_2 = False
         # Condition 3: 200 SMA trending up for at least 1 month (ideally 4-5 months)
         if(moving_average_200 > moving_average_200_20):
-            cond_3 = True
+            condition_3 = True
         else:
-            cond_3 = False
+            condition_3 = False
         # Condition 4: 50 SMA> 150 SMA and 50 SMA> 200 SMA
         if(moving_average_50 > moving_average_150 > moving_average_200):
             #print("Condition 4 met")
-            cond_4 = True
+            condition_4 = True
         else:
             #print("Condition 4 not met")
-            cond_4 = False
+            condition_4 = False
         # Condition 5: Current Price > 50 SMA
         if(currentClose > moving_average_50):
-            cond_5 = True
+            condition_5 = True
         else:
-            cond_5 = False
+            condition_5 = False
         # Condition 6: Current Price is at least 30% above 52 week low (Many of the best are up 100-300% before coming out of consolidation)
         if(currentClose >= (1.3*low_of_52week)):
-            cond_6 = True
+            condition_6 = True
         else:
-            cond_6 = False
+            condition_6 = False
         # Condition 7: Current Price is within 25% of 52 week high
         if(currentClose >= (.75*high_of_52week)):
-            cond_7 = True
+            condition_7 = True
         else:
-            cond_7 = False
+            condition_7 = False
         # Condition 8: IBD RS rating >70 and the higher the better
         if(RS_Rating > 70):
-            cond_8 = True
+            condition_8 = True
         else:
-            cond_8 = False
+            condition_8 = False
 
-        if(cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6 and cond_7 and cond_8):
+        if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):
             final.append(stock)
             index.append(n)
             
