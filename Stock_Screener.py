@@ -16,9 +16,16 @@ filePath = r"/Users/shashank/Downloads/Code/"
 
 stocklist = si.tickers_nasdaq()
 
+final = []
+index = []
+n = 805
+
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 
-for stock in stocklist[200:]:
+for stock in stocklist[806:]:
+    n += 1
+    time.sleep(1)
+    
     print ("\npulling {}".format(stock))
     # rsi value
     start_date = datetime.datetime.now() - datetime.timedelta(days=365)
@@ -60,8 +67,6 @@ for stock in stocklist[200:]:
         moving_average_200 = df["SMA_200"][-1]
         low_of_52week = min(df["Adj Close"][-260:])
         high_of_52week = max(df["Adj Close"][-260:])
-        
-        time.sleep(3)
         
         try:
             moving_average_200_20 = df["SMA_200"][-20]
@@ -113,6 +118,13 @@ for stock in stocklist[200:]:
             cond_8 = False
 
         if(cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6 and cond_7 and cond_8):
+            final.append(stock)
+            index.append(n)
+            
+            dataframe = pd.DataFrame(list(zip(final, index)), columns =['Company', 'Index'])
+            
+            dataframe.to_csv('good_stocks({})'.format(n))
+            
             exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
             print (stock + " made the requirements")
     except Exception:
