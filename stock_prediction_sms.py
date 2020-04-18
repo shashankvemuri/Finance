@@ -38,9 +38,9 @@ def sendMessage(text):
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
 
-    email = ""
-    pas = ""
-    sms_gateway = ''
+    email = "johnbroe23@gmail.com"
+    pas = "fantasyforlife3"
+    sms_gateway = '8482521431@tmomail.net'
     smtp = "smtp.gmail.com" 
     port = 587
     

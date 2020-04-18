@@ -12,13 +12,13 @@ import json
 
 
 config = {}
-me = ''
-you = ''
-password = ''
+me = 'johnbroe23@gmail.com'
+you = 'shashankv323@gmail.com'
+password = 'fantasyforlife3'
 
 config['session'] = True
 
-config['api_key'] = ""
+config['api_key'] = "b89559c7df932f3d1173a58e423f0c1634f61651"
 
 
 client = TiingoClient(config)

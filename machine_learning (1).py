@@ -16,7 +16,7 @@ from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0, 1))
 
 #read the file
-df = pd.read_csv('C:/Users/Sagar/.spyder-py3/NSE-TATAGLOBAL11.csv')
+df = pd.read_csv('')
 
 #print the head
 df.head()
