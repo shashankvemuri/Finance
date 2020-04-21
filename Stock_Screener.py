@@ -1,5 +1,5 @@
 import datetime
-import datetime
+import requests
 import pandas as pd
 from pandas_datareader import data as pdr
 import yfinance as yf
@@ -11,8 +11,6 @@ from yahoo_fin import stock_info as si
 import time
 
 yf.pdr_override()
-
-filePath = r"/Users/shashank/Downloads/Code/"
 
 stocklist = si.tickers_nasdaq()
 
@@ -26,7 +24,7 @@ for stock in stocklist:
     n += 1
     time.sleep(1)
     
-    print ("\npulling {}".format(stock))
+    print ("\npulling {} from index {}".format(stock, n))
     # rsi value
     start_date = datetime.datetime.now() - datetime.timedelta(days=365)
     end_date = datetime.date.today()
@@ -122,16 +120,16 @@ for stock in stocklist:
             
             dataframe = pd.DataFrame(list(zip(final, index)), columns =['Company', 'Index'])
             
-            dataframe.to_csv('good_stocks({})'.format(n))
+            dataframe.to_csv('good_stocks.csv')
             
             exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
             print (stock + " made the requirements")
-    except Exception:
+    except Exception as e:
+        print (e)
         print("No data on "+stock)
 
 print(exportList)
 
-newFile = os.path.dirname(filePath)+"/ScreenOutput.xlsx"
-writer = ExcelWriter(newFile)
+writer = ExcelWriter("ScreenOutput.xlsx")
 exportList.to_excel(writer, "Sheet1")
 writer.save()
