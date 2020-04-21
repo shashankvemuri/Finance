@@ -1,12 +1,9 @@
 import datetime
-import requests
 import pandas as pd
 from pandas_datareader import data as pdr
 import yfinance as yf
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
-import os
 from pandas import ExcelWriter
+import requests
 from yahoo_fin import stock_info as si
 import time
 
