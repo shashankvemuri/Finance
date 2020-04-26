@@ -14,10 +14,10 @@ register_matplotlib_converters()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-n = 5 #number of stocks 
-stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'FB']
-start = datetime.datetime(2019,1,12)
-end = datetime.datetime(2020,1,12)
+stocks = ['TGT', 'AMZN', 'NFLX', 'PG', 'NSRGY', 'MDLZ', 'MRK', 'MSFT', 'AAPL']
+n = len(stocks) #number of stocks 
+start = datetime.datetime.now() - datetime.timedelta(days=365)
+end = datetime.datetime.now() - datetime.timedelta(days=60)
 
 df = pdr.get_data_yahoo(stocks, start=start, end=end)['Close']
 print (df.tail())
@@ -49,7 +49,7 @@ def random_portfolios(num_portfolios, mean_returns, cov_matrix, risk_free_rate):
 returns = df.pct_change()
 mean_returns = returns.mean()
 cov_matrix = returns.cov()
-num_portfolios = 25000
+num_portfolios = 50000
 risk_free_rate = 0.021
 
 def neg_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate):
