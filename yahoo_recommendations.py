@@ -24,14 +24,14 @@ for ticker in tickers:
     except:
         recommendation = 0
     
-    recommendations.append(recommendation)    
+    recommendations.append(recommendation)
+    
     print("--------------------------------------------")
     print ("{} has an average recommendation of: ".format(ticker), recommendation)
     
-dataframe = pd.DataFrame(list(zip(tickers, recommendations)), columns =['Company', 'Recommendation'])
-df  = dataframe.sort_values('Recommendation', ascending = True)
+dataframe = pd.DataFrame(list(zip(tickers, recommendations)), columns =['Company', 'Recommendations']) 
+df = dataframe.sort_values('Recommendations', ascending = True)
+df = df.set_index('Company')
 df.to_csv('recommendations.csv')
 
 print (df)
-
-
