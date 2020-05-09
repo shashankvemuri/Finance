@@ -27,7 +27,6 @@ nasdaq_tickers = si.tickers_nasdaq()
 sharpe_ratios = []
 invalid_tickers = []
 
-'''
 for ticker in nasdaq_tickers:
     try:
         df = DataReader(ticker, 'yahoo', start_date, end_date) 
@@ -62,6 +61,7 @@ for ticker in nasdaq_tickers:
     except (KeyError, RemoteDataError, ZeroDivisionError):
         invalid_tickers.append(ticker)
 
+'''
 np.savez('invalid_nasdaq_tickers.npz', invalid_tickers)
 np.savez("nasdaq_sharpe_ratios(1).npz", sharpe_ratios)
 '''

@@ -17,12 +17,12 @@ for ticker in tickers:
     url =  lhs_url + ticker + rhs_url
     r = requests.get(url)
     if not r.ok:
-        recommendation = 0
+        recommendation = 6
     try:
         result = r.json()['quoteSummary']['result'][0]
         recommendation =result['financialData']['recommendationMean']['fmt']
     except:
-        recommendation = 0
+        recommendation = 6
     
     recommendations.append(recommendation)
     
@@ -30,8 +30,8 @@ for ticker in tickers:
     print ("{} has an average recommendation of: ".format(ticker), recommendation)
     
 dataframe = pd.DataFrame(list(zip(tickers, recommendations)), columns =['Company', 'Recommendations']) 
-df = dataframe.sort_values('Recommendations', ascending = True)
-df = df.set_index('Company')
-df.to_csv('recommendations.csv')
+dataframe = dataframe.set_index('Company')
+dataframe.to_csv('recommendations.csv')
 
-print (df)
+#dataframe = pd.read_csv('recommendations.csv')
+print (dataframe)
