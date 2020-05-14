@@ -11,7 +11,7 @@ pd.set_option('display.max_columns', 6)
 finwiz_url = 'https://finviz.com/quote.ashx?t='
 
 news_tables = {}
-tickers = ['AMZN', 'TSLA', 'GOOG']
+tickers = ['NFLX', 'MRK', 'M']
 
 for ticker in tickers:
     url = finwiz_url + ticker
@@ -26,13 +26,13 @@ for ticker in tickers:
     var_tr = var.findAll('tr')
 
     print ('\n')    
-    print ('News Headlines for {} Today: '.format(ticker))
+    print ('Recent News Headlines for {}: '.format(ticker))
     
     for i, table_row in enumerate(var_tr):
         a_text = table_row.a.text
         td_text = table_row.td.text
-        print(a_text)
-        #print(td_text)
+        td_text = td_text.strip()
+        print(a_text,'(',td_text,')')
         if i == 3:
             break
         
@@ -88,7 +88,8 @@ df = df.sort_values('Sentiment Value', ascending=False)
 print ('\n')
 print (df)
 
-'''#plot 
+'''
+#plot 
 plt.rcParams['figure.figsize'] = [10, 6]
 mean_scores = parsed_and_scored_news.groupby(['ticker','date']).mean()
 mean_scores = mean_scores.unstack()
@@ -96,4 +97,5 @@ mean_scores = mean_scores.unstack()
 mean_scores = mean_scores.xs('compound', axis="columns").transpose()
 
 mean_scores.plot(kind = 'bar')
-plt.grid()'''
+plt.grid()
+'''
