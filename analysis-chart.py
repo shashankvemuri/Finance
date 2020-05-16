@@ -2,14 +2,18 @@ import pandas as pd
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import talib
+from pylab import rcParams 
 import matplotlib.pyplot as plt
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.pylab import date2num
+
+ticker = "HP"
 
 # Get today's date as UTC timestamp
 today = datetime.today().strftime("%d/%m/%Y")
 today = datetime.strptime(today + " +0000", "%d/%m/%Y %z")
 to = int(today.timestamp())
+
 # Get date ten years ago as UTC timestamp
 ten_yr_ago = today-relativedelta(years=10)
 fro = int(ten_yr_ago.timestamp())
@@ -26,8 +30,6 @@ def get_price_hist(ticker):
 
     return data
 
-nflx_df = get_price_hist("NFLX")
-print(nflx_df)
 
 def get_indicators(data):
     # Get MACD
@@ -41,8 +43,6 @@ def get_indicators(data):
     data["rsi"] = talib.RSI(data["Close"])
     return data
 
-nflx_df2 = get_indicators(nflx_df)
-print(nflx_df2)
 
 def plot_chart(data, n, ticker):
     
@@ -51,11 +51,12 @@ def plot_chart(data, n, ticker):
     
     # Create figure and set axes for subplots
     fig = plt.figure()
-    fig.set_size_inches((20, 16))
-    ax_candle = fig.add_axes((0, 0.72, 1, 0.32))
-    ax_macd = fig.add_axes((0, 0.48, 1, 0.2), sharex=ax_candle)
-    ax_rsi = fig.add_axes((0, 0.24, 1, 0.2), sharex=ax_candle)
-    ax_vol = fig.add_axes((0, 0, 1, 0.2), sharex=ax_candle)
+    fig.suptitle('{} Technical Indicators'.format(ticker))
+    rcParams['figure.figsize'] = 15, 10
+    ax_candle = fig.add_axes((0, 0.72, 1, 0.20))
+    ax_macd = fig.add_axes((0, 0.48, 1, 0.20), sharex=ax_candle)
+    ax_rsi = fig.add_axes((0, 0.24, 1, 0.20), sharex=ax_candle)
+    ax_vol = fig.add_axes((0, 0, 1, 0.20), sharex=ax_candle)
     
     # Format x-axis ticks as dates
     ax_candle.xaxis_date()
@@ -89,10 +90,14 @@ def plot_chart(data, n, ticker):
     # Show volume in millions
     ax_vol.bar(data.index, data["Volume"] / 1000000)
     ax_vol.set_ylabel("(Million)")
-   
-    # Save the chart as PNG
-    fig.savefig("charts/" + ticker + ".png", bbox_inches="tight")
     
     plt.show()
     
-plot_chart(nflx_df2, 180, "NFLX")
+
+dataframe = get_price_hist(ticker)
+#print(dataframe)
+
+frame = get_indicators(dataframe)
+print(frame.tail(60))
+
+plot_chart(frame, 180, ticker)

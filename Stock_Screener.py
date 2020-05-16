@@ -1,15 +1,36 @@
 import datetime
 import pandas as pd
-from pandas_datareader import data as pdr
+from pandas_datareader import DataReader
 import yfinance as yf
 from pandas import ExcelWriter
 import requests
 from yahoo_fin import stock_info as si
 import time
+import bs4 as bs
+import pickle
 
-yf.pdr_override()
+def save_spx_tickers():
+    resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+    soup = bs.BeautifulSoup(resp.text, 'lxml')
+    table = soup.find('table', {'class':'wikitable sortable'})
+    tickers = []
+    for row in table.findAll('tr')[1:]:
+        ticker = row.find_all('td') [0].text.strip()
+        tickers.append(ticker)
+        
+    with open('spxTickers.pickle', 'wb') as f:
+            pickle.dump(tickers, f)       
+    return tickers
+        
+stocklist = save_spx_tickers()
 
-stocklist = si.tickers_nasdaq()
+# Make the ticker symbols readable by Yahoo Finance
+stocklist = [item.replace(".", "-") for item in stocklist]
+
+mylist = []
+today = datetime.date.today()
+mylist.append(today)
+today = mylist[0]
 
 final = []
 index = []
@@ -18,15 +39,15 @@ n = -1
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 
 for stock in stocklist:
-    n += 1
+    #n += 1
     time.sleep(1)
     
-    print ("\npulling {} from index {}".format(stock, n))
+    print ("\npulling {}".format(stock))
     # rsi value
     start_date = datetime.datetime.now() - datetime.timedelta(days=365)
     end_date = datetime.date.today()
     
-    df = pdr.get_data_yahoo(stock, start=start_date, end=end_date)
+    df = DataReader(stock, 'yahoo', start=start_date, end=end_date)
     df = df.reset_index()
     df['Date'] = pd.to_datetime(df.Date)
     data = df.sort_values(by="Date", ascending=True).set_index("Date").last("59D")
@@ -46,7 +67,7 @@ for stock in stocklist:
     rsi = rsi.reset_index()
     rsi = rsi.drop(columns=['Date'])
     rsi.columns = ['Value']
-    rsi_list = rsi.Value.to_list()
+    rsi_list = rsi.Value.tolist()
     RS_Rating = rsi['Value'].mean()
 
     try:
@@ -112,21 +133,22 @@ for stock in stocklist:
             condition_8 = False
 
         if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):
-            final.append(stock)
-            index.append(n)
+            #final.append(stock)
+            #index.append(n)
             
             dataframe = pd.DataFrame(list(zip(final, index)), columns =['Company', 'Index'])
             
-            dataframe.to_csv('good_stocks.csv')
+            #dataframe.to_csv('/Users/shashank/Downloads/Code/screener-output/Output_{}.csv'.format(today))
             
             exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
-            print (stock + " made the requirements")
+            #print (stock + " made the requirements")
     except Exception as e:
-        print (e)
-        print("No data on "+stock)
+        pass
+        #print (e)
+        #print("No data on "+stock)
 
-print(exportList)
+#print(exportList)
 
-writer = ExcelWriter("ScreenOutput.xlsx")
+writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Output_{}.xlsx'.format(today))
 exportList.to_excel(writer, "Sheet1")
 writer.save()
