@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.pylab import date2num
 
-ticker = "HP"
+ticker = "AMZN"
 
 # Get today's date as UTC timestamp
 today = datetime.today().strftime("%d/%m/%Y")
@@ -88,7 +88,7 @@ def plot_chart(data, n, ticker):
     ax_rsi.legend()
     
     # Show volume in millions
-    ax_vol.bar(data.index, data["Volume"] / 1000000)
+    ax_vol.bar(data.index, data["Volume"] / 1000000, label = "Volume")
     ax_vol.set_ylabel("(Million)")
     
     plt.show()
