@@ -18,8 +18,7 @@ end_date = dt.date.today()
 
 for t in ticker:
     df = DataReader(t, 'yahoo', start_date, end_date)
-    
-    df["Date"] = pd.to_datetime(df["Date"])
+
     df["Return"] = df["Close"].pct_change()
     
     df["Range"] = (df["High"]/df["Low"])-1
