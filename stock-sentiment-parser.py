@@ -85,6 +85,7 @@ unique_ticker = parsed_and_scored_news['ticker'].unique().tolist()
 parsed_and_scored_news_dict = {name: parsed_and_scored_news.loc[parsed_and_scored_news['ticker'] == name] for name in unique_ticker}
 
 values = []
+
 for ticker in tickers: 
     dataframe = parsed_and_scored_news_dict[ticker]
     dataframe = dataframe.set_index('ticker')

@@ -22,8 +22,10 @@ for t in ticker:
     df["Return"] = df["Close"].pct_change()
     
     df["Range"] = (df["High"]/df["Low"])-1
+    
     del df["High"]
     del df["Low"]
+    
     df.dropna(how="any", inplace=True)
 
 print(df)
