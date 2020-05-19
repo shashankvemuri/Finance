@@ -1,33 +1,23 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import timedelta
+import datetime
 from dateutil.relativedelta import relativedelta
 import talib
 from pylab import rcParams 
 import matplotlib.pyplot as plt
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.pylab import date2num
+from pandas_datareader import DataReader
 
-ticker = "AMZN"
+ticker = "DXCM"
 
-# Get today's date as UTC timestamp
-today = datetime.today().strftime("%d/%m/%Y")
-today = datetime.strptime(today + " +0000", "%d/%m/%Y %z")
-to = int(today.timestamp())
+#Get Dates
+start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
+end_date = datetime.date.today()
 
-# Get date ten years ago as UTC timestamp
-ten_yr_ago = today-relativedelta(years=10)
-fro = int(ten_yr_ago.timestamp())
-
-def get_price_hist(ticker):
-
-    # Put stock price data in dataframe
-    url = "https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={fro}&period2={to}&interval=1d&events=history".format(ticker=ticker, fro=fro, to=to)
-    data = pd.read_csv(url)
-    
-    # Convert date to timestamp and make index
-    data.index = data["Date"].apply(lambda x: pd.Timestamp(x))
-    data.drop("Date", axis=1, inplace=True)
-
+def get_price_hist(ticker):    
+    #Get data 
+    data = DataReader(ticker, 'yahoo', start_date, end_date)
     return data
 
 

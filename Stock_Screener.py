@@ -8,6 +8,7 @@ from yahoo_fin import stock_info as si
 import time
 import bs4 as bs
 import pickle
+import talib
 
 def save_spx_tickers():
     resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
@@ -37,10 +38,11 @@ index = []
 n = -1
 
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
+otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 
 for stock in stocklist:
     #n += 1
-    time.sleep(1)
+    time.sleep(.5)
     
     print ("\npulling {}".format(stock))
     # rsi value
@@ -48,27 +50,10 @@ for stock in stocklist:
     end_date = datetime.date.today()
     
     df = DataReader(stock, 'yahoo', start=start_date, end=end_date)
-    df = df.reset_index()
-    df['Date'] = pd.to_datetime(df.Date)
-    data = df.sort_values(by="Date", ascending=True).set_index("Date").last("59D")
-    df = df.set_index('Date')
-    rsi_period = 14
-    chg = data['Close'].diff(1)
-    gain = chg.mask(chg < 0, 0)
-    data['gain'] = gain
-    loss = chg.mask(chg > 0, 0)
-    data['loss'] = loss
-    avg_gain = gain.ewm(com=rsi_period - 1, min_periods=rsi_period).mean()
-    avg_loss = loss.ewm(com=rsi_period - 1, min_periods=rsi_period).mean()
-    data['avg_gain'] = avg_gain
-    data['avg_loss'] = avg_loss
-    rs = abs(avg_gain/avg_loss)
-    rsi = 100-(100/(1+rs))
-    rsi = rsi.reset_index()
-    rsi = rsi.drop(columns=['Date'])
-    rsi.columns = ['Value']
-    rsi_list = rsi.Value.tolist()
-    RS_Rating = rsi['Value'].mean()
+    
+    df["rsi"] = talib.RSI(df["Close"])
+    
+    RS_Rating = df["rsi"].tail(14).mean()
 
     try:
         smaUsed = [50, 150, 200]
@@ -142,6 +127,10 @@ for stock in stocklist:
             
             exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
             #print (stock + " made the requirements")
+        
+        else:
+            otherList = otherList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
+
     except Exception as e:
         pass
         #print (e)
@@ -149,6 +138,10 @@ for stock in stocklist:
 
 #print(exportList)
 
-writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Export-Output_{}.xlsx'.format(today))
 exportList.to_excel(writer, "Sheet1")
+writer.save()
+
+writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Other-Output_{}.xlsx'.format(today))
+otherList.to_excel(writer, "Sheet1")
 writer.save()
