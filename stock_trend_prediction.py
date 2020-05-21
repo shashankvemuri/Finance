@@ -109,6 +109,7 @@ print ('\n')
 # plot training and testing data
 ax = train_x.plot(grid=True, figsize=(10, 6))
 test_x.plot(ax=ax, grid=True)
+plt.title('DOW Jones Industrial Average Voltaility')
 plt.legend(["train", "test"])
 
 # normalize data

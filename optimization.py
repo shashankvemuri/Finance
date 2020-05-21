@@ -17,7 +17,7 @@ pd.set_option('display.max_rows', None)
 stocks = ['TGT', 'AMZN', 'NFLX', 'PG', 'NSRGY', 'MDLZ', 'MRK', 'MSFT', 'AAPL']
 n = len(stocks) #number of stocks 
 start = datetime.datetime.now() - datetime.timedelta(days=365)
-end = datetime.datetime.now() - datetime.timedelta(days=60)
+end = datetime.datetime.now() - datetime.timedelta(days=90)
 
 df = pdr.get_data_yahoo(stocks, start=start, end=end)['Close']
 print (df.tail())
