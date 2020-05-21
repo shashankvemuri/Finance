@@ -48,7 +48,7 @@ for ticker in tickers:
     html = BeautifulSoup(response, features="lxml")
     news_table = html.find(id='news-table')
     news_tables[ticker] = news_table
-    time.sleep(1)
+    time.sleep(2)
     print (ticker + ' done')
 
 parsed_news = []

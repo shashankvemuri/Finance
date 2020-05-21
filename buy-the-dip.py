@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator
 import seaborn as sns
 from pandas_datareader import DataReader
+from sklearn.model_selection import train_test_split
 
-ticker = ["SPY"]
-all_historic_data = pd.DataFrame()
+ticker = "AAPL"
 
 # Change these if needed
 start_date = dt.datetime.now() - dt.timedelta(days=365*5)
@@ -32,18 +32,17 @@ print(df)
 
 #create train and test sets
 #this methodology will randomly select 80% of our data
+msk = np.random.rand(len(df)) < 0.8
+train = df[msk]
+test = df[~msk]
 
-msk = np.random.rand(len(all_historic_data)) < 0.8
-train = all_historic_data[msk]
-test = all_historic_data[~msk]
+print (train)
+print (test)
 
-X_train = train[["date", "return", "range", "close"]].set_index("date")
-X_test = test[["date", "return", "range", "close"]].set_index("date")
+X_train = train[["Return", "Range", "Close"]]
+X_test = test[["Return", "Range", "Close"]]
 
-model = mix.GaussianMixture(n_components=3, 
-                            covariance_type="full", 
-                            n_init=100, 
-                            random_state=7).fit(X_train)
+model = mix.GaussianMixture(n_components=3, covariance_type="full", n_init=100, random_state=7).fit(X_train)
 
 # Predict the optimal sequence of internal hidden state
 hidden_states = model.predict(X_test)
@@ -57,7 +56,7 @@ for i in range(model.n_components):
 
 sns.set(font_scale=1.25)
 style_kwds = {'xtick.major.size': 3, 'ytick.major.size': 3,
-              'font.family':u'courier prime code', 'legend.frameon': True}
+              'font.family':u'DejaVu Sans ', 'legend.frameon': True}
 sns.set_style('white', style_kwds)
 
 fig, axs = plt.subplots(model.n_components, sharex=True, sharey=True, figsize=(12,9))
@@ -67,7 +66,7 @@ for i, (ax, color) in enumerate(zip(axs, colors)):
     # Use fancy indexing to plot data in each state.
     mask = hidden_states == i
     ax.plot_date(X_test.index.values[mask],
-                 X_test["close"].values[mask],
+                 X_test["Close"].values[mask],
                  ".-", c=color)
     ax.set_title("{0}th hidden state".format(i), fontsize=16, fontweight='demi')
 
@@ -94,7 +93,7 @@ sns.set_style('white', style_kwds)
 order = [0, 1, 2]
 fg = sns.FacetGrid(data=states, hue='states', hue_order=order,
                    palette=colors, aspect=1.31, height=12)
-fg.map(plt.scatter, 'date', "close", alpha=0.8).add_legend()
+fg.map(plt.scatter, 'Date', "Close", alpha=0.8).add_legend()
 sns.despine(offset=10)
-fg.fig.suptitle('Historical SPY Regimes', fontsize=24, fontweight='demi')
+fg.fig.suptitle('Historical {} Regimes'.format(ticker), fontsize=24, fontweight='demi')
 
