@@ -9,7 +9,7 @@ from scipy import stats
 # BETA, ALPHA, OLS REGRESSION
 
 
-stock = 'WMT'
+stock = 'MSFT'
 start_date = datetime.datetime(2014,12,28)
 end_date = datetime.date.today()
 df = DataReader(stock, 'yahoo', start_date, end_date)['Close']
@@ -38,9 +38,9 @@ model = sm.OLS(y, X1)
 results = model.fit()
 print(results.summary())
 
+
 # alternatively scipy linear regression
 slope, intercept, r_value, p_value, std_err = stats.linregress(X, y)
-
 
 plt.figure(figsize=(20,10))
 X.plot()
@@ -76,7 +76,7 @@ plt.scatter(X, y, color='r')
 plt.scatter(y, X, color='b')
 plt.plot(xlst,ylst,'k-')
 
-plt.title('Percentage Returns for Stocks')
+plt.title(f'Percentage Returns for {stock} against the S&P 500')
 plt.xlabel('Company')
 plt.ylabel('S&P 500')
 plt.grid()

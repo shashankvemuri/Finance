@@ -7,6 +7,8 @@ from pandas_datareader import data as pdr
 import xlsxwriter
 import requests
 from yahoo_fin import stock_info as si
+import pickle
+import bs4 as bs
 
 # You need to change this to a convenient spot on your own hard drive.
 
@@ -15,16 +17,34 @@ threshold = 0.80
 
 # You need to go to Yahoo and download a list of the S&P 500 components. Make sure to save it to
 # a CSV file with column headers that include "Symbol", "Date" and "Close" 
-sp500_tickers = si.tickers_sp500()
+def save_spx_tickers():
+    resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+    soup = bs.BeautifulSoup(resp.text, 'lxml')
+    table = soup.find('table', {'class':'wikitable sortable'})
+    tickers = []
+    for row in table.findAll('tr')[1:]:
+        ticker = row.find_all('td') [0].text.strip()
+        tickers.append(ticker)
+        
+    with open('spxTickers.pickle', 'wb') as f:
+            pickle.dump(tickers, f)       
+    return tickers
+        
+sp500_tickers = save_spx_tickers()
 
+# Make the ticker symbols readable by Yahoo Finance
+sp500_tickers = [item.replace(".", "-") for item in sp500_tickers]
 
 # Upload a list of the S&P 500 components downloaded from Yahoo.
-df_sp500_tickers = pd.DataFrame(list(zip(sp500_tickers, None, None)), columns =['Symbol', 'Date', 'Close']) 
-print(df_sp500_tickers.head())
+mylist= []
+mylist2 = []
+
+df_sp500_tickers = pd.DataFrame(list(zip(sp500_tickers)), columns =['Symbol'])
 
 # This module loops through the S&P 500 tickers, downloads the data from Yahoo and creates a separate CSV 
 # file of historical data for each ticker (e.g. AAPL.csv).
 # Skip this routine if you already have the CSV files available.
+'''
 for index, ticker in df_sp500_tickers.iterrows():
     global df
     
@@ -38,7 +58,7 @@ for index, ticker in df_sp500_tickers.iterrows():
     df = df[['Symbol','Date','Close']]
     df.drop_duplicates(subset ="Date", keep = 'first', inplace = True) #Yahoo has a tendency to duplicate the last row.
     df.to_csv(path_or_buf = my_path + "/data/" + my_ticker +".csv", index=False)
-
+'''
 # Creates the dataframe container for the stats data.
 df_tradelist = pd.DataFrame(index=[], columns=['my_ticker', 'hold_per', 'pct_uprows', 'max_up_return', 'min_up_return', 'avg_up_return', 'avg_down_return', 'exp_return', 'stdev_returns', 'pct_downside', 'worst_return', 'least_pain_pt', 'total_years', 'max_consec_beat', 'best_buy_date', 'best_sell_date', 'analyzed_years'])
 df_tradelist.head()
@@ -159,7 +179,7 @@ def calc_trading_stats():
     avg_up_return = np.float64(avg_up_return).round(4)
     avg_down_return = dfr_pivot.loc[dfr_pivot['PctDown'] > 0.5, 'AvgReturn'].mean()
     avg_down_return = np.float64(avg_down_return).round(4)
-    exp_return = dfr_pivot['AvgReturn'].mean().round(4)
+    exp_return = round(dfr_pivot['AvgReturn'].mean(), 4)
     stdev_returns = dfr_pivot['StDevReturns'].mean()
     stdev_returns = np.float64(stdev_returns).round(4)
     worst_return = dfr_pivot['MinReturn'].min()

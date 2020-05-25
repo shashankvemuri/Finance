@@ -1,11 +1,20 @@
 from pandas_datareader import DataReader
 import numpy as np
 import pandas as pd
+import datetime
 
 # Grab time series data for 5-year history for the stock (here AAPL)
 # and for S&P-500 Index
-df = DataReader('MRK','yahoo','2018-07-30', '2019-07-30')
-dfb = DataReader('^GSPC','yahoo','2018-07-30', '2019-07-30')
+start_date = datetime.datetime.now() - datetime.timedelta(days=1826)
+end_date = datetime.date.today()
+
+stock = 'MSFT'
+index = '^GSPC'
+
+# Grab time series data for 5-year history for the stock 
+# and for S&P-500 Index
+df = DataReader(stock,'yahoo', start_date, end_date)
+dfb = DataReader(index,'yahoo', start_date, end_date)
 
 # create a time-series of monthly data points
 rts = df.resample('M').last()

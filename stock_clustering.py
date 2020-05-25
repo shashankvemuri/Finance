@@ -1,4 +1,4 @@
-from pandas_datareader import data 
+from pandas_datareader import DataReader 
 import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
@@ -9,12 +9,12 @@ from sklearn.preprocessing import Normalizer
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
-companies = ['AMZN', 'AAPL', 'WBA', 'NOC', 'BA', 'LMT', 'MCD', 'INTC', 'NAV', 'IBM', 'TXN', 'MA', 'MSFT', 'GE', 'WMT', 'AXP', 'PEP', 'KO', 'JNJ', 'TM', 'HMC', 'MSBHY', 'SNE', 'XOM', 'CVX', 'VLO', 'F', 'BAC']
+companies = ['TGT', 'AMZN', 'NFLX', 'PG', 'NSRGY', 'MDLZ', 'MRK', 'MSFT', 'AAPL']
 
 start_date = datetime.datetime(2017, 5, 17)
 end_date = datetime.date.today()
 
-df = data.DataReader(companies, 'yahoo', start_date, end_date)
+df = DataReader(companies, 'yahoo', start_date, end_date)
 
 stock_open = np.array(df['Open']).transpose()
 stock_close = np.array(df['Close']).transpose()
@@ -32,7 +32,7 @@ norm_movements = normalizer.fit_transform(movements)
 
 # Create Kmeans model
 normalizer = Normalizer()
-kmeans = KMeans(n_clusters = 10,max_iter = 1000)
+kmeans = KMeans(max_iter = 1000)
 pipeline = make_pipeline(normalizer,kmeans)
 pipeline.fit(movements)
 labels = pipeline.predict(movements)
@@ -45,7 +45,7 @@ print(df1)
 # Reduce the data
 normalizer = Normalizer()
 reduced_data = PCA(n_components = 2)
-kmeans = KMeans(n_clusters = 10,max_iter = 1000)
+kmeans = KMeans(max_iter = 1000)
 pipeline = make_pipeline(normalizer,reduced_data,kmeans)
 pipeline.fit(movements)
 labels = pipeline.predict(movements)

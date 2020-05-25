@@ -60,10 +60,10 @@ while stock != "done":
         plt.plot_date([dates[index], dates[index]+timeD],
         [pivots[index], pivots[index]], linestyle = "-", linewidth = 2, marker = ",")
         
-        plt.title(stock + ' resistance points')
+        plt.title(stock.upper() + ' resistance points')
         
     rcParams['figure.figsize'] = 15, 10
     plt.subplots()
     plt.show()
     
-    stock = input("Enter the stock symbol: ")
+    stock = input("Enter another stock symbol: ")
