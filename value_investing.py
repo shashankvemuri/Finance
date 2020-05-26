@@ -13,7 +13,6 @@ pd.set_option('display.max_rows', None)
 
 # Define The Method To Extract Fundamental Data
 
-'''
 def get_fundamental_data(df):
     for symbol in df.index:
 
@@ -116,9 +115,9 @@ print ('\n')
 print("Stocks after screening")
 print(df.head())
 df.to_csv('/Users/shashank/Downloads/after_screening.csv')
+
+
 '''
-
-
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 100)
 
@@ -129,4 +128,4 @@ df = df.set_index('Companies')
 #print (df.tail(50))
 
 sort_by_ROI= df.sort_values('P/E', ascending = False)
-print(sort_by_ROI)
+print(sort_by_ROI)'''

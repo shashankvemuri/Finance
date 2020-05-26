@@ -1,23 +1,21 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 31 11:57:54 2018
-
-@author: Ishan Shah
-"""
-# To plot
 import matplotlib.pyplot as plt
+from pandas_datareader import DataReader
+import pandas as pd 
+import datetime 
 
-# To import stock prices
-import fix_yahoo_finance as yf  
-df = yf.download('XOM','2017-08-01', '2017-12-31')
+ticker = 'AAPL'
+start_date = datetime.datetime(2020,1,1)
+end_date = datetime.date.today()
+
+df = DataReader(ticker,'yahoo', start_date, end_date)
 
 # Plot the price series
 fig, ax = plt.subplots()
 ax.plot(df.Close, color='black')
 
 # Define minimum and maximum price points
-price_min = 76 #df.Close.min()
-price_max = 84 #df.Close.max()
+price_min = df.Close.min()
+price_max = df.Close.max()
 
 # Fibonacci Levels considering original trend as upward move
 diff = price_max - price_min
@@ -25,12 +23,12 @@ level1 = price_max - 0.236 * diff
 level2 = price_max - 0.382 * diff
 level3 = price_max - 0.618 * diff
 
-print "Level", "Price"
-print "0 ", price_max
-print "0.236", level1
-print "0.382", level2
-print "0.618", level3
-print "1 ", price_min
+levels = [0, 0.236, 0.382, 0.618, 1]
+prices = [price_max, level1, level2, level3, price_min]
+
+dataframe = pd.DataFrame(list(zip(levels, prices)), columns =['Levels', 'Prices']) 
+
+print (dataframe)
 
 ax.axhspan(level1, price_min, alpha=0.4, color='lightsalmon')
 ax.axhspan(level2, level1, alpha=0.5, color='palegoldenrod')
