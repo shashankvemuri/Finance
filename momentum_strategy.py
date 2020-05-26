@@ -7,7 +7,7 @@ import seaborn as sns
 sns.set_style('whitegrid')
 
 #initializing our data variable as our eMini data
-data=pd.read_csv('ESPostData.csv')
+data=pd.read_csv('/Users/shashank/Documents/GitHub/Code/csv/ESPostData.csv')
 
 data.head()
 
