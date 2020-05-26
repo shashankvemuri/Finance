@@ -142,10 +142,7 @@ def parse(ticker):
         return {"error":"Failed to parse json response"}
         
 if __name__=="__main__":
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument('ticker',help = '')
-    args = argparser.parse_args()
-    ticker = args.ticker
+    ticker = input("Enter a ticker: ")
     print ("Fetching data for %s"%(ticker))
     scraped_data = parse(ticker)
     print ("Writing data to output file")

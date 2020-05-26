@@ -16,7 +16,7 @@ from pandas_datareader import DataReader
 import seaborn as sns
 
 
-start_date = datetime.datetime(2019,1,14)
+start_date = datetime.datetime(2019,1,15)
 end_date = datetime.date.today()
 
 '''
@@ -37,47 +37,13 @@ def save_spx_tickers():
 tickers = save_spx_tickers()
 tickers = [item.replace(".", "-") for item in tickers]
 '''
-'''
-tickers = pd.read_csv('/Users/shashank/Downloads/companylist.csv')
-tickers = tickers['Symbol']
-tickers = [item.replace(".U", "-UN") for item in tickers]
-tickers = [item.replace(".WS", "-WT") for item in tickers]
-tickers = [item.replace("^A", "-PA") for item in tickers]
-tickers = [item.replace("^B", "-PB") for item in tickers]
-tickers = [item.replace("^C", "-PC") for item in tickers]
-tickers = [item.replace("^D", "-PD") for item in tickers]
-tickers = [item.replace("^E", "-PE") for item in tickers]
-tickers = [item.replace("^F", "-PF") for item in tickers]
-tickers = [item.replace("^G", "-PG") for item in tickers]
-tickers = [item.replace("^H", "-PH") for item in tickers]
-tickers = [item.replace("^I", "-PI") for item in tickers]
-tickers = [item.replace("^J", "-PJ") for item in tickers]
-tickers = [item.replace("^K", "-PK") for item in tickers]
-tickers = [item.replace("^L", "-PL") for item in tickers]
-tickers = [item.replace("^M", "-PM") for item in tickers]
-tickers = [item.replace("^N", "-PN") for item in tickers]
-tickers = [item.replace("^O", "-PO") for item in tickers]
-tickers = [item.replace("^P", "-PP") for item in tickers]
-tickers = [item.replace("^Q", "-PQ") for item in tickers]
-tickers = [item.replace("^R", "-PR") for item in tickers]
-tickers = [item.replace("^S", "-PS") for item in tickers]
-tickers = [item.replace("^T", "-PT") for item in tickers]
-tickers = [item.replace("^U", "-PU") for item in tickers]
-tickers = [item.replace("^V", "-PV") for item in tickers]
-tickers = [item.replace("^W", "-PW") for item in tickers]
-tickers = [item.replace("^X", "-PX") for item in tickers]
-tickers = [item.replace("^Y", "-PY") for item in tickers]
-tickers = [item.replace("^Z", "-PZ") for item in tickers]
-tickers = [item.replace(".CL", "CL") for item in tickers]
-tickers = [item.replace("~", "-RI") for item in tickers]
-tickers = [item.replace(".", "-") for item in tickers]
-tickers = [item.replace("^", "-P") for item in tickers]
-'''
-tickers = pd.read_csv('/Users/shashank/Downloads/tickers.csv')
 
+tickers = pd.read_csv('nasdaq.csv')
+tickers = tickers['Symbol']
+tickers = tickers.drop(['ABAC'])
 sharpe_ratios = []
 
-for ticker in (tickers[2452:]):
+for ticker in tickers:
     df = DataReader(ticker, 'yahoo', start_date, end_date) 
     x = 5000
     
@@ -107,18 +73,20 @@ for ticker in (tickers[2452:]):
     print ('{} has an average annualized sharpe ratio of {}'.format(ticker, A_Sharpe_Ratio))
     
     sharpe_ratios.append(A_Sharpe_Ratio)
-    np.savez("NYSE_sharpe_ratios(1).npz", sharpe_ratios)
 
+np.savez("nasdaq_sharpe_ratios(1).npz", sharpe_ratios)
 
-all_sharpe_ratios = np.load("NYSE_sharpe_ratios(1).npz")
+'''
+all_sharpe_ratios = np.load("nasdaq_sharpe_ratios(1).npz")
 all_sharpe_ratios = all_sharpe_ratios['arr_0'] 
 all_sharpe_ratios = all_sharpe_ratios.tolist()
 
 # Create a dataframe with each company and their corressponding beta/alpha values
 dataframe = pd.DataFrame(list(zip(tickers, all_sharpe_ratios)), columns =['Company', 'Sharpe_Ratio']) 
 
-pd.set_option('display.max_rows', 200)
-pd.set_option('display.min_rows', 200)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.min_rows', None)
 # Sorting the dataframe from highest beta values to lowest
 sort_by_sharpe = dataframe.sort_values('Sharpe_Ratio', ascending = True)
 print(sort_by_sharpe)
+'''
