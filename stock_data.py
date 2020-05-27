@@ -52,3 +52,6 @@ print (f'alpha = {alpha}')
 print (f'r_squared = {r_squared}')
 print (f'volatility = {volatility}')
 print (f'momentum = {momentum}')
+volume = df.Volume
+volume = volume.tail(60).mean()
+print (volume)

@@ -111,8 +111,8 @@ for stock in stocklist:
             condition_7 = True
         else:
             condition_7 = False
-        # Condition 8: IBD RS rating >70 and the higher the better
-        if(RS_Rating > 70):
+        # Condition 8: IBD RS rating < 30 and the higher the better
+        if(RS_Rating < 30):
             condition_8 = True
         else:
             condition_8 = False
@@ -137,10 +137,10 @@ for stock in stocklist:
         #print("No data on "+stock)
 
 #print(exportList)
-writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/screener-output/Export-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/mm-screener-output/Export-Output_{}.xlsx'.format(today))
 exportList.to_excel(writer, "Sheet1")
 writer.save()
 
-writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/screener-output/Other-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/mm-screener-output/Other-Output_{}.xlsx'.format(today))
 otherList.to_excel(writer, "Sheet1")
 writer.save()
