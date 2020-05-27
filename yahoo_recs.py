@@ -57,10 +57,10 @@ for ticker in tickers:
     print ("{} has an average recommendation of: ".format(ticker), recommendation)
     
 
-df = pd.read_csv('/Users/shashank/Downloads/Code/recommendation-values/recommendation-values.csv')
+df = pd.read_csv('/Users/shashank/Documents/GitHub/Code/recommendation-values/recommendation-values.csv')
 df['{}'.format(today)] = recommendations
 df = df.set_index('Company')
-df.to_csv('/Users/shashank/Downloads/Code/recommendation-values/recommendation-value.csv')
+df.to_csv('/Users/shashank/Documents/GitHub/Code/recommendation-values/recommendation-values.csv')
 
 #dataframe = pd.read_csv('recommendations.csv')
 #print (dataframe)

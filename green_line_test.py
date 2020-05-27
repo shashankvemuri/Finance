@@ -1,16 +1,16 @@
-import yfinance as yf
 import datetime as dt
 import pandas as pd
-from pandas_datareader import data as pdr
+from pandas_datareader import DataReader
+import matplotlib.pyplot as plt
+from pylab import rcParams 
 
-yf.pdr_override() # <== that's all it takes :-)
-start =dt.datetime(1980,12,1)
+start = dt.datetime(1980,12,1)
 now = dt.datetime.now()
-stock=""
+stock = ""
 
 stock = input("Enter the stock symbol : ") 
 while stock != "quit":
-  df = pdr.get_data_yahoo(stock, start, now)
+  df = DataReader(stock, 'yahoo', start, now)
 
   df.drop(df[df["Volume"]<1000].index, inplace=True)
 
@@ -38,7 +38,16 @@ while stock != "quit":
   if lastGLV==0:
     message=stock+" has not formed a green line yet"
   else:
-    message=("Last Green Line: "+str(lastGLV)+" on "+str(glDate))
+    message=("Last Green Line: "+str(round(lastGLV, 2))+" on "+str(glDate.strftime('%Y-%m-%d')))
+    
+    fig, ax = plt.subplots()
+    rcParams['figure.figsize'] = 15, 10
+    ax.plot(df['Close'])
+    ax.axhline(lastGLV, color='g')
+    plt.title(f"{stock.upper()}'s Close Price Green Line Test")
+    plt.xlabel('Dates')
+    plt.ylabel('Close Price')
+    plt.show()
 
   print(message)
   stock = input("Enter the stock symbol : ") 

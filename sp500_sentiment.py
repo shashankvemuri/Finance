@@ -94,7 +94,7 @@ for ticker in tickers:
     values.append(mean)
   
 
-df = pd.read_csv('/Users/shashank/Downloads/Code/sentiment-values/sentiments-values.csv')
+df = pd.read_csv('/Users/shashank/Documents/GitHub/Code/sentiment-values/sentiments-values.csv')
 df['{}'.format(today)] = values
 df = df.set_index('Ticker')
-df.to_csv('/Users/shashank/Downloads/Code/sentiment-values/sentiments-values.csv')
+df.to_csv('/Users/shashank/Documents/GitHub/Code/sentiment-values/sentiments-values.csv')

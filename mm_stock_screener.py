@@ -137,11 +137,10 @@ for stock in stocklist:
         #print("No data on "+stock)
 
 #print(exportList)
-
-writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Export-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/screener-output/Export-Output_{}.xlsx'.format(today))
 exportList.to_excel(writer, "Sheet1")
 writer.save()
 
-writer = ExcelWriter('/Users/shashank/Downloads/Code/screener-output/Other-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/GitHub/Code/screener-output/Other-Output_{}.xlsx'.format(today))
 otherList.to_excel(writer, "Sheet1")
 writer.save()
