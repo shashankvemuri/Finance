@@ -28,6 +28,8 @@ tickers = save_spx_tickers()
 # Make the ticker symbols readable by Yahoo Finance
 tickers = [item.replace(".", "-") for item in tickers]
 
+tickers = ['AAPL']
+
 oversold = []
 overbought = []
 for ticker in tickers:

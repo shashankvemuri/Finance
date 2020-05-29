@@ -42,7 +42,7 @@ while stock != "quit":
     
     fig, ax = plt.subplots()
     rcParams['figure.figsize'] = 15, 10
-    ax.plot(df['Close'])
+    ax.plot(df['Close'].tail(150))
     ax.axhline(lastGLV, color='g')
     plt.title(f"{stock.upper()}'s Close Price Green Line Test")
     plt.xlabel('Dates')
