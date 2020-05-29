@@ -38,7 +38,7 @@ index = []
 n = -1
 
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
-otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
+otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High", "Failed"])
 
 for stock in stocklist:
     #n += 1
@@ -117,19 +117,25 @@ for stock in stocklist:
         else:
             condition_8 = False
 
-        if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):
-            #final.append(stock)
-            #index.append(n)
-            
-            dataframe = pd.DataFrame(list(zip(final, index)), columns =['Company', 'Index'])
-            
-            #dataframe.to_csv('/Users/shashank/Downloads/Code/screener-output/Output_{}.csv'.format(today))
-            
+        if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):            
             exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
             #print (stock + " made the requirements")
         
         else:
-            otherList = otherList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
+            conditions = {'condition_1': condition_1, 'condition_2': condition_2, 'condition_3': condition_3, 'condition_4': condition_4, 'condition_5': condition_5, 'condition_6': condition_6, 'condition_7': condition_7, 'condition_8': condition_8}
+            
+            false = []
+            for condition in conditions: 
+                if conditions[condition] == False: 
+                    false.append(condition)
+                else:
+                    pass
+                
+            print (stock + " did not make the requirements because of: ")        
+            for value in false: 
+                print (value)
+            
+            otherList = otherList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week, "Failed": false}, ignore_index=True)
 
     except Exception as e:
         pass
