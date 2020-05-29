@@ -1,15 +1,19 @@
 #import the libraries
 import math
+import warnings
 import datetime 
 import numpy as np
 import pandas as pd
+from math import sqrt
 import matplotlib.pyplot as plt
 from tensorflow.keras import Sequential
 from pandas_datareader import DataReader
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
 from tensorflow.keras.layers import Dense, LSTM
 from pandas.util.testing import assert_frame_equal
-plt.style.use('fivethirtyeight')
+
+warnings.filterwarnings("ignore")
 
 #get the stock quote for the past 10 years
 stock = input("Enter a stock ticker: ")
@@ -92,7 +96,7 @@ plt.xlabel('Date', fontsize=16)
 plt.ylabel('Close Price', fontsize=16)
 plt.plot(train['Close'])
 plt.plot(valid[['Close','Predictions']])
-plt.legend(['Train','Val','Prediction'],loc='lower right')
+plt.legend(['Train','Valid','Prediction'],loc='lower right')
 plt.show()
 
 print (valid)
@@ -108,5 +112,12 @@ pred = model.predict(xx_test)
 pred = scaler.inverse_transform(pred)
 pred = pred[0]
 pred = pred[0]
-pred = round(pred, 2)
-print("The predicted price for the next trading day is: {}".format(pred))
+print("The predicted price for the next trading day is: {}".format(round(pred, 2)))
+
+#get stats
+#Root mean squared error 
+rmse=sqrt(mean_squared_error(valid['Predictions'].tolist(), valid['Close'].tolist()))
+print (f'The root mean squared error is {rmse}')
+
+error = mean_squared_error(valid['Close'].tolist(), valid['Predictions'].tolist())
+print('Testing Mean Squared Error: %.3f' % error)
