@@ -37,7 +37,7 @@ mylist.append(today)
 today = mylist[0]
 
 exportList = pd.DataFrame(columns=["Stock", "Price", "RSI", "Sharpe Ratio", "News Sentiment", "Recommendation", "Alpha", "Volatility", "Beta", "Volume"])
-otherList = pd.DataFrame(columns=["Stock", "Price", "RSI", "Sharpe Ratio", "News Sentiment", "Recommendation", "Alpha", "Volatility", "Beta", "Volume"])
+otherList = pd.DataFrame(columns=["Stock", "Price", "RSI", "Sharpe Ratio", "News Sentiment", "Recommendation", "Alpha", "Volatility", "Beta", "Volume", "Failed"])
 
 for stock in stocklist:
     t.sleep(3)
@@ -259,7 +259,6 @@ for stock in stocklist:
             print (stock + " made the requirements")
         
         else:
-            otherList = otherList.append({'Stock': stock, "Price": price, "RSI": rsi, "Sharpe Ratio": sharpe_ratio, "News Sentiment": sentiment_value, "Recommendation": rec_val, "Alpha": alpha, "Volatility": volatility, "Beta": beta, "Volume": volume}, ignore_index=True)
             conditions = {'condition_1': condition_1, 'condition_2': condition_2, 'condition_3': condition_3, 'condition_4': condition_4, 'condition_5': condition_5, 'condition_6': condition_6, 'condition_7': condition_7, 'condition_8': condition_8, 'condition_9': condition_9}
             
             false = []
@@ -272,7 +271,8 @@ for stock in stocklist:
             print (stock + " did not make the requirements because of: ")        
             for value in false: 
                 print (value)
-    
+                
+            otherList = otherList.append({'Stock': stock, "Price": price, "RSI": rsi, "Sharpe Ratio": sharpe_ratio, "News Sentiment": sentiment_value, "Recommendation": rec_val, "Alpha": alpha, "Volatility": volatility, "Beta": beta, "Volume": volume, "Failed": false}, ignore_index=True)
     except Exception as e: 
         print (e)
         print (f"could not get data on {stock}")
