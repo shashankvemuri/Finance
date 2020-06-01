@@ -78,4 +78,4 @@ while stock != 'quit':
                 plt.show()
     
     print(message)
-    stock = input('enter a ticker: ')
+    stock = input('enter another ticker: ')
