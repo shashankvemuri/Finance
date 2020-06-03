@@ -10,6 +10,7 @@ start = dt.datetime(1980,12,1)
 now = dt.datetime.now()
 
 tickers = pd.read_pickle('spxTickers.pickle')
+#tickers = si.tickers_nasdaq()
 
 diff_5 = []
 diff_neither = []
@@ -72,7 +73,7 @@ for ticker in tickers:
     
         print(message)
         print('-'*100)
-        time.sleep(1.25)
+        time.sleep(2)
     except Exception as e: 
         print (e)
         pass
