@@ -9,7 +9,7 @@ from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.pylab import date2num
 from pandas_datareader import DataReader
 
-ticker = "BAX"
+ticker = "NIO"
 
 #Get Dates
 start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
