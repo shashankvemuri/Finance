@@ -8,6 +8,8 @@ from math import sqrt
 import matplotlib.pyplot as plt
 from tensorflow.keras import Sequential
 from pandas_datareader import DataReader
+from itertools import tee, islice, chain
+from itertools import zip_longest as izip
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.layers import Dense, LSTM
@@ -91,7 +93,7 @@ train = data[:train_data_len]
 valid = data[train_data_len:]
 valid['Predictions'] = predictions
 plt.figure(figsize=(16,8))
-plt.title('Model for {}'.format(stock))
+plt.title('Model for {}'.format(stock.upper()))
 plt.xlabel('Date', fontsize=16)
 plt.ylabel('Close Price', fontsize=16)
 plt.plot(train['Close'])
@@ -100,6 +102,38 @@ plt.legend(['Train','Valid','Prediction'],loc='lower right')
 plt.show()
 
 print (valid)
+
+valid_movement = []
+pred_movement = []
+close_prices = valid.Close.tolist()
+pred_prices = valid.Predictions.tolist()
+        
+n = 0
+
+for index, value in enumerate(close_prices[:-1]):
+    if value > close_prices[index+1]: 
+        valid_movement.append(1)
+    else:
+        valid_movement.append(0)
+
+for index, value in enumerate(pred_prices[:-1]):
+    if value > pred_prices[index+1]: 
+        pred_movement.append(1)
+    else:
+        pred_movement.append(0)
+
+for val, pred in zip(valid_movement, pred_movement):
+    if val == pred:
+        n=n+1
+    else:
+        pass
+
+total = len(valid_movement)
+accuracy = round(n/total, 3)
+
+print (f'The accuracy of the LSTM Model predicting the movement of a stock each day is {100 * accuracy}%')
+
+dataframe = pd.DataFrame(list(zip(valid_movement, pred_movement)), columns =['Valid Movement', 'Predicted Movement'])
 
 #get predicted price for next day
 last_60day = data[-60:].values
@@ -117,7 +151,7 @@ print("The predicted price for the next trading day is: {}".format(round(pred, 2
 #get stats
 #Root mean squared error 
 rmse=sqrt(mean_squared_error(valid['Predictions'].tolist(), valid['Close'].tolist()))
-print (f'The root mean squared error is {rmse}')
+print (f'The root mean squared error is {round(rmse, 2)}')
 
 error = mean_squared_error(valid['Close'].tolist(), valid['Predictions'].tolist())
 print('Testing Mean Squared Error: %.3f' % error)
