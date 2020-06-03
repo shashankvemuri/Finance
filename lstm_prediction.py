@@ -61,7 +61,7 @@ model.add(Dense(25))
 model.add(Dense(1))
 
 #compile the model
-model.compile(optimizer='adam', loss='mean_squared_error')
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
 
 #train the model
 model.fit(x_train, y_train, batch_size=1, epochs=1)
@@ -129,9 +129,9 @@ for val, pred in zip(valid_movement, pred_movement):
         pass
 
 total = len(valid_movement)
-accuracy = round(n/total, 3)
+accuracy = n/total
 
-print (f'The accuracy of the LSTM Model predicting the movement of a stock each day is {100 * accuracy}%')
+print (f'The accuracy of the LSTM Model predicting the movement of a stock each day is {100 * round(accuracy, 3)}%')
 
 dataframe = pd.DataFrame(list(zip(valid_movement, pred_movement)), columns =['Valid Movement', 'Predicted Movement'])
 
@@ -150,7 +150,6 @@ print("The predicted price for the next trading day is: {}".format(round(pred, 2
 
 #get stats
 #Root mean squared error 
-rmse=sqrt(mean_squared_error(valid['Predictions'].tolist(), valid['Close'].tolist()))
 print (f'The root mean squared error is {round(rmse, 2)}')
 
 error = mean_squared_error(valid['Close'].tolist(), valid['Predictions'].tolist())
