@@ -1,2 +1,6 @@
 chromedriver
 spxTickers.pickle
+keras_sentiment_model/input/glove.6B.50d.txt
+keras_sentiment_model/input/RedditNews.csv
+keras_sentiment_model/input/DJIA_table.csv
+keras_sentiment_model/input/Combined_News_DJIA.csv
