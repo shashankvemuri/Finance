@@ -1,71 +1,26 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Inverse Fisher Transform
-
-# https://www.motivewave.com/studies/inverse_fisher_transform.htm
-# 
-# https://www.metastock.com/customer/resources/tasc/?id=60
-# 
-# https://www.mesasoftware.com/papers/TheInverseFisherTransform.pdf
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 import talib as ta
-
-
-# In[4]:
-
 
 v1 = 0.1 * (ta.RSI(df['Adj Close'], timeperiod=5) - 50)
 v2 = ta.WMA(v1, timeperiod=9)
 
-
-# In[5]:
-
-
 df['IFT'] = pd.Series((np.exp(2 * v2) - 1) / (np.exp(2 * v2) + 1))
-
-
-# In[6]:
-
-
-df.head(20)
-
-
-# In[7]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -82,16 +37,10 @@ ax2.grid()
 ax2.set_ylabel('Inverse Fisher Transform')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Inverse Fisher Transform
-
-# In[8]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -100,12 +49,7 @@ dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
 
-
-# In[9]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -129,4 +73,4 @@ ax2.grid()
 ax2.set_ylabel('Inverse Fisher Transform')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
