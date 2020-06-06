@@ -1,55 +1,22 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Logarithmic Return Indicator
-
-# https://www.investopedia.com/terms/l/logarithmicscale.asp
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 n = 10
 df['Logarithmic_Return'] = np.log(df['Adj Close']) - np.log(df['Adj Close'].shift(1))
-
-
-# In[4]:
-
-
-df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -66,15 +33,10 @@ ax2.grid()
 ax2.set_ylabel('Logarithmic Return')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Triple Exponential Weighted Moving Average
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -84,12 +46,7 @@ dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
 
-
-# In[7]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -114,4 +71,4 @@ ax2.grid()
 ax2.set_ylabel('Logarithmic Return')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
