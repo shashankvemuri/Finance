@@ -1,51 +1,24 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Kijun-sen (Base Line)
-
-# https://www.investopedia.com/terms/k/kijunsen.asp
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365*2)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
-
 
 # Kijun-sen (Base Line): (26-Period High + 26-Period Low)/2))
 Period_High = df['High'].rolling(window=26).max()
 Period_Low = df['Low'].rolling(window=26).min()
 df['Kijun_Sen'] = (Period_High + Period_Low) / 2
-
-
-# In[4]:
-
 
 plt.figure(figsize=(14,8))
 plt.plot(df['Adj Close'])
@@ -56,15 +29,8 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with Kijun-Sen
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -73,12 +39,7 @@ dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
 
-
-# In[6]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -102,4 +63,4 @@ ax2.bar(df.index, df['Volume'], color=df.VolumePositive.map({True: 'g', False: '
 ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
-
+plt.show()
