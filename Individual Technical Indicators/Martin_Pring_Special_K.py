@@ -1,55 +1,23 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Martin Pring's Special K
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:pring_s_special_k
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2012-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 import talib as ta
 
-
-# In[4]:
-
-
 df['200MA'] = df['Adj Close'].rolling(200).mean()
-
-
-# In[5]:
-
-
 df['SMA10'] = ta.SMA(df['Adj Close'], timeperiod=10)
 df['SMA15'] = ta.SMA(df['Adj Close'], timeperiod=15)
 df['SMA50'] = ta.SMA(df['Adj Close'], timeperiod=50)
@@ -71,34 +39,9 @@ df['ROC195'] = ta.ROC(df['SMA130'], timeperiod=100)
 df['ROC265'] = ta.ROC(df['SMA130'], timeperiod=265)
 df['ROC390'] = ta.ROC(df['SMA130'], timeperiod=390)
 df['ROC530'] = ta.ROC(df['SMA195'], timeperiod=530)
-
-
-# In[6]:
-
-
 df['Special_K'] = (df['ROC10'] * 1) + (df['ROC15'] * 2) + (df['ROC20'] * 3) + (df['ROC30']) * 4 + (df['ROC40'] * 1) + (df['ROC65'] * 2) + (df['ROC75'] * 3) + (df['ROC100'] * 4) + (df['ROC195'] * 1) + (df['ROC265'] * 2) + (df['ROC390'] * 3) + (df['ROC530'] * 4)
-
-
-# In[7]:
-
-
 df['200MAk'] = df['Special_K'].rolling(5).mean()
-
-
-# In[8]:
-
-
-df.tail()
-
-
-# In[9]:
-
-
 df = df.dropna()
-
-
-# In[10]:
-
 
 # Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -127,15 +70,10 @@ ax2.grid()
 ax2.set_ylabel('Special K')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Martin Pring Special K
-
-# In[11]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -144,12 +82,7 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
 
-
-# In[12]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -177,4 +110,4 @@ ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

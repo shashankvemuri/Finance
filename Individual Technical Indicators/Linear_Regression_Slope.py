@@ -53,7 +53,6 @@ plt.show()
 
 # ## Candlestick with Linear Regression Slope
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df1.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']

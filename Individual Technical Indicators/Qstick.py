@@ -31,17 +31,7 @@ end = '2019-01-01'
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 import talib as ta
-
-
-# In[4]:
 
 
 #EMAC = ta.EMA(df['Adj Close'], timeperiod=10)
@@ -50,15 +40,7 @@ CO = df['Adj Close'] - df['Open']
 #df['QStick'] = EMAC - EMAO
 df['QStick'] = ta.EMA(CO, timeperiod=10)
 
-
-# In[5]:
-
-
 df.head(20)
-
-
-# In[6]:
-
 
 # Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -79,11 +61,7 @@ ax2.legend(loc='best')
 
 # ## Candlestick with QStick
 
-# In[7]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['QStick'] = (dfc['Adj Close'] - dfc['Open']).rolling(10).mean() 
@@ -92,10 +70,6 @@ dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[10]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -119,10 +93,6 @@ ax2.grid()
 ax2.set_ylabel('QStick')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
-
-# In[11]:
-
 
 fig = plt.figure(figsize=(16,12))
 ax1 = plt.subplot(2, 1, 1)

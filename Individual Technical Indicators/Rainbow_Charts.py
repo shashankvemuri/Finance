@@ -33,9 +33,6 @@ df['Violet'] = df['Indigo'].rolling(2).mean()
 df = df.dropna()
 
 
-# In[4]:
-
-
 colors = ['k','r', 'orange', 'yellow', 'g', 'b', 'indigo', 'violet']
 df[['Adj Close','Red','Orange','Yellow','Green','Blue','Indigo','Violet']].plot(colors=colors, figsize=(18,12))
 plt.fill_between(df.index, df['Low'], df['High'], color='grey', alpha=0.4)
@@ -49,12 +46,7 @@ plt.show()
 
 
 # ## Candlestick with Rainbow
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -62,10 +54,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[8]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

@@ -43,52 +43,22 @@ df1.head()
 df2.head()
 
 
-# In[4]:
-
-
 c = df1['Adj Close'].cov(df2['Adj Close'])
 
-
-# In[5]:
-
-
 c
-
-
-# In[6]:
-
 
 df = pd.concat([df1['Adj Close'], df2['Adj Close']],axis=1)
 
 
-# In[7]:
-
-
 df.head()
-
-
-# In[8]:
-
 
 # Rename columns
 df.columns = [symbol1,symbol2]
 
-
-# In[9]:
-
-
 df.head()
-
-
-# In[10]:
-
 
 n = 14
 df['M_Cov'] = df['AAPL'].rolling(n).cov(df['QQQ']).rolling(n).mean()
-
-
-# In[11]:
-
 
 df.head(20)
 
@@ -109,15 +79,13 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Covariance')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Covariance
 
 # In[13]:
 
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df1.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -153,4 +121,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Covariance')
 ax2.set_xlabel('Date')
-
+plt.show()

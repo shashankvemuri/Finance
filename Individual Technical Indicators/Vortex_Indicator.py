@@ -5,38 +5,27 @@
 
 # https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:vortex_indicator
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
+
+# Read data 
+df = yf.download(symbol,start,end)
 start = '2017-01-01'
 end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
-
 
 n = 14 # Number of days
 df['Prior Low'] = df['Low'].shift()
@@ -51,42 +40,20 @@ df['LC'] = abs(df['Low'] -df['Adj Close'].shift())
 df['TR'] = df[['HL','HC','LC']].max(axis=1)
 
 
-# In[4]:
-
-
 df.tail()
-
-
-# In[5]:
-
 
 del df['HL']
 del df['HC']
 del df['LC']
-
-
-# In[6]:
-
 
 df['TR_'+str(n)] = df['TR'].rolling(n).sum()
 df['+VI_'+str(n)] = df['+VM_'+str(n)]/df['TR_'+str(n)]
 df['-VI_'+str(n)] = df['-VM_'+str(n)]/df['TR_'+str(n)]
 
 
-# In[7]:
-
-
 df = df.drop(['Prior Low','Prior High','+VM','-VM','+VM_14','-VM_14','TR','TR_14'],axis=1)
 
-
-# In[8]:
-
-
 df.head(30)
-
-
-# In[9]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -103,15 +70,9 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Vortex Indicator')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Vortex Indicator
-
-# In[10]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -119,10 +80,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[11]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -149,4 +106,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Vortex Indicator')
 ax2.set_xlabel('Date')
-
+plt.show()

@@ -51,9 +51,6 @@ dataset['Returns'] = dataset['Adj Close'].pct_change().dropna()
 
 # ## Standard Pivot Points
 
-# In[4]:
-
-
 # Floor Pivot Points (Basic Pivot Points) - Support and Resistance
 # https://www.investopedia.com/trading/using-pivot-points-for-predictions/
 PP = pd.Series((dataset['High'] + dataset['Low'] + dataset['Close']) / 3)  
@@ -73,40 +70,21 @@ PSR = pd.DataFrame(psr)
 dataset = dataset.join(PSR)
 print(dataset.head())
 
-
-# In[5]:
-
-
 # labels = ['Price','P','R1','S1','R2','S2','R3','S3']
 pivot_point = pd.concat([dataset['Adj Close'],P,R1,S1,R2,S2,R3,S3],axis=1).plot(figsize=(18,12),grid=True)
 plt.title('Stock Pivot Point')
 plt.legend(['Price','P','R1','S1','R2','S2','R3','S3'], loc=0)
 plt.show()
 
-
-# In[6]:
-
-
 dataset['Adj Close']['2018-05-01':'2018-06-01']
 
 
-# In[7]:
-
-
 date_range = dataset[['Adj Close','P','R1','S1','R2','S2','R3','S3']]['2018-05-01':'2018-06-01']# Pick Date Ranges
-
-
-# In[8]:
-
 
 date_range.plot(figsize=(18,12),grid=True)
 plt.title('Stock Pivot Point')
 plt.legend(['Price','P','R1','S1','R2','S2','R3','S3'], loc=0)
 plt.show()
-
-
-# In[9]:
-
 
 ax = date_range.plot(figsize=(18,12), grid=True) 
 ax.lines[0].set_linewidth(4) # Plot Specific Line
@@ -116,10 +94,6 @@ plt.show()
 
 
 # ## Woodie's Pivot Points
-
-# In[10]:
-
-
 # Woodie's Pivot Points
 P = pd.Series((dataset['High'] + dataset['Low'] + 2*dataset['Close']) / 4)  
 R1 = pd.Series(2 * P - dataset['Low'])  
@@ -129,10 +103,6 @@ S2 = pd.Series(P - dataset['High'] + dataset['Low'])
 wpp = {'P':P, 'R1':R1, 'S1':S1, 'R2':R2, 'S2':S2}  
 WPP = pd.DataFrame(wpp)  
 # dataset = dataset.join(WPP)  
-
-
-# In[11]:
-
 
 WPP.head()
 

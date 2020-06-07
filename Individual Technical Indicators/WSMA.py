@@ -31,16 +31,9 @@ def WSMA(df, column="Adj Close", n=14):
     return wsma
 
 
-# In[4]:
-
-
 df['WSMA'] = WSMA(df, column="Adj Close", n=14)
 df = df.dropna()
 df.head()
-
-
-# In[5]:
-
 
 plt.figure(figsize=(16,10))
 plt.plot(df['Adj Close'])
@@ -53,12 +46,7 @@ plt.show()
 
 
 # ## Candlestick with WSMA
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']
@@ -66,9 +54,6 @@ df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
 df.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc

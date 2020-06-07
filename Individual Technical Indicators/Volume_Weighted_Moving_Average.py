@@ -5,57 +5,35 @@
 
 # https://www.tradingsetupsreview.com/volume-weighted-moving-average-vwma/
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
+
+# Read data 
+df = yf.download(symbol,start,end)
 start = '2018-12-01'
 end = '2019-02-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 import talib as ta
-
-
-# In[4]:
 
 
 df['SMA'] = ta.SMA(df['Adj Close'], timeperiod=3)
 
-
-# In[5]:
-
-
 df['VWMA'] = ((df['Adj Close']*df['Volume'])+(df['Adj Close'].shift(1)*df['Volume'].shift(1))+(df['Adj Close'].shift(2)*df['Volume'].shift(2))) / (df['Volume'].rolling(3).sum())
 df.head()
-
-
-# In[8]:
-
 
 def VWMA(close,volume, n):
     cv =pd.Series(close.shift(n) * volume.shift(n))
@@ -86,7 +64,6 @@ plt.show()
 
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']

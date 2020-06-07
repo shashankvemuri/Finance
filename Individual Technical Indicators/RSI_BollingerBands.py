@@ -3,38 +3,27 @@
 
 # # RSI & Bollinger Bands Strategy
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
+
+# Read data 
+df = yf.download(symbol,start,end)
 start = '2018-08-01'
 end = '2018-12-31'
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
-
 
 # Simple Line Chart
 plt.figure(figsize=(14,10))
@@ -48,14 +37,7 @@ plt.show()
 
 # ## RSI
 
-# In[4]:
-
-
 import talib as ta
-
-
-# In[5]:
-
 
 rsi = ta.RSI(df['Adj Close'], timeperiod=14)
 rsi = rsi.dropna()
@@ -63,10 +45,6 @@ rsi
 
 
 # ## Bollinger Bands
-
-# In[6]:
-
-
 # Create Bollinger Band
 # https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:bollinger_bands
 df['20 Day MA'] = df['Adj Close'].rolling(window=20).mean()
@@ -75,34 +53,18 @@ df['Upper Band'] = df['20 Day MA'] + (df['20 Day STD'] * 2)
 df['Lower Band'] = df['20 Day MA'] - (df['20 Day STD'] * 2)
 
 
-# In[7]:
-
-
 df[['Adj Close', '20 Day MA', 'Upper Band', 'Lower Band']].plot(figsize=(14,8))
 plt.title('30 Day Bollinger Band for Facebook')
 plt.ylabel('Price')
 plt.legend(loc='best')
 plt.show()
 
-
-# In[8]:
-
-
 dfc = df.copy()
 dfc = dfc.reset_index()
 
-
-# In[9]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-
-
-# In[10]:
-
 
 # This one has not date and is convert to number
 from mplfinance.original_flavor import candlestick_ohlc
@@ -113,10 +75,6 @@ candlestick_ohlc(ax,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0
 plt.title('Candlestick Chart of Stock')
 plt.ylabel('Price')
 plt.show()
-
-
-# In[11]:
-
 
 # Plot Candlestick with dates
 fig = plt.figure(figsize=(20,10))

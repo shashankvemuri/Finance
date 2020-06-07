@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Money Flow Index (MFI)
-
-# Money Flow Index (MFI) is a technical oscillator that uses price and volume for identifying overbought or oversold conditions in an asset. It can also be used to spot divergences which warn of a trend change in price. The oscillator moves between 0 and 100.
-# 
-# https://www.investopedia.com/terms/m/mfi.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,27 +17,8 @@ df = yf.download(symbol,start,end)
 
 import talib as ta
 
-
-# In[4]:
-
-
 df['MFI'] = ta.MFI(df['High'], df['Low'],df['Adj Close'], df['Volume'], timeperiod=14)
-
-
-# In[5]:
-
-
-df.tail()
-
-
-# In[6]:
-
-
 df['Positive'] = df['MFI'] > 0
-
-
-# In[7]:
-
 
 df['MFI'] = ta.MFI(df['High'], df['Low'],df['Adj Close'], df['Volume'], timeperiod=14)# Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -66,15 +38,10 @@ ax2.bar(df.index, df['MFI'])
 ax2.grid()
 ax2.set_ylabel('Money Flow Index')
 ax2.set_xlabel('Date')
-
+plt.show()
 
 # ## Candlestick with MFI
-
-# In[8]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['MFI'] = ta.MFI(dfc['High'], dfc['Low'],dfc['Adj Close'], dfc['Volume'], timeperiod=14)
@@ -84,12 +51,7 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
 
-
-# In[9]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -110,4 +72,4 @@ ax2.bar(df.index, df['MFI'])
 ax2.grid()
 ax2.set_ylabel('Money Flow Index')
 ax2.set_xlabel('Date')
-
+plt.show()

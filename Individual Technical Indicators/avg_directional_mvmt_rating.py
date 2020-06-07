@@ -48,7 +48,6 @@ plt.show()
 dfc = df.copy()
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc['ADX'] = ta.ADX(dfc['High'], dfc['Low'],dfc['Adj Close'], timeperiod=14)
 dfc = dfc.dropna()

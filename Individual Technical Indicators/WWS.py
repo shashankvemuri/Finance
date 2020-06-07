@@ -31,9 +31,6 @@ df = df.dropna()
 df.head()
 
 
-# In[4]:
-
-
 plt.figure(figsize=(16,10))
 plt.plot(df['Adj Close'])
 plt.plot(df['WWS'])
@@ -45,12 +42,7 @@ plt.show()
 
 
 # ## Candlestick with WWS
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']
@@ -58,10 +50,6 @@ df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
 df.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

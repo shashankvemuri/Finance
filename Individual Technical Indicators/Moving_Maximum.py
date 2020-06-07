@@ -25,9 +25,6 @@ df['Maximum_Price'] = df['Adj Close'].rolling(n).max()
 df['Moving_Maximum'] = df['Maximum_Price'].rolling(n).max()
 
 
-# In[4]:
-
-
 plt.figure(figsize=(14,8))
 plt.plot(df['Adj Close'])
 plt.plot(df['Moving_Maximum'], color='red')
@@ -39,12 +36,7 @@ plt.show()
 
 
 # ## Candlestick with Maximum Price
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -53,10 +45,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -83,4 +71,4 @@ ax2.bar(df.index, df['Volume'], color=df.VolumePositive.map({True: 'g', False: '
 ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
-
+plt.show()
