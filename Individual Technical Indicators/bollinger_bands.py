@@ -24,7 +24,7 @@ bb2 = MA - 2*STD
 df['Lower Bollinger Band'] = pd.Series(bb2)
 
 plt.figure()
-df[['Adj Close', 'Upper Bollinger Band','Lower Bollinger Band']].plot(figsize=(14,10))
+df[['Adj Close', 'Upper Bollinger Band','Lower Bollinger Band']].plot(figsize=(14,7))
 plt.ylabel('Price')
 plt.xlabel('Date')
 plt.title('Stock Closing Price of Bollinger BAnds')

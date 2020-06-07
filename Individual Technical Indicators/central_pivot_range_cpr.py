@@ -19,7 +19,7 @@ df['Pivot'] = (df['High'] + df['Low'] + df['Adj Close']) / 3.0
 df['BC'] = (df['High'] + df['Low']) / 2.0
 df['TC'] = (df['Pivot'] - df['BC']) + df['Pivot']
 
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['TC'], label='Central Pivot Range')
 plt.plot(df['Pivot'], label='Central Pivot Range')

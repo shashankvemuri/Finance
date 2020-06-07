@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Time Weighted Average Price (TWAP)
-
-# https://en.wikipedia.org/wiki/Time-weighted_average_price
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,14 +15,9 @@ end = dt.date.today()
 # Read data 
 df = yf.download(symbol,start,end)
 
-
 TP = (df[['Open','High','Low','Adj Close']].sum(axis=1))/4 
-
-
 n=10
 df['TWAP'] = TP.rolling(n).mean()
-
-df.head(15)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -46,12 +34,10 @@ ax2.grid()
 ax2.set_ylabel('Time Weighted Average Price')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Time Weighted Average Price (TWAP)
-
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -84,4 +70,4 @@ ax2.grid()
 ax2.set_ylabel('Time Weighted Average Price')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

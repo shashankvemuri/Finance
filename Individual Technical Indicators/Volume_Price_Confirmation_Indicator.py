@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Volume Price Confirmation Indicator (VPCI)
-
-# https://www.tradingview.com/script/lmTqKOsa-Indicator-Volume-Price-Confirmation-Indicator-VPCI/
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,11 +14,6 @@ end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-start = '2018-12-01'
-end = '2019-02-01'
-
-# Read data 
-df = yf.download(symbol,start,end)
 
 short_term=5
 long_term=20
@@ -37,11 +25,7 @@ vpc = vwma_lt - df['Adj Close'].rolling(long_term).mean()
 vpr = vwma_st / df['Adj Close'].rolling(short_term).mean()
 vm = df['Adj Close'].rolling(short_term).mean()/ df['Adj Close'].rolling(long_term).mean()
 vpci = vpc * vpr * vm
-
-
 df['VPCI'] = vpci
-
-df.head(30)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -59,20 +43,18 @@ ax2.plot(df['VPCI'], '-', label='Volume Price Confirmation Indicator')
 #ax2.axhline(y=0,color='r')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with VPCI
-
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-from mplfinance.original_flavor import candlestick_ohlc
 
+from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(3, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -100,4 +82,4 @@ ax3.grid()
 ax3.set_ylabel('Volume Price Confirmation Indicator')
 ax3.set_xlabel('Date')
 ax3.legend()
-
+plt.show()

@@ -24,7 +24,7 @@ df['Upper Line'] = df['EMA'] + 2*df['ATR']
 df['Lower Line'] = df['EMA'] - 2*df['ATR']
 del df['ATR']
 
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['EMA'], label='Middle Line', linestyle='--')
 plt.plot(df['Upper Line'], color='g')

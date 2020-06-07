@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Z-Score Indicator
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,23 +9,14 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
 from scipy.stats import zscore
-
-
 df['z_score'] = zscore(df['Adj Close'])
-
-df.head()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -47,18 +33,17 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Z-Score')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Z-Score
-
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-from mplfinance.original_flavor import candlestick_ohlc
 
+from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

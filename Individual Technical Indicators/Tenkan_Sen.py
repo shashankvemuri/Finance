@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Tenkan-Sen (Conversion Line) 
-
-# https://www.investopedia.com/terms/t/tenkansen.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,12 +15,10 @@ end = dt.date.today()
 # Read data 
 df = yf.download(symbol,start,end)
 
-
 # Tenkan-sen (Conversion Line): (9-Period High + 9-Period Low)/2))
 Nine_Period_High = df['High'].rolling(window=9).max()
 Nine_Period_Low = df['Low'].rolling(window=9).min()
 df['Tenkan_Sen'] = (Nine_Period_High + Nine_Period_Low)/2
-
 
 plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
@@ -38,10 +29,8 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with Tenkan-Sen
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()

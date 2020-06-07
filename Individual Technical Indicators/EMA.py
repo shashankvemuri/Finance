@@ -18,7 +18,7 @@ df = yf.download(symbol,start,end)
 n = 15
 df['EMA'] = df['Adj Close'].ewm(ignore_na=False,span=n,min_periods=n,adjust=True).mean()
 
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['EMA'])
 plt.ylabel('Price')

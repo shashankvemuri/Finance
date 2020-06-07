@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Ultimate Oscillator
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:ultimate_oscillator
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -35,9 +23,6 @@ df['Average14'] = df['BP'].rolling(14).sum()/df['TR'].rolling(14).sum()
 df['Average28'] = df['BP'].rolling(28).sum()/df['TR'].rolling(28).sum()
 df['UO'] = 100 * (4*df['Average7']+2*df['Average14']+df['Average28'])/(4+2+1)
 df = df.drop(['Prior Close','BP','TR','Average7','Average14','Average28'],axis=1)
-
-
-df.head(30)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -56,9 +41,9 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Ultimate Oscillator')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Ultimate Oscillator
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -66,7 +51,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

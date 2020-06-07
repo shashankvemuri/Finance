@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Zero Lag Exponential Moving Average (ZLEMA)
-
-# https://www.fmlabs.com/reference/default.htm?url=DMI.htm
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2018-08-01'
-end = '2018-12-31'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -30,9 +18,6 @@ df = yf.download(symbol,start,end)
 n = 14
 lag = (n - 1) / 2
 df['ZLEMA'] = pd.Series(df['Adj Close'] + df['Adj Close'].diff(lag))
-
-
-df.head(20)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -47,9 +32,9 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Zero Lag Exponential Moving Average')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Zero Lag Exponential Moving Average
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -57,7 +42,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

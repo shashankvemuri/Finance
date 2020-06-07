@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Weighted Moving Average (WMA)
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,27 +9,11 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-start = '2018-08-01'
-end = '2019-01-01'
-
-# Read data 
-df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
-# 
-# https://www.thebalance.com/simple-exponential-and-weighted-moving-averages-1031196
-
-# In[3]:
-
 
 def WMA(data, n):
 
@@ -46,9 +25,7 @@ def WMA(data, n):
         
     return ws
 
-
 df['WMA'] = WMA(df['Adj Close'], 5)
-df.head()
 
 # Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -63,20 +40,18 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()
 
 # # Candlestick with WMA
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-
 dfc = dfc.iloc[4:]
-from mplfinance.original_flavor import candlestick_ohlc
 
+from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -96,4 +71,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()

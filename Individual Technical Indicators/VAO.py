@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Volume Accumulation Oscillator (VAO)
-
-# Volume Accumulation Oscillator (VAO) use for volume times the difference of the current price and the midpoint price. As a result, is used as a divergence indicator with the high and low price. 
-# 
-# https://www.marketvolume.com/technicalanalysis/vao.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,18 +17,8 @@ df = yf.download(symbol,start,end)
 
 # Create Volume Accumulation Oscillator (VAO) indicator
 df['VAO'] = df['Volume'] * (df['Adj Close'] - (df['High']+df['Low'])/2)
-df.head()
-
-
 df['Positive'] = df['VAO'] > 0
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
-
-df.head()
-
-
-# In[12]:
-
 
 # Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -53,8 +34,6 @@ ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
 plt.show()
-# In[8]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -69,9 +48,9 @@ ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with VAO
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VAO'] = dfc['Volume'] * (dfc['Adj Close'] - (dfc['High']+dfc['Low'])/2)
 dfc['Positive'] = dfc['VAO'] > 0
@@ -80,11 +59,7 @@ dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
-# In[13]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -106,8 +81,6 @@ ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
 plt.show()
-# In[17]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)

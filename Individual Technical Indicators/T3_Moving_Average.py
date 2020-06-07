@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # T3 Moving Average Indicator
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,7 +17,6 @@ df = yf.download(symbol,start,end)
 
 import talib as ta
 
-
 e1 = ta.EMA(df['Adj Close'], timeperiod=3)
 e2 = ta.EMA(e1, timeperiod=3)
 e3 = ta.EMA(e2, timeperiod=3)
@@ -37,26 +31,15 @@ c3 = - (6*a**2) - (3*a) - (3*a**3)
 c4 = 1 + (3*a) + (a**3) + (3*a**2)
 
 df['T3'] = c1*e6 + c2*e5 + c3*e4 + c4*e3
-
 df = df.dropna()
-df.head()
-
 
 from matplotlib import dates as mdates
-
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
-df.head()
-
-
-# In[15]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(20,16))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -72,9 +55,7 @@ ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.legend(loc='best')
-
-
-# In[19]:
+plt.show()
 
 
 fig = plt.figure(figsize=(20,16))
@@ -94,10 +75,7 @@ ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.legend(loc='best')
-
-
-# In[33]:
-
+plt.show()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = fig.add_subplot(111)
@@ -118,10 +96,6 @@ ax1.set_ylabel('Price')
 ax1.legend(loc='best')
 plt.show()
 
-
-# In[77]:
-
-
 fig = plt.figure(figsize=(14,7))
 ax1 = fig.add_subplot(111)
 candlestick_ohlc(ax1,df.values[80:], width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -140,4 +114,3 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.legend(loc='best')
 plt.show()
-

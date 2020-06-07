@@ -16,7 +16,7 @@ end = dt.date.today()
 df = yf.download(symbol,start,end)
 
 # Simple Line Chart
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.legend(loc='best')
 plt.title('Stock '+ symbol +' Closing Price')
