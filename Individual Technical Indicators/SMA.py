@@ -18,7 +18,7 @@ df = yf.download(symbol,start,end)
 n = 15
 df['SMA'] = df['Adj Close'].rolling(n).mean()
 
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['SMA'])
 plt.ylabel('Price')

@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Triple Exponential Moving Average (TEMA) 
-
-# https://www.investopedia.com/terms/t/triple-exponential-moving-average.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,18 +16,10 @@ end = dt.date.today()
 df = yf.download(symbol,start,end)
 
 import talib as ta
-
-
 df['EMA'] = ta.EMA(df['Adj Close'], timeperiod=5) 
-
 df['EMA_2'] = ta.EMA(df['EMA'], timeperiod=5) 
-
 df['EMA_3'] = ta.EMA(df['EMA_2'], timeperiod=5) 
-
-
 df['TEMA'] = (3*df['EMA']) - (3*(df['EMA_2'])) + (df['EMA_3'])
-
-df.head()
 
 # Line Chart
 fig = plt.figure(figsize=(16,8))
@@ -54,11 +39,10 @@ ax1v.axes.yaxis.set_ticklabels([])
 ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
-
+plt.show()
 
 # ## Candlestick with TEMA
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.dropna()
@@ -81,4 +65,4 @@ ax1v.axes.yaxis.set_ticklabels([])
 ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
-
+plt.show()

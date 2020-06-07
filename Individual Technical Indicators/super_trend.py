@@ -109,4 +109,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend()
-
+plt.show()

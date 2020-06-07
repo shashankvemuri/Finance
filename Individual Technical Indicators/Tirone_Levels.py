@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Tirone Levels
-
-# https://www.metastock.com/customer/resources/taaz/?p=110
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,10 +14,6 @@ end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-df.tail()
-
-
 df['Adj Close'][-1]
 
 print('Lowest Price:', df['Adj Close'].min())
@@ -33,22 +22,18 @@ print('Mean Price:', df['Adj Close'].mean())
 print('Lowest Low:', df['Low'].min())
 print('Highest High:', df['High'].max())
 
-
 # ## Midpoint Method
 Top_Line = abs(((df['High'].max() - df['Low'].min())/3) - df['High'].max())
 Center_Line = ((df['High'].max() - df['Low'].min())/2) + df['Low'].min()
 Bottom_Line = ((df['High'].max() - df['Low'].min())/3) + df['Low'].min()
 
-
 # ## Mean Method
-
 Adjusted_Mean = abs((df['High'].max() + df['Low'].min() + df['Adj Close'][-1])/3)
 #Adjusted_Mean = (df['High'].max() + df['Low'].min() + df['Adj Close'].mean())/3
 Extreme_High = abs((df['High'].max()  - df['Low'].min()) + Adjusted_Mean)
 Regular_High = abs((Adjusted_Mean*2) - df['Low'].min())
 Regular_Low = abs((Adjusted_Mean*2) - df['High'].max())
 Extreme_Low = abs((df['High'].max() - df['Low'].min()) - Adjusted_Mean)
-
 
 # ## Line Chart
 # Line Chart
@@ -77,21 +62,15 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
-# In[12]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -110,13 +89,9 @@ ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price (Midpoint Method)')
 ax1.set_ylabel('Price')
 ax1.legend()
-
-
-# In[13]:
-
+plt.show()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -137,4 +112,4 @@ ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price (Mean Method)')
 ax1.set_ylabel('Price')
 ax1.legend()
-
+plt.show()

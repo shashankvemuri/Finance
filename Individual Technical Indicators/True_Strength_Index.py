@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # True Strength Index
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:true_strength_index
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,11 +14,6 @@ end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
-
-# Read data 
-df = yf.download(symbol,start,end)
 
 df['PC'] = df['Adj Close'] - df['Adj Close'].shift()
 df['EMA_FS'] = df['PC'].ewm(ignore_na=False,span=25,min_periods=25,adjust=True).mean()
@@ -35,9 +23,6 @@ df['Absolute_FS'] = df['Absolute_PC'].ewm(span=25,min_periods=25).mean()
 df['Absolute_SS'] = df['Absolute_FS'].ewm(span=13,min_periods=13).mean()
 df['TSI'] = 100 * df['EMA_SS']/df['Absolute_SS']
 df = df.drop(['PC','EMA_FS','EMA_SS','Absolute_PC','Absolute_FS','Absolute_SS'],axis=1)
-
-
-df.head()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -54,9 +39,9 @@ ax2.legend(loc='best')
 ax2.set_ylabel('True Strength Index')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with True Strength Index
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -64,7 +49,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
