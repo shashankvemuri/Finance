@@ -19,7 +19,7 @@ end = dt.date.today()
 df = yf.download(symbol,start,end)
 
 # Line Chart
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 y_lim = plt.ylim()
 x_lim = plt.xlim()
@@ -56,14 +56,12 @@ df['VolumePositive'] = df['Open'] < df['Adj Close']
 dfc = df.dropna()
 dfc = df.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 # Plot Example Angle line
 angles = [82.5,75,71.25,63.75,45,26.25,18.75,15,7.5]
 
 # plot the points
-fig = plt.figure(figsize=(18,8))
+fig = plt.figure(figsize=(14,7))
 ax = plt.subplot(111)
 
 candlestick_ohlc(ax,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

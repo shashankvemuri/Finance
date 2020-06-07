@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Simple Moving Average (SMA)
-
-# https://www.investopedia.com/terms/s/sma.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,20 +9,14 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
 n = 15
 df['SMA'] = df['Adj Close'].rolling(n).mean()
-
 
 plt.figure(figsize=(14,10))
 plt.plot(df['Adj Close'])
@@ -38,20 +25,17 @@ plt.ylabel('Price')
 plt.xlabel('Date')
 plt.title('Stock Closing Price of ' + str(n) + '-Day Simple Moving Average')
 plt.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with SMA
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -69,4 +53,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.legend(loc='best')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
-
+plt.show()

@@ -51,7 +51,7 @@ df['WMA'] = WMA(df['Adj Close'], 5)
 df.head()
 
 # Line Chart
-fig = plt.figure(figsize=(12,8))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 ax1.plot(df.index, df['Adj Close'])
 ax1.plot(df.index[4:], df['WMA'][4:])
@@ -73,12 +73,8 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 
 dfc = dfc.iloc[4:]
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 
 fig = plt.figure(figsize=(14,7))

@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Return on Investment (ROI)
-
-# https://www.investopedia.com/terms/r/returnoninvestment.asp
-# 
-# https://en.wikipedia.org/wiki/Return_on_investment
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,9 +17,6 @@ df = yf.download(symbol,start,end)
 
 df['ROI'] = (df['Adj Close'] - df['Adj Close'].shift(1)) / df['Adj Close'].shift(1) * 100
 
-
-df.head()
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -42,22 +30,18 @@ ax2.grid()
 ax2.set_ylabel('Return on Investmente')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Return On Investment (ROI)
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -80,4 +64,4 @@ ax2.grid()
 ax2.set_ylabel('Return on Investmente')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

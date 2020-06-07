@@ -60,12 +60,8 @@ dfc = df.copy()
 from matplotlib import dates as mdates
 dfc['ADX'] = ta.ADX(dfc['High'], dfc['Low'],dfc['Adj Close'], timeperiod=14)
 dfc = dfc.dropna()
-dfc.head()
-
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 
 fig = plt.figure(figsize=(14,7))

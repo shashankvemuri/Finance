@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Smoothed Moving Average (SMMA)
-
-# https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma#smma
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,46 +15,34 @@ end = dt.date.today()
 # Read data 
 df = yf.download(symbol,start,end)
 
-df.shape
-
-
 n = 10
 SMMA = np.array([np.nan] * len(df['Adj Close']))
 SMMA[n - 2] = df['Adj Close'][:n - 1].mean()
 for i in range(n - 1, len(df['Adj Close'])):
     SMMA[i] = (SMMA [i - 1] * (n - 2) + 2 * df['Adj Close'][i]) / n
 
-SMMA
-
 x = SMMA.reshape(-1,1)
 data = pd.DataFrame.from_records(x)
-data
-
 
 df['SMMA'] = data.values
-df.head(10)
 
 # Line Chart
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['SMMA'])
 plt.title('Guppy Multiple Moving Averages of EMA')
 plt.legend(loc='best')
 plt.show()
 
-
 # ## Candlestick with SMMA
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -77,4 +58,4 @@ ax1v.axes.yaxis.set_ticklabels([])
 ax1v.set_ylim(0, 3*df.Volume.max())
 ax1.set_title('Stock '+ symbol +' Closing Price of SMMA')
 ax1.set_ylabel('Price')
-
+plt.show()

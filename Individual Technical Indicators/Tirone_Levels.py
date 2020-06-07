@@ -52,7 +52,7 @@ Extreme_Low = abs((df['High'].max() - df['Low'].min()) - Adjusted_Mean)
 
 # ## Line Chart
 # Line Chart
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.axhline(Top_Line, color='green', label='Top Line')
 plt.axhline(Center_Line, color='orange', linestyle='--',label='Center Line')
@@ -64,7 +64,7 @@ plt.ylabel('Price')
 plt.show()
 
 # Line Chart
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.axhline(Extreme_High, color='darkgreen', label='Extreme High')
 plt.axhline(Regular_High, color='green', label='Regular High')
@@ -86,15 +86,13 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 
 # In[12]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
 
-fig = plt.figure(figsize=(18,8))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.axhline(Top_Line, color='green', label='Top Line')
@@ -119,7 +117,7 @@ ax1.legend()
 
 from mplfinance.original_flavor import candlestick_ohlc
 
-fig = plt.figure(figsize=(18,8))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.axhline(Extreme_High, color='darkgreen', label='Extreme High')

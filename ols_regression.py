@@ -42,7 +42,7 @@ print(results.summary())
 # alternatively scipy linear regression
 slope, intercept, r_value, p_value, std_err = stats.linregress(X, y)
 
-plt.figure(figsize=(20,10))
+plt.figure(figsize=(14,7))
 X.plot()
 y.plot()
 plt.ylabel("Daily Returns")

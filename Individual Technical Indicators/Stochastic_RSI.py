@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Stochastic RSI (STOCH RSI)
-
-# https://www.tradingview.com/wiki/Stochastic_RSI_(STOCH_RSI)#CALCULATION
-# 
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:stochrsi
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,33 +9,21 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2018-06-01'
-end = '2018-12-31'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
 import talib as ta
-
 df['RSI'] = ta.RSI(df['Adj Close'], timeperiod=14)
-df.head(10)
-
-
 df = df.dropna()
-df.head()
 
 LL_RSI = df['RSI'].rolling(14).min()
 HH_RSI = df['RSI'].rolling(14).max()
 
 df['Stoch_RSI'] = (df['RSI'] - LL_RSI) / (HH_RSI - LL_RSI)
 df = df.dropna()
-df.head(10)
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -62,18 +41,16 @@ ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Stoch RSI
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -99,10 +76,7 @@ ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
-
-# In[14]:
-
+plt.show()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -131,4 +105,4 @@ ax2.minorticks_on()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

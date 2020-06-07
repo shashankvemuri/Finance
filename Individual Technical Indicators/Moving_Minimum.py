@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Minimum Price
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,8 +19,7 @@ n = 14
 df['Minimum_Price'] = df['Adj Close'].rolling(14).min()
 df['Moving_Minimum'] = df['Minimum_Price'].rolling(n).min()
 
-
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Moving_Minimum'], color='red')
 plt.title('Moving Minimum Price Indicator of Stock')
@@ -34,20 +28,15 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with Minimum Price
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
