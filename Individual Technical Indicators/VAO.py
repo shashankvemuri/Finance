@@ -29,20 +29,9 @@ df['VAO'] = df['Volume'] * (df['Adj Close'] - (df['High']+df['Low'])/2)
 df.head()
 
 
-# In[4]:
-
-
 df['Positive'] = df['VAO'] > 0
 
-
-# In[5]:
-
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
-
-
-# In[6]:
-
 
 df.head()
 
@@ -63,8 +52,7 @@ ax2.bar(df.index, df['VAO'], color=df.Positive.map({True: 'g', False: 'r'}))
 ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # In[8]:
 
 
@@ -80,15 +68,9 @@ ax2.plot(df.index, df['VAO'])
 ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with VAO
-
-# In[9]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VAO'] = dfc['Volume'] * (dfc['Adj Close'] - (dfc['High']+dfc['Low'])/2)
@@ -125,8 +107,7 @@ ax2.bar(dfc.Date, dfc['VAO'], color=dfc.Positive.map({True: 'g', False: 'r'}))
 ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # In[17]:
 
 
@@ -153,4 +134,4 @@ ax2.fill_between(dfc.Date, dfc['VAO'],where= dfc['VAO'] <= 0,
 ax2.grid()
 ax2.set_ylabel('VAO')
 ax2.set_xlabel('Date')
-
+plt.show()

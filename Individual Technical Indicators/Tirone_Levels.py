@@ -25,14 +25,7 @@ df = yf.download(symbol,start,end)
 df.tail()
 
 
-# In[4]:
-
-
 df['Adj Close'][-1]
-
-
-# In[5]:
-
 
 print('Lowest Price:', df['Adj Close'].min())
 print('Highest Price:', df['Adj Close'].max())
@@ -42,19 +35,12 @@ print('Highest High:', df['High'].max())
 
 
 # ## Midpoint Method
-
-# In[6]:
-
-
 Top_Line = abs(((df['High'].max() - df['Low'].min())/3) - df['High'].max())
 Center_Line = ((df['High'].max() - df['Low'].min())/2) + df['Low'].min()
 Bottom_Line = ((df['High'].max() - df['Low'].min())/3) + df['Low'].min()
 
 
 # ## Mean Method
-
-# In[7]:
-
 
 Adjusted_Mean = abs((df['High'].max() + df['Low'].min() + df['Adj Close'][-1])/3)
 #Adjusted_Mean = (df['High'].max() + df['Low'].min() + df['Adj Close'].mean())/3
@@ -65,10 +51,6 @@ Extreme_Low = abs((df['High'].max() - df['Low'].min()) - Adjusted_Mean)
 
 
 # ## Line Chart
-
-# In[8]:
-
-
 # Line Chart
 plt.figure(figsize=(14,8))
 plt.plot(df['Adj Close'])
@@ -80,10 +62,6 @@ plt.title('Stock of Midpoint Method')
 plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
-
-
-# In[9]:
-
 
 # Line Chart
 plt.figure(figsize=(14,8))
@@ -101,12 +79,7 @@ plt.show()
 
 
 # ## Candlestick
-
-# In[11]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']

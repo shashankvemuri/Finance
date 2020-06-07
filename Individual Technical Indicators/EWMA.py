@@ -38,7 +38,6 @@ plt.show()
 
 # ## Candlestick with Exponential Weighted Moving Average (EWMA)
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']

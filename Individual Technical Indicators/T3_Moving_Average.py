@@ -23,9 +23,6 @@ df = yf.download(symbol,start,end)
 import talib as ta
 
 
-# In[4]:
-
-
 e1 = ta.EMA(df['Adj Close'], timeperiod=3)
 e2 = ta.EMA(e1, timeperiod=3)
 e3 = ta.EMA(e2, timeperiod=3)
@@ -39,25 +36,13 @@ c2 = (3*a**2) + (3*a**3)
 c3 = - (6*a**2) - (3*a) - (3*a**3)
 c4 = 1 + (3*a) + (a**3) + (3*a**2)
 
-
-# In[5]:
-
-
 df['T3'] = c1*e6 + c2*e5 + c3*e4 + c4*e3
-
-
-# In[6]:
-
 
 df = df.dropna()
 df.head()
 
 
-# In[7]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']

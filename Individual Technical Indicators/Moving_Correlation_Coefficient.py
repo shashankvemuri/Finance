@@ -43,52 +43,22 @@ df1.head()
 df2.head()
 
 
-# In[4]:
-
-
 cc = df1['Adj Close'].corr(df2['Adj Close'])
 
-
-# In[5]:
-
-
 cc
-
-
-# In[6]:
-
 
 df = pd.concat([df1['Adj Close'], df2['Adj Close']],axis=1)
 
 
-# In[7]:
-
-
 df.head()
-
-
-# In[8]:
-
 
 # Rename columns
 df.columns = [symbol1,symbol2]
 
-
-# In[9]:
-
-
 df.head()
-
-
-# In[10]:
-
 
 n = 14
 df['M_Cor'] = df['AAPL'].rolling(n).corr(df['QQQ']).rolling(n).mean()
-
-
-# In[11]:
-
 
 df.head(30)
 
@@ -109,15 +79,13 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Correlation Coefficient')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Moving Correlation Coefficient
 
 # In[13]:
 
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df1.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -153,4 +121,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Correlation Coefficient')
 ax2.set_xlabel('Date')
-
+plt.show()

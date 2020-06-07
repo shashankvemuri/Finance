@@ -25,38 +25,16 @@ df = yf.download(symbol,start,end)
 import talib as ta
 
 
-# In[4]:
-
-
 df['EMA'] = ta.EMA(df['Adj Close'], timeperiod=5) 
 
-
-# In[5]:
-
-
 df['EMA_2'] = ta.EMA(df['EMA'], timeperiod=5) 
-
-
-# In[6]:
-
 
 df['EMA_3'] = ta.EMA(df['EMA_2'], timeperiod=5) 
 
 
-# In[7]:
-
-
 df['TEMA'] = (3*df['EMA']) - (3*(df['EMA_2'])) + (df['EMA_3'])
 
-
-# In[8]:
-
-
 df.head()
-
-
-# In[9]:
-
 
 # Line Chart
 fig = plt.figure(figsize=(16,8))
@@ -79,12 +57,7 @@ ax1.set_ylabel('Price')
 
 
 # ## Candlestick with TEMA
-
-# In[10]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -92,10 +65,6 @@ dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[11]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

@@ -41,14 +41,7 @@ df2 = yf.download(symbol2,start,end)
 df1.head()
 
 
-# In[4]:
-
-
 df2.head()
-
-
-# In[5]:
-
 
 avg1 = df1['Adj Close'].mean()
 avg2 = df2['Adj Close'].mean()
@@ -57,14 +50,7 @@ df1['AVGS2_S2'] = avg2 - df2['Adj Close']
 df1['Average_SQ'] = df1['AVGS1_S1']**2
 df1['AVG_AVG'] = df1['AVGS1_S1']*df1['AVGS2_S2']
 
-
-# In[6]:
-
-
 df1.head(20)
-
-
-# In[7]:
 
 
 sum_sq = df1['Average_SQ'].sum()
@@ -72,29 +58,13 @@ sum_avg = df1['AVG_AVG'].sum()
 slope = sum_avg/sum_sq
 intercept = avg2-(slope*avg1)
 
-
-# In[8]:
-
-
 df1['Linear_Regression'] = intercept + slope*(df1['Adj Close'])
-
-
-# In[9]:
-
 
 n = 14 # number of periods
 df1['Moving_Linear_Regression'] = df1['Linear_Regression'].rolling(n).mean()
 
-
-# In[10]:
-
-
 df1 = df1.drop(['AVGS1_S1', 'AVGS2_S2', 'Average_SQ', 'AVG_AVG'], axis=1)
 df1.head()
-
-
-# In[11]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -119,7 +89,6 @@ ax2.set_ylabel('Volume')
 
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df1.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']

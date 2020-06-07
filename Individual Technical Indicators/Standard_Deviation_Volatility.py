@@ -25,9 +25,6 @@ df = yf.download(symbol,start,end)
 df['STD'] = df['Adj Close'].rolling(10).std()
 
 
-# In[4]:
-
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -40,15 +37,9 @@ ax2.axhline(y=df['STD'].mean(), color='red')
 ax2.grid()
 ax2.set_ylabel('Standard Deviation Volatility')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Standard Deviation Volatility
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 dfc = df.copy()
@@ -57,10 +48,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -85,4 +72,4 @@ ax2.axhline(y=df['STD'].mean(), color='red')
 ax2.grid()
 ax2.set_ylabel('Standard Deviation Volatility')
 ax2.set_xlabel('Date')
-
+plt.show()

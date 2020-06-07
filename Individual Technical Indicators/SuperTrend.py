@@ -35,9 +35,6 @@ for i in range(n,len(df)):
     df['ATR'][i]=(df['ATR'][i-1]*(n-1)+ df['TR'][i])/n
 
 
-# In[4]:
-
-
 f = 3 # Number of factor
 # BASIC UPPERBAND = (HIGH + LOW) / 2 + Multiplier * ATR
 # BASIC LOWERBAND = (HIGH + LOW) / 2 - Multiplier * ATR
@@ -84,15 +81,7 @@ for i in range(n,len(df)):
     elif df['SUPERTREND'][i-1]==df['FINAL LOWERBAND'][i-1] and df['Close'][i]<=df['FINAL LOWERBAND'][i]:
         df['SUPERTREND'][i]=df['FINAL UPPERBAND'][i]
 
-
-# In[5]:
-
-
 df.head(10)
-
-
-# In[6]:
-
 
 plt.figure(figsize=(12,8))
 
@@ -107,11 +96,7 @@ plt.show()
 
 # ## Candlestick with SuperTrend
 
-# In[7]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -119,10 +104,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[8]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

@@ -5,51 +5,33 @@
 
 # https://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:speed_resistance_lin
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
+
+# Read data 
+df = yf.download(symbol,start,end)
 start = '2018-12-01'
 end = '2019-02-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 df['Middle_Line'] = df['Low'] + (df['High'] - df['Low']) * .667
 df['Lower_Line'] = df['Low'] + (df['High'] - df['Low']) * .333
 
 
-# In[4]:
-
-
 df.head()
-
-
-# In[5]:
-
 
 plt.figure(figsize=(14,8))
 plt.plot(df['Adj Close'])
@@ -61,18 +43,11 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
-# In[6]:
-
-
 def connectpoints():
     x1, x2 = df['Low'].loc['2019-01-01':].idxmin(), df['Adj Close'].loc['2019-01-01':].idxmax()
     y1, y2 = df['Low'].loc['2019-01-01':].min(), df['Adj Close'].loc['2019-01-01':].max()
     plt.plot([x1,x2],[y1,y2],'y-')
     return
-
-
-# In[7]:
 
 
 def connectpoints2():
@@ -81,19 +56,11 @@ def connectpoints2():
     plt.plot([x1,x2],[y1,y2],'g-')
     return
 
-
-# In[8]:
-
-
 def connectpoints3():
     x1, x2 = df['Low'].loc['2019-01-01':].idxmin(), df['Adj Close'].loc['2019-01-01':].idxmax()
     y1, y2 = df['Low'].loc['2019-01-01':].min(), df['Lower_Line'].loc['2019-01-01':].max()
     plt.plot([x1,x2],[y1,y2],'r-')
     return
-
-
-# In[9]:
-
 
 # Connect the points
 plt.figure(figsize=(20,8))
@@ -113,12 +80,7 @@ plt.show()
 
 
 # ## Candlestick wtih Speed Resistance Lines
-
-# In[10]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -126,10 +88,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[11]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

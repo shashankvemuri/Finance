@@ -1,54 +1,20 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Averages of the High and Low
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2018-12-31'
-
-# Read data 
-df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
-
+start = dt.date.today() - dt.timedelta(days = 365)
+end = dt.date.today()
 
 n = 14 # number of periods
 df['MA_High'] = df['High'].rolling(n).mean()
 df['MA_Low'] = df['Low'].rolling(n).mean()
-
-
-# In[4]:
-
-
-df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -66,16 +32,10 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Average of High and Low')
 ax2.set_xlabel('Date')
-
+plt.show()
 
 # ## Candlestick with Moving Averages of the High and Low
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -83,12 +43,7 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
 
-
-# In[7]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -114,4 +69,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Average of High and Low')
 ax2.set_xlabel('Date')
-
+plt.show()

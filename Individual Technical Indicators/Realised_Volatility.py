@@ -32,38 +32,17 @@ end = '2019-01-01'
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 n = 20
 rets = df['Adj Close'].pct_change().dropna()
 std = rets.rolling(n).std() 
 
 
-# In[4]:
-
-
 historical_vol_annually = std*math.sqrt(252)  
 df['RV'] = 100*historical_vol_annually
 
-
-# In[5]:
-
-
 df.head()
 
-
-# In[6]:
-
-
 df.tail()
-
-
-# In[7]:
 
 
 fig = plt.figure(figsize=(14,7))
@@ -78,15 +57,9 @@ ax2.axhline(y=df['RV'].mean(), color='red')
 ax2.grid()
 ax2.set_ylabel('Realised Volatility')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Historical Volatility
-
-# In[8]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -95,10 +68,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[9]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -123,4 +92,4 @@ ax2.axhline(y=df['RV'].mean(), color='red')
 ax2.grid()
 ax2.set_ylabel('Realised Volatility')
 ax2.set_xlabel('Date')
-
+plt.show()
