@@ -38,8 +38,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(32,25))
 ax1 = plt.subplot(2, 1, 1)

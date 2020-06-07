@@ -1,70 +1,30 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Covariance
-
-# https://www.fmlabs.com/reference/default.htm
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol1 = 'AAPL'
 symbol2 = 'QQQ'
-start = '2017-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365*2)
+end = dt.date.today()
 
 # Read data 
 df1 = yf.download(symbol1,start,end)
 df2 = yf.download(symbol2,start,end)
 
-# View Columns
-df1.head()
-
-
-# In[3]:
-
-
-df2.head()
-
-
 c = df1['Adj Close'].cov(df2['Adj Close'])
-
-c
-
 df = pd.concat([df1['Adj Close'], df2['Adj Close']],axis=1)
-
-
-df.head()
 
 # Rename columns
 df.columns = [symbol1,symbol2]
 
-df.head()
-
 n = 14
 df['M_Cov'] = df['AAPL'].rolling(n).cov(df['QQQ']).rolling(n).mean()
-
-df.head(20)
-
-
-# In[12]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -80,11 +40,8 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Moving Covariance')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Covariance
-
-# In[13]:
-
-
 from matplotlib import dates as mdates
 
 dfc = df1.copy()
@@ -92,14 +49,7 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
-
-# In[14]:
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

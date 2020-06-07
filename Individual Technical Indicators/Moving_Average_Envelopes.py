@@ -22,7 +22,7 @@ df['Upper_Envelope'] = df['20SMA'] + (df['20SMA'] * 0.025)
 df['Lower_Envelope'] = df['20SMA'] - (df['20SMA'] * 0.025)
 
 # Line Chart
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Upper_Envelope'], color='blue')
 plt.plot(df['Lower_Envelope'], color='red')
@@ -41,10 +41,8 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-fig = plt.figure(figsize=(18,8))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.plot(df['Upper_Envelope'], color='blue')

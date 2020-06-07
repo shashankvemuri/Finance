@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Positive Volume Index (PVI)
-
-# https://www.investopedia.com/terms/p/pvi.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,7 +17,6 @@ df = yf.download(symbol,start,end)
 
 returns = df['Adj Close'].pct_change()
 vol_increase = (df['Volume'].shift(1) < df['Volume'])
-
 pvi = pd.Series(data=np.nan, index=df['Adj Close'].index, dtype='float64')
 
 pvi.iloc[0] = 1000
@@ -37,9 +29,6 @@ for i in range(1,len(pvi)):
 pvi = pvi.replace([np.inf, -np.inf], np.nan).fillna(1000)
 
 df['PVI'] = pd.Series(pvi)
-
-
-df.head()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -55,19 +44,15 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Positive Volume Index')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Postive Volume Index
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

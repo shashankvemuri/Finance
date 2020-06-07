@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Relative Volatility Index
-
-# http://www.chart-formations.com/indicators/rvi.aspx?cat=oscillator
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,11 +24,7 @@ df['AVG_Loss'] = df.Loss.rolling(n).std()
 df['RS'] = df['AVG_Gain']/df['AVG_Loss']
 df['RVI'] = 100 - (100/(1+df['RS']))
 
-
-df.head(20)
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -52,21 +41,14 @@ ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 plt.show()
-# In[6]:
-
 
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -94,4 +76,4 @@ ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

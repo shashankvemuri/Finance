@@ -1,56 +1,28 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Pivot Point Indicators
-
-# https://en.wikipedia.org/wiki/Pivot_point_(technical_analysis)
-# 
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:pivot_points
-
-# In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-
 import warnings
 warnings.filterwarnings("ignore") 
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AMD'
 market = 'SPY'
-start = '2017-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365*2)
+end = dt.date.today()
 
 # Read data 
 dataset = yf.download(symbol,start,end)
 benchmark = yf.download(market,start,end)
 
-# View Columns
-dataset.head()
-benchmark.head()
-
-
-# In[3]:
-
-
 dataset['Returns'] = dataset['Adj Close'].pct_change().dropna()
-
 
 # # Stock Pivot Points
 
 # ## Standard Pivot Points
-
 # Floor Pivot Points (Basic Pivot Points) - Support and Resistance
 # https://www.investopedia.com/trading/using-pivot-points-for-predictions/
 PP = pd.Series((dataset['High'] + dataset['Low'] + dataset['Close']) / 3)  
@@ -77,8 +49,6 @@ plt.legend(['Price','P','R1','S1','R2','S2','R3','S3'], loc=0)
 plt.show()
 
 dataset['Adj Close']['2018-05-01':'2018-06-01']
-
-
 date_range = dataset[['Adj Close','P','R1','S1','R2','S2','R3','S3']]['2018-05-01':'2018-06-01']# Pick Date Ranges
 
 date_range.plot(figsize=(18,12),grid=True)
@@ -92,7 +62,6 @@ plt.title('Stock Pivot Point')
 plt.legend()
 plt.show()
 
-
 # ## Woodie's Pivot Points
 # Woodie's Pivot Points
 P = pd.Series((dataset['High'] + dataset['Low'] + 2*dataset['Close']) / 4)  
@@ -102,16 +71,11 @@ R2 = pd.Series(P + dataset['High'] - dataset['Low'])
 S2 = pd.Series(P - dataset['High'] + dataset['Low'])  
 wpp = {'P':P, 'R1':R1, 'S1':S1, 'R2':R2, 'S2':S2}  
 WPP = pd.DataFrame(wpp)  
-# dataset = dataset.join(WPP)  
-
-WPP.head()
+# dataset = dataset.join(WPP) 
+print (WPP.head()) 
 
 
 # ## Camarilla's Pivot Points
-
-# In[12]:
-
-
 # Camarilla's Pivot Points
 R1 = pd.Series((dataset['High'] - dataset['Low']) * 1.1 / (2+dataset['Close']))  
 R2 = pd.Series((dataset['High'] - dataset['Low']) * 1.1 / (4+dataset['Close']))  
@@ -124,19 +88,9 @@ S4 = pd.Series((dataset['Close'] - (dataset['High']-dataset['Low']) * 1.1)/2)
 cpp = {'R1':R1, 'S1':S1, 'R2':R2, 'S2':S2, 'R3':R3, 'S3':S3,'R4':R4, 'S4':S4}  
 CPP = pd.DataFrame(cpp)  
 # dataset = dataset.join(CPP)  
-
-
-# In[13]:
-
-
-CPP.head()
-
+print (CPP.head())
 
 # ## Tom DeMark's
-
-# In[14]:
-
-
 # Tom DeMark's
 dataset = yf.download(symbol,start,end)
 
@@ -152,19 +106,9 @@ R1 = P / 2.0 - dataset['Low']
 P = P / 4.0
 tdm = {'P': P, 'S1': S1, 'R1': R1}
 TDM = pd.DataFrame(tdm)
-
-
-# In[15]:
-
-
-TDM.head()
-
+print (TDM.head())
 
 # ## Fibonacci's Pivot Point
-
-# In[16]:
-
-
 # Fibonacci's Pivot Points
 PP = pd.Series((dataset['High'] + dataset['Low'] + dataset['Close']) / 3)  
 R1 = pd.Series((PP + (dataset['High'] - dataset['Low']) * 0.382))
@@ -176,21 +120,10 @@ S3 = pd.Series((PP - (dataset['High'] - dataset['Low']) * 1.000))
 fpp = {'PP':PP, 'R1':R1, 'S1':S1, 'R2':R2, 'S2':S2, 'R3':R3, 'S3':S3}  
 FPP = pd.DataFrame(fpp)  
 # dataset = dataset.join(CPP) 
-
-
-# In[17]:
-
-
-FPP.head()
+print (FPP.head())
 
 
 # ## Chicago Floor Trading Pivotal Point
-
-# https://www.fmlabs.com/reference/default.htm
-
-# In[18]:
-
-
 PP = pd.Series((dataset['High'] + dataset['Low'] + dataset['Close']) / 3)
 R1 = pd.Series(PP * 2 - dataset['Low'].shift())
 R2 = pd.Series(PP + (dataset['High'].shift() - dataset['Low'].shift()))
@@ -198,10 +131,4 @@ S1 = pd.Series(PP * 2 - dataset['High'].shift())
 S2 = pd.Series(PP - (dataset['High'].shift() - dataset['Low'].shift()))
 CFpp = {'PP':PP, 'R1':R1, 'S1':S1, 'R2':R2, 'S2':S2}
 CFPP = pd.DataFrame(CFpp)
-
-
-# In[19]:
-
-
-CFPP.head()
-
+print (CFPP.head())

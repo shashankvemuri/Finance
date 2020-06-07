@@ -55,14 +55,14 @@ df['SMA60'] = ta.SMA(df['Adj Close'], timeperiod=60)
 SMA_Short = df[['SMA3','SMA5','SMA8','SMA10','SMA12','SMA15']]
 SMA_Long = df[['SMA30','SMA35','SMA40','SMA45','SMA50','SMA60']]
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(EMA_Short, color='blue')
 plt.plot(EMA_Long, color='orange')
 plt.title('Guppy Multiple Moving Averages of EMA')
 plt.show()
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(SMA_Short, color='blue')
 plt.plot(SMA_Long, color='orange')
@@ -77,8 +77,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)

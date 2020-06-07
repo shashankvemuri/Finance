@@ -100,7 +100,7 @@ signals['position'][short_term:] = np.where(signals['Short_MA'][short_term:]
 signals['intersection'] = signals['position'].diff()
 print(signals)
 
-fig = plt.figure(figsize=(14,8))
+fig = plt.figure(figsize=(14,7))
 
 # Add a subplot and label for y-axis
 ax = fig.add_subplot(111,  ylabel='Price in $')

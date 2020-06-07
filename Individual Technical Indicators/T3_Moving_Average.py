@@ -99,7 +99,7 @@ ax1.legend(loc='best')
 # In[33]:
 
 
-fig = plt.figure(figsize=(20,10))
+fig = plt.figure(figsize=(14,7))
 ax1 = fig.add_subplot(111)
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 plt.plot(df.Date, df['T3'],marker='o',label='T3')
@@ -122,7 +122,7 @@ plt.show()
 # In[77]:
 
 
-fig = plt.figure(figsize=(20,10))
+fig = plt.figure(figsize=(14,7))
 ax1 = fig.add_subplot(111)
 candlestick_ohlc(ax1,df.values[80:], width=0.5, colorup='g', colordown='r', alpha=1.0)
 plt.plot(df.iloc[80:, 0], df['T3'][80:],marker='o',label='T3')

@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Relative Strength Index
-
-# http://cns.bu.edu/~gsc/CN710/fincast/Technical%20_indicators/Relative%20Strength%20Index%20(RSI).htm
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,12 +24,10 @@ df['AVG_Loss'] = df.Loss.rolling(n).mean()
 df['RS'] = df['AVG_Gain']/df['AVG_Loss']
 df['RSI'] = 100 - (100/(1+df['RS']))
 
-
-# Simple way to do RSI
+# RSI
 import talib as ta
 
 df['RSI_ta'] = ta.RSI(df['Adj Close'], timeperiod=14)
-df.head(20)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -54,19 +45,16 @@ ax2.grid()
 ax2.set_ylabel('RSI')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with RSI
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -92,6 +80,7 @@ ax2.grid()
 ax2.set_ylabel('RSI')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
+plt.show()
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -119,4 +108,4 @@ ax2.grid()
 ax2.set_ylabel('RSI')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

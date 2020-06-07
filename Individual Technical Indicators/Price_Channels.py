@@ -1,41 +1,23 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Price Channels
-
-# In[1]:
-
-
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-
+import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-12-01'
-end = '2019-04-01'
+start = dt.date.today() - dt.timedelta(days = 365*4)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
 df['Upper_Channel_Line'] = df['High'].rolling(20).max()
 df['Lower_Channel_Line'] = df['Low'].rolling(20).min()
 df['Centerline'] = (df['Upper_Channel_Line'] + df['Lower_Channel_Line']) / 2
-
-
 df = df.dropna()
-df.head()
 
 df[['Adj Close','Upper_Channel_Line','Lower_Channel_Line','Centerline']].plot(figsize=(16,10))
 plt.title('Price Channels for Stock')
@@ -49,12 +31,10 @@ xtick = pd.date_range( start=df.index.min(), end=df.index.max(), freq='W')
 ax.set_xticks(xtick, minor=True )
 ax.grid('on', which='minor', axis='x')
 ax.grid('off', which='major', axis='x')
-
+plt.show()
 
 import matplotlib.dates as mdates
-
 months = mdates.MonthLocator()  # every month
-
 fig, ax = plt.subplots(figsize=(16,8))
 datemin = np.datetime64(df.index[0], 'M')
 datemax = np.datetime64(df.index[-1], 'M') + np.timedelta64(1, 'M')
@@ -83,20 +63,15 @@ plt.ylabel('Price')
 plt.xlabel('Date')
 plt.show()
 
-
 # ## Candlestick with Price Channels
 from matplotlib import dates as mdates
-
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
-df.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.dates import MonthLocator, YearLocator
-
 fig, ax1 = plt.subplots(figsize=(16,8))
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.plot(df.Date, df['Upper_Channel_Line'], color='red')
@@ -123,14 +98,10 @@ ax1.set_title('Price Channels for Stock')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
-
-# In[15]:
-
+plt.show()
 
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.dates import MonthLocator, YearLocator
-
 fig, ax1 = plt.subplots(figsize=(16,8))
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.plot(df.Date, df['Upper_Channel_Line'], color='red')
@@ -144,7 +115,6 @@ ax1.set_xticks(xtick, minor=True)
 ax1.grid('on', which='minor', axis='x')
 ax1.grid('off', which='major', axis='x')
 
-
 ax1v = ax1.twinx()
 colors = df.VolumePositive.map({True: 'g', False: 'r'})
 ax1v.bar(df.Date, df['Volume'], color=colors, alpha=0.4)
@@ -154,4 +124,4 @@ ax1.set_title('Price Channels for Stock')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()

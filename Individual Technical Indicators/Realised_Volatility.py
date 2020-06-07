@@ -1,33 +1,17 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Realised Volatility Indicator
-
-# https://www.investopedia.com/terms/h/historicalvolatility.asp
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-08-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -36,14 +20,8 @@ n = 20
 rets = df['Adj Close'].pct_change().dropna()
 std = rets.rolling(n).std() 
 
-
 historical_vol_annually = std*math.sqrt(252)  
 df['RV'] = 100*historical_vol_annually
-
-df.head()
-
-df.tail()
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -58,19 +36,16 @@ ax2.grid()
 ax2.set_ylabel('Realised Volatility')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Historical Volatility
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

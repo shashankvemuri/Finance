@@ -18,7 +18,7 @@ df = yf.download(symbol,start,end)
 n = 14
 df['Maximum_Price'] = df['Adj Close'].rolling(14).max()
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Maximum_Price'], color='red')
 plt.title('Maximum Price Indicator of Stock')
@@ -35,8 +35,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)

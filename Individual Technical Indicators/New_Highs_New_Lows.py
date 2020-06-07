@@ -1,43 +1,19 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Market Breadth: 52-Week Highs/Lows
-# ## New Highs New Lows
-
-# https://www.investopedia.com/university/marketbreadth/marketbreadth2.asp
-# 
-# https://www.marketinout.com/technical_analysis.php?t=New_Highs-New_Lows&id=70
-# 
-# https://stockcharts.com/school/doku.php?id=chart_school:market_indicators:high_low_index
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'SPY'
-start = '2012-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 365*7)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-df.tail()
-
 
 new_high = df['Adj Close'].rolling(52).max() # 52-week lows
 new_low = df['Adj Close'].rolling(52).min() # 52-week highs
@@ -49,7 +25,6 @@ new_high = new_high.dropna()
 new_low = new_low.dropna()
 #Record_High_Percent = (new_high /(new_high + new_low)) * 100
 #nhnl = new_high - new_low
-
 
 # 1. Cumulative New High/Low Line
 # Today's Value = Yesterday's Value + (Today's New Highs - Today's New Lows) 
@@ -75,16 +50,7 @@ df['NL'] = new_high/ (new_high + new_low)
 df['NHTM'] = new_high / 5 # Number of stocks
 df['NLTM'] = new_low / 5 # Number of stocks
 
-
-# In[12]:
-
-
 df = df.dropna()
-df.head(10)
-
-
-# In[13]:
-
 
 fig = plt.figure(figsize=(14,14))
 ax1 = plt.subplot(3, 1, 1)
@@ -104,27 +70,16 @@ ax3.plot(df['Oscillator'], label='Oscillator')
 ax3.set_ylabel('Oscillator')
 ax3.set_xlabel('Date')
 ax3.grid()
-
+plt.show()
 
 # ## Candlestick with New Highs/New Lows
-
-# In[14]:
-
-
 from matplotlib import dates as mdates
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
-df.head()
-
-
-# In[15]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(16,8))
 ax1 = plt.subplot(3, 1, 1)
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -150,4 +105,4 @@ ax3.plot(df['Oscillator'], label='Oscillator')
 ax3.grid()
 ax3.set_ylabel('Oscillator')
 ax3.set_xlabel('Date')
-
+plt.show()

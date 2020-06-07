@@ -48,10 +48,8 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-fig = plt.figure(figsize=(20,18))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.xaxis_date()
@@ -76,7 +74,7 @@ ax2.legend(loc='best')
 plt.show()
 
 import matplotlib.patches as mpatches
-fig = plt.figure(figsize=(20,18))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.xaxis_date()

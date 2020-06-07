@@ -12,7 +12,7 @@ end = dt.date.today()
 
 df = pdr.get_data_yahoo(stock, start, end)
 
-df['Adj Close'].plot(figsize=(12,8))
+df['Adj Close'].plot(figsize=(14,7))
 plt.show()
 
 df = df.reset_index().rename(columns={'Date':'ds', 'Adj Close':'y'})

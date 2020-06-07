@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Standard Deviation Indicator
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:standard_deviation_volatility
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,7 +17,6 @@ df = yf.download(symbol,start,end)
 
 df['STD'] = df['Adj Close'].rolling(10).std()
 
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -38,19 +30,16 @@ ax2.grid()
 ax2.set_ylabel('Standard Deviation Volatility')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Standard Deviation Volatility
 from matplotlib import dates as mdates
-
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

@@ -20,7 +20,7 @@ Period_High = df['High'].rolling(window=26).max()
 Period_Low = df['Low'].rolling(window=26).min()
 df['Kijun_Sen'] = (Period_High + Period_Low) / 2
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Kijun_Sen'], color='red')
 plt.title('Moving Maximum Price Indicator of Stock')
@@ -37,8 +37,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
