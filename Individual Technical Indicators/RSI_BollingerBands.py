@@ -6,6 +6,7 @@ warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 import datetime as dt
+from pylab import rcParams
 
 # input
 symbol = 'NIO'
@@ -19,7 +20,7 @@ df = yf.download(symbol,start,end)
 plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.legend(loc='best')
-plt.title('Stock '+ symbol +' Closing Price')
+plt.title(symbol +' Closing Price')
 plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
@@ -38,7 +39,7 @@ df['Upper Band'] = df['20 Day MA'] + (df['20 Day STD'] * 2)
 df['Lower Band'] = df['20 Day MA'] - (df['20 Day STD'] * 2)
 
 df[['Adj Close', '20 Day MA', 'Upper Band', 'Lower Band']].plot(figsize=(14,7))
-plt.title(f'30 Day Bollinger Band for {symbol}')
+plt.title(f'30 Day Bollinger Band for {symbol.upper()}')
 plt.ylabel('Price')
 plt.legend(loc='best')
 plt.show()
@@ -53,36 +54,30 @@ dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax = plt.subplot(1,1,1)
-candlestick_ohlc(ax,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-plt.title('Candlestick Chart of Stock')
-plt.ylabel('Price')
-plt.show()
-
-# Plot Candlestick with dates
-fig = plt.figure(figsize=(14,7))
-ax = plt.subplot(1,1,1)
 ax.xaxis_date()
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
 candlestick_ohlc(ax,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-plt.title('Candlestick Chart of Stock')
+plt.title(f'{symbol.upper()} Candlestick Chart')
 plt.ylabel('Price')
 plt.show()
 
 # ## Combine RSI and Bollinger Bands
-fig = plt.figure(figsize=(14,7))
-ax = plt.subplot(2,1,2)
+rcParams['figure.figsize'] = 14, 7
+ax = plt.subplot(211)
 ax.xaxis_date()
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
 plt.plot(df[['20 Day MA', 'Upper Band', 'Lower Band']], label=('20 Day MA', 'Upper Band', 'Lower Band'))
-candlestick_ohlc(ax,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-plt.title('RSI & Bollinger Bands')
+candlestick_ohlc(ax,dfc.values, width=.5, colorup='g', colordown='r', alpha=1.0)
+plt.title(f'Bollinger Bands & RSI for {symbol.upper()}')
 plt.ylabel('Price')
 
+plt.subplot(212)
 plt.plot(rsi, '-', label='RSI')
-plt.text(s='Overbought', x=rsi.index[0], y=80, fontsize=14)
-plt.text(s='OverSold', x=rsi.index[0], y=20, fontsize=14)
-ax.axhline(y=80,color='r')
-ax.axhline(y=20,color='r')
+plt.text(s='Overbought', x=rsi.index[0], y=70, fontsize=8)
+plt.text(s='OverSold', x=rsi.index[0], y=30, fontsize=8)
+plt.axhline(y=70,color='r')
+plt.axhline(y=30,color='r')
 plt.xlabel('Date')
+plt.ylabel('RSI')
 plt.legend(loc='best')
 plt.show()
