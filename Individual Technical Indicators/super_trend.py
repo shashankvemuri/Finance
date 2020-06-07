@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # SuperTrend
-
-# http://www.freebsensetips.com/blog/detail/7/What-is-supertrend-indicator-its-calculation
-# 
-# https://stocksfetcher.com/supertrend/
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -81,9 +72,7 @@ for i in range(n,len(df)):
     elif df['SUPERTREND'][i-1]==df['FINAL LOWERBAND'][i-1] and df['Close'][i]<=df['FINAL LOWERBAND'][i]:
         df['SUPERTREND'][i]=df['FINAL UPPERBAND'][i]
 
-df.head(10)
-
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 
 df['Adj Close'].plot()
 df['SUPERTREND'].plot()
@@ -93,22 +82,17 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with SuperTrend
-
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 plt.style.use('fivethirtyeight')
-fig = plt.figure(figsize=(18,8))
+fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 ax1.plot(df['SUPERTREND'])

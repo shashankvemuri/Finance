@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Median Price
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,8 +17,7 @@ df = yf.download(symbol,start,end)
 
 df['Median_Price'] = (df['High'] + df['Low'])/2
 
-
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Median_Price'], color='red')
 plt.title('Median Price Indicator of Stock')
@@ -32,19 +26,14 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with Median Price
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

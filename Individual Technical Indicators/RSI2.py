@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # RSI(2)
-
-# https://stockcharts.com/school/doku.php?id=chart_school:trading_strategies:rsi2
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,21 +9,18 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-
-# Simple way to do RSI
+# RSI
 import talib as ta
 
 df['MA5'] = df['Adj Close'].rolling(5).mean()
 df['MA200'] = df['Adj Close'].rolling(200).mean()
 df['RSI2'] = ta.RSI(df['Adj Close'], timeperiod=2)
-df.head()
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -54,18 +44,16 @@ ax2.grid()
 ax2.set_ylabel('RSI2')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with RSI2 Strategy
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['MA5'], label='MA5')

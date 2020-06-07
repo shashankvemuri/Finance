@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Rainbow Charts
-
-# http://www.binarytribune.com/forex-trading-indicators/rainbow-charts
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,7 +25,6 @@ df['Indigo'] = df['Blue'].rolling(2).mean()
 df['Violet'] = df['Indigo'].rolling(2).mean()
 df = df.dropna()
 
-
 colors = ['k','r', 'orange', 'yellow', 'g', 'b', 'indigo', 'violet']
 df[['Adj Close','Red','Orange','Yellow','Green','Blue','Indigo','Violet']].plot(colors=colors, figsize=(18,12))
 plt.fill_between(df.index, df['Low'], df['High'], color='grey', alpha=0.4)
@@ -44,19 +36,14 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-
 # ## Candlestick with Rainbow
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig, ax1 = plt.subplots(figsize=(20,12))
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
 #colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
@@ -76,4 +63,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()

@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Negative Volume Index (NVI)
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:negative_volume_inde
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365*2)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -36,15 +24,10 @@ df1['NVI_Value'] = df1['ROC']
 df[df['ROC_Volume']<0] = df1
 df['NVI_Cumulative'] = 1000+df['NVI_Value'].cumsum()
 
-
 # Drop Columns
 df = df.drop(['ROC','ROC_Volume'],axis=1)
 
-df.head()
-
 import talib as ta
-
-
 df['EMA_100'] = ta.EMA(df['Adj Close'], timeperiod=100)
 df['EMA_255'] = ta.EMA(df['Adj Close'], timeperiod=255)
 df['NVI_100'] = ta.EMA(df['NVI_Cumulative'], timeperiod=100)
@@ -68,18 +51,15 @@ ax2.legend(loc='best')
 ax2.set_ylabel('NVI')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with NVI
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -106,4 +86,4 @@ ax2.grid()
 ax2.set_ylabel('NVI')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

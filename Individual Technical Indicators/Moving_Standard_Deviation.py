@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Standard Deviation
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -20,13 +15,11 @@ end = dt.date.today()
 # Read data 
 df = yf.download(symbol,start,end)
 
-
 n = 20
 df['MA20'] = df['Adj Close'][0:n].mean()
 df['MA_STD'] = df['Adj Close'] - df['MA20']
 df['MA_STD2'] = df['MA_STD']**2
 df['MA_STD'] = df['MA_STD2']/df['MA_STD2'].rolling(n).sum() 
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -40,20 +33,16 @@ ax2.grid()
 ax2.set_ylabel('Moving Average Standard Deviation')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Moving Standard Deviation
 from matplotlib import dates as mdates
-import datetime
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

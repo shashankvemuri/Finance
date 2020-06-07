@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Price Volume Trend (PVT)
-
-# https://www.incrediblecharts.com/indicators/price_and_volume_trend.php
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,8 +19,6 @@ df['Momentum_1D'] = (df['Adj Close'] - df['Adj Close'].shift(1)).fillna(0)
 df["PVT"] = (df['Momentum_1D']/ df['Adj Close'].shift(1))*df['Volume']
 df["PVT"] = df["PVT"] - df["PVT"].shift(1)
 df["PVT"] = df["PVT"].fillna(0)
-df.tail()
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -42,18 +33,15 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Price Volume Trend')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Price Volume Trend (PVT)
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

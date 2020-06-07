@@ -29,7 +29,7 @@ Nine_Period_Low = df['Low'].rolling(window=9).min()
 df['Tenkan_Sen'] = (Nine_Period_High + Nine_Period_Low)/2
 
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Tenkan_Sen'], color='red')
 plt.title('Moving Maximum Price Indicator of Stock')
@@ -48,8 +48,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
 
 fig = plt.figure(figsize=(14,7))

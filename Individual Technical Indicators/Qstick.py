@@ -1,46 +1,26 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Qstick Indicator 
-
-# https://www.investopedia.com/terms/q/qstick.asp
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
-symbol = 'GLD'
-start = '2018-01-01'
-end = '2019-01-01'
+symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 365*2)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
 
 import talib as ta
-
-
 #EMAC = ta.EMA(df['Adj Close'], timeperiod=10)
 #EMAO = ta.EMA(df['Open'], timeperiod=10)
 CO = df['Adj Close'] - df['Open']
 #df['QStick'] = EMAC - EMAO
 df['QStick'] = ta.EMA(CO, timeperiod=10)
-
-df.head(20)
 
 # Line Chart
 fig = plt.figure(figsize=(14,7))
@@ -57,22 +37,17 @@ ax2.grid()
 ax2.set_ylabel('QStick')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with QStick
-
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['QStick'] = (dfc['Adj Close'] - dfc['Open']).rolling(10).mean() 
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(16,12))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -93,6 +68,7 @@ ax2.grid()
 ax2.set_ylabel('QStick')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
+plt.show()
 
 fig = plt.figure(figsize=(16,12))
 ax1 = plt.subplot(2, 1, 1)
@@ -115,4 +91,4 @@ ax2.grid()
 ax2.set_ylabel('QStick')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()

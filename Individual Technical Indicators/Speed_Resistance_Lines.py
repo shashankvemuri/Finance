@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # SPEED RESISTANCE LINES (SRL)
-
-# https://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:speed_resistance_lin
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2018-12-01'
-end = '2019-02-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -30,10 +18,7 @@ df = yf.download(symbol,start,end)
 df['Middle_Line'] = df['Low'] + (df['High'] - df['Low']) * .667
 df['Lower_Line'] = df['Low'] + (df['High'] - df['Low']) * .333
 
-
-df.head()
-
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['Middle_Line'], color='orange', label='Middle Line')
 plt.plot(df['Lower_Line'], color='red', label='Lower Line')
@@ -48,7 +33,6 @@ def connectpoints():
     y1, y2 = df['Low'].loc['2019-01-01':].min(), df['Adj Close'].loc['2019-01-01':].max()
     plt.plot([x1,x2],[y1,y2],'y-')
     return
-
 
 def connectpoints2():
     x1, x2 = df['Low'].loc['2019-01-01':].idxmin(), df['Adj Close'].loc['2019-01-01':].idxmax()
@@ -78,19 +62,15 @@ plt.ylabel('Price')
 plt.legend(loc='best')
 plt.show()
 
-
 # ## Candlestick wtih Speed Resistance Lines
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -114,4 +94,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()

@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Moving Standard Error
-
-# https://www.fmlabs.com/reference/default.htm
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2018-01-01'
-end = '2018-12-31'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -30,9 +18,6 @@ df = yf.download(symbol,start,end)
 n = 14 # number of periods
 df['std'] = df['Adj Close'].rolling(n).std()
 df['MSE'] = df['std']/np.sqrt(n-1)
-
-
-df.head(20)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -48,19 +33,15 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Moving Standard Error')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Moving Standard Error
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
-
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

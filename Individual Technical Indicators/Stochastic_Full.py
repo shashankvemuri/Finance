@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Full Stochastic
-
-# https://www.investopedia.com/university/indicator_oscillator/ind_osc8.asp
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,9 +23,6 @@ df['Fast_%K'] = (((df['Adj Close'] - df['Low_Lowest']) / (df['High_Highest'] - d
 df['Full_%K'] = df['Fast_%K'].rolling(s).mean()
 df['Full_%D'] = df['Full_%K'].rolling(s).mean()
 
-
-df.head(20)
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -51,19 +41,16 @@ ax2.set_ylabel('Full Stochastic')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Full Stochastic
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

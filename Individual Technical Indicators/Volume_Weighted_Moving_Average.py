@@ -47,7 +47,7 @@ VWMA(df['Adj Close'],df['Volume'], 3)
 # In[37]:
 
 
-plt.figure(figsize=(14,8))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['VWMA'], label='Volume Weighted Moving Average')
 plt.plot(df['SMA'], label='Simple Moving Average')
@@ -70,8 +70,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-dfc.head()
-
 
 # In[40]:
 
