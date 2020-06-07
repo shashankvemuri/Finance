@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Volume Price Trend (VPT)
-
-# https://en.wikipedia.org/wiki/Volume%E2%80%93price_trend
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -27,9 +20,6 @@ vpt = vpt.shift(1) + vpt
 vpt = vpt.replace([np.inf, -np.inf], np.nan).fillna(0)
 df['VPT'] = pd.Series(vpt)
 
-
-df.head()
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df['Adj Close'])
@@ -43,9 +33,9 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Volume Price Trend')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Volume Price Trend
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -53,7 +43,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

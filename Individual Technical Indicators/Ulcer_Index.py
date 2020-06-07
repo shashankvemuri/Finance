@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Ulcer Index
-
-# https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:ulcer_index
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,13 +9,8 @@ import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 180)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
-start = '2017-01-01'
-end = '2019-01-01'
 
 # Read data 
 df = yf.download(symbol,start,end)
@@ -34,9 +22,6 @@ df['Percent_Drawdown_Squared'] = df['Percent_Drawdown'] ** 2
 df['Squared_Average'] = df['Percent_Drawdown_Squared'].rolling(n).sum()/14
 df['Ulcer_Index'] = df['Squared_Average'].pow(0.5)
 df = df.drop([str(n)+'-period Max Close','Percent_Drawdown','Percent_Drawdown_Squared','Squared_Average'],axis=1)
-
-
-df.head(20)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -53,9 +38,9 @@ ax2.legend(loc='best')
 ax2.set_ylabel('Ulcer Index')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Ulcer Index
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -63,7 +48,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

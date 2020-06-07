@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Typical Price
-
-# https://en.wikipedia.org/wiki/Typical_price
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,8 +16,6 @@ end = dt.date.today()
 df = yf.download(symbol,start,end)
 
 df['Typical_Price'] = (df['High'] + df['Low'] + df['Adj Close'])/3
-df.head()
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -39,16 +30,16 @@ ax2.set_ylabel('Typical Price')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
 plt.show()
+
 # ## Candlestick with Typical Price
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
-from mplfinance.original_flavor import candlestick_ohlc
 
+from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)

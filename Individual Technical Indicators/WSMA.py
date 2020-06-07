@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Wilder's Smoothing Moving Average (WSMA)
-
-# https://mahifx.com/mfxtrade/indicators/wilders-moving-average
-# 
-# https://www.theindicatorclub.com/product/wilders/
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,10 +21,8 @@ def WSMA(df, column="Adj Close", n=14):
     wsma = df[column] * K + ema * (1-K)
     return wsma
 
-
 df['WSMA'] = WSMA(df, column="Adj Close", n=14)
 df = df.dropna()
-df.head()
 
 plt.figure(figsize=(16,10))
 plt.plot(df['Adj Close'])
@@ -44,20 +33,14 @@ plt.xlabel('Price')
 plt.ylabel('Date')
 plt.show()
 
-
 # ## Candlestick with WSMA
 from matplotlib import dates as mdates
-
-
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
-df.head()
-
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(16,8))
 ax1 = plt.subplot(111)
 candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -74,4 +57,4 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.set_xlabel('Date')
 ax1.legend(loc='best')
-
+plt.show()

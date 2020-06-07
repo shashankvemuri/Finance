@@ -31,7 +31,7 @@ while i<len(df['KAMA'][n+1:]):
         i = i + 1
 df = df.drop(['Change','Volatility','ER','SC'],axis=1)
 
-plt.figure(figsize=(14,10))
+plt.figure(figsize=(14,7))
 plt.plot(df['Adj Close'])
 plt.plot(df['KAMA'])
 plt.ylabel('Price')

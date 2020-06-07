@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Triangular Moving Average (TRIMA) 
-
-# https://www.tradingtechnologies.com/xtrader-help/x-study/technical-indicator-definitions/triangular-moving-average-trima/
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,13 +15,9 @@ end = dt.date.today()
 # Read data 
 df = yf.download(symbol,start,end)
 
-
 n = 7
 sma = df['Adj Close'].rolling(center=False, window=n, min_periods=n - 1).mean()
 df['TRIMA'] = sma.rolling(center=False, window=n, min_periods=n - 1).mean()
-
-
-df.head(20)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -43,11 +32,10 @@ ax2.grid()
 ax2.set_ylabel('Triangular Moving Average')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
 
 # ## Candlestick with Triangular Moving Average
 from matplotlib import dates as mdates
-
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 #dfc = dfc.dropna()
@@ -56,7 +44,6 @@ dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 
 from mplfinance.original_flavor import candlestick_ohlc
-
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
 candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
@@ -79,4 +66,4 @@ ax2.grid()
 ax2.set_ylabel('Triangular Moving Average')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
+plt.show()
