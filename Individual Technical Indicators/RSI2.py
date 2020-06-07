@@ -5,37 +5,22 @@
 
 # https://stockcharts.com/school/doku.php?id=chart_school:trading_strategies:rsi2
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
 
 
 # Simple way to do RSI
@@ -45,9 +30,6 @@ df['MA5'] = df['Adj Close'].rolling(5).mean()
 df['MA200'] = df['Adj Close'].rolling(200).mean()
 df['RSI2'] = ta.RSI(df['Adj Close'], timeperiod=2)
 df.head()
-
-
-# In[4]:
 
 
 fig = plt.figure(figsize=(14,7))
@@ -71,15 +53,9 @@ ax2.axhline(y=5, color='darkblue')
 ax2.grid()
 ax2.set_ylabel('RSI2')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with RSI2 Strategy
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -87,10 +63,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -124,4 +96,4 @@ ax2.axhline(y=5, color='darkblue')
 ax2.grid()
 ax2.set_ylabel('RSI2')
 ax2.set_xlabel('Date')
-
+plt.show()

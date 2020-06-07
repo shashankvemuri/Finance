@@ -7,51 +7,29 @@
 # 
 # https://mahifx.com/mfxtrade/indicators/smoothed-moving-average-smma
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
 
 
 n = 7
 df['SMMA'] = pd.Series(df['Adj Close'].ewm(alpha=1 / float(n)).mean())
 
 
-# In[4]:
-
-
 df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -69,12 +47,7 @@ ax2.legend(loc='best')
 
 
 # ## Candlestick with Smoothed Moving Average
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -83,9 +56,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc

@@ -3,37 +3,22 @@
 
 # # Moving Standard Deviation
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
 
 # Read data 
 df = yf.download(symbol,start,end)
-
-# View Columns
-df.head()
-
-
-# In[3]:
 
 
 n = 20
@@ -41,9 +26,6 @@ df['MA20'] = df['Adj Close'][0:n].mean()
 df['MA_STD'] = df['Adj Close'] - df['MA20']
 df['MA_STD2'] = df['MA_STD']**2
 df['MA_STD'] = df['MA_STD2']/df['MA_STD2'].rolling(n).sum() 
-
-
-# In[4]:
 
 
 fig = plt.figure(figsize=(14,7))
@@ -57,13 +39,8 @@ ax2.plot(df['MA_STD'], label='Moving Average Standard Deviation')
 ax2.grid()
 ax2.set_ylabel('Moving Average Standard Deviation')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Moving Standard Deviation
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
 import datetime
 
@@ -74,10 +51,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -101,4 +74,4 @@ ax2.plot(df['MA_STD'], label='Moving Average Standard Deviation')
 ax2.grid()
 ax2.set_ylabel('Moving Average Standard Deviation')
 ax2.set_xlabel('Date')
-
+plt.show()

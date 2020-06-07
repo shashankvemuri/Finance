@@ -25,39 +25,21 @@ df = yf.download(symbol,start,end)
 df.shape
 
 
-# In[4]:
-
-
 n = 10
 SMMA = np.array([np.nan] * len(df['Adj Close']))
 SMMA[n - 2] = df['Adj Close'][:n - 1].mean()
 for i in range(n - 1, len(df['Adj Close'])):
     SMMA[i] = (SMMA [i - 1] * (n - 2) + 2 * df['Adj Close'][i]) / n
 
-
-# In[5]:
-
-
 SMMA
-
-
-# In[6]:
-
 
 x = SMMA.reshape(-1,1)
 data = pd.DataFrame.from_records(x)
 data
 
 
-# In[7]:
-
-
 df['SMMA'] = data.values
 df.head(10)
-
-
-# In[8]:
-
 
 # Line Chart
 plt.figure(figsize=(14,8))
@@ -69,12 +51,7 @@ plt.show()
 
 
 # ## Candlestick with SMMA
-
-# In[9]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -82,10 +59,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[10]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

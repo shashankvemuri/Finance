@@ -23,9 +23,6 @@ df = yf.download(symbol,start,end)
 df['Median_Price'] = (df['High'] + df['Low'])/2
 
 
-# In[4]:
-
-
 plt.figure(figsize=(14,8))
 plt.plot(df['Adj Close'])
 plt.plot(df['Median_Price'], color='red')
@@ -37,12 +34,7 @@ plt.show()
 
 
 # ## Candlestick with Median Price
-
-# In[5]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -50,10 +42,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[6]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -80,4 +68,4 @@ ax2.bar(df.index, df['Volume'], color=df.VolumePositive.map({True: 'g', False: '
 ax2.grid()
 ax2.set_ylabel('Volume')
 ax2.set_xlabel('Date')
-
+plt.show()

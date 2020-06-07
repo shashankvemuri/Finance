@@ -27,14 +27,7 @@ df = yf.download(symbol,start,end)
 df['ROI'] = (df['Adj Close'] - df['Adj Close'].shift(1)) / df['Adj Close'].shift(1) * 100
 
 
-# In[4]:
-
-
 df.head()
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -52,12 +45,7 @@ ax2.legend(loc='best')
 
 
 # ## Candlestick with Return On Investment (ROI)
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -66,9 +54,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc

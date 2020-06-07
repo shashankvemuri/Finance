@@ -29,14 +29,7 @@ df['Slow_%K'] = df['Fast_%K'].rolling(s).mean()
 df['Slow_%D'] = df['Slow_%K'].rolling(s).mean()
 
 
-# In[4]:
-
-
 df.head(30)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -55,15 +48,9 @@ ax2.grid()
 ax2.set_ylabel('Slow Stochastic')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Slow Stochastic
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -71,9 +58,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
@@ -104,4 +88,4 @@ ax2.grid()
 ax2.set_ylabel('Slow Stochastic')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
-
+plt.show()

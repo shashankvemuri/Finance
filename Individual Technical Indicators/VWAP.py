@@ -26,22 +26,11 @@ def VWAP(df):
     return (df['Adj Close'] * df['Volume']).sum() / df['Volume'].sum()
 
 
-# In[4]:
-
-
 n = 14
 df['VWAP'] = pd.concat([(pd.Series(VWAP(df.iloc[i:i+n]), index=[df.index[i+n]])) for i in range(len(df)-n)])
 
-
-# In[5]:
-
-
 df = df.dropna()
 df.head()
-
-
-# In[6]:
-
 
 plt.figure(figsize=(16,10))
 plt.plot(df['Adj Close'])
@@ -55,11 +44,7 @@ plt.show()
 
 # ## Candlestick with VWAP
 
-# In[7]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']
@@ -67,10 +52,6 @@ df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
 df.head()
-
-
-# In[8]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

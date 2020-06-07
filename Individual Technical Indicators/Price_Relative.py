@@ -40,27 +40,13 @@ df2 = yf.download(symbol2,start,end)
 df = pd.concat([df1['Adj Close'], df2['Adj Close']],axis=1)
 
 
-# In[4]:
-
-
 # Rename columns
 df.columns = [symbol1,symbol2]
-
-
-# In[5]:
-
 
 df['Price Relative'] = df['AAPL']/df['^GSPC']
 df['Percentage Change in Price Relative'] = ((df['Price Relative']-df['Price Relative'].shift())/df['Price Relative'].shift())*100
 
-
-# In[6]:
-
-
 df.head()
-
-
-# In[7]:
 
 
 fig = plt.figure(figsize=(14,7))
@@ -76,15 +62,9 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Price Relative')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Price Relative
-
-# In[8]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df1.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -92,10 +72,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[9]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 
@@ -120,4 +96,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Price Relative')
 ax2.set_xlabel('Date')
-
+plt.show()

@@ -22,31 +22,13 @@ end = '2019-01-01'
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 n = 12
 df['ROCR'] = (df['Adj Close']/df['Adj Close'].shift(n))
 
 
-# In[4]:
-
-
 df.head(20)
 
-
-# In[5]:
-
-
 df.tail()
-
-
-# In[6]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -67,11 +49,7 @@ ax2.legend(loc='best')
 
 # ## Candlestick with (ROCP)
 
-# In[7]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -80,10 +58,6 @@ dfc = dfc.reset_index()
 dfc['Date'] = pd.to_datetime(dfc['Date'])
 dfc['Date'] = dfc['Date'].apply(mdates.date2num)
 dfc.head()
-
-
-# In[8]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 

@@ -5,52 +5,34 @@
 
 # https://www.fmlabs.com/reference/default.htm
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
-
-# In[2]:
-
+import datetime as dt
 
 # input
 symbol = 'AAPL'
+start = dt.date.today() - dt.timedelta(days = 180)
+end = dt.date.today()
+
+# Read data 
+df = yf.download(symbol,start,end)
 start = '2018-08-01'
 end = '2018-12-31'
 
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 from math import sqrt, log
 n = 14 # Number of days
 df['Disp'] = np.sqrt(((abs(np.log(df['Adj Close']/df['Adj Close'].shift()))).rolling(n).sum())/n)
 
 
-# In[4]:
-
-
 df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -64,15 +46,9 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Dispersion')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Moving Dispersion
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -80,9 +56,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
@@ -108,4 +81,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Moving Dispersion')
 ax2.set_xlabel('Date')
-
+plt.show()

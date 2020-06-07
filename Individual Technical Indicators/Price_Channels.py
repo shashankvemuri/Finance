@@ -29,27 +29,13 @@ end = '2019-04-01'
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 df['Upper_Channel_Line'] = df['High'].rolling(20).max()
 df['Lower_Channel_Line'] = df['Low'].rolling(20).min()
 df['Centerline'] = (df['Upper_Channel_Line'] + df['Lower_Channel_Line']) / 2
 
 
-# In[4]:
-
-
 df = df.dropna()
 df.head()
-
-
-# In[5]:
-
 
 df[['Adj Close','Upper_Channel_Line','Lower_Channel_Line','Centerline']].plot(figsize=(16,10))
 plt.title('Price Channels for Stock')
@@ -58,18 +44,11 @@ plt.xlabel('Price')
 plt.ylabel('Date')
 plt.show()
 
-
-# In[6]:
-
-
 ax = df[['Adj Close','Upper_Channel_Line','Lower_Channel_Line','Centerline']].plot(figsize=(16,10))
 xtick = pd.date_range( start=df.index.min(), end=df.index.max(), freq='W')
 ax.set_xticks(xtick, minor=True )
 ax.grid('on', which='minor', axis='x')
 ax.grid('off', which='major', axis='x')
-
-
-# In[7]:
 
 
 import matplotlib.dates as mdates
@@ -93,10 +72,6 @@ ax.set_ylabel('Price')
 ax.set_xlabel('Date')
 ax.legend(loc='best')
 
-
-# In[8]:
-
-
 plt.figure(figsize=(16,10))
 plt.plot(df['Adj Close'])
 plt.plot(df['Upper_Channel_Line'], color='r')
@@ -110,12 +85,7 @@ plt.show()
 
 
 # ## Candlestick with Price Channels
-
-# In[9]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']
@@ -123,10 +93,6 @@ df = df.dropna()
 df = df.reset_index()
 df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
 df.head()
-
-
-# In[10]:
-
 
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.dates import MonthLocator, YearLocator

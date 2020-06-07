@@ -7,7 +7,6 @@ warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 from matplotlib import dates as mdates
-import datetime as dt
 import calendar
 import datetime
 

@@ -36,32 +36,14 @@ end = '2019-01-01'
 # Read data 
 df = yf.download(symbol,start,end)
 
-# View Columns
-df.head()
-
-
-# In[3]:
-
-
 df.tail()
-
-
-# In[4]:
 
 
 new_high = df['Adj Close'].rolling(52).max() # 52-week lows
 new_low = df['Adj Close'].rolling(52).min() # 52-week highs
 
-
-# In[5]:
-
-
 print("Yesterday's Value:", df['Adj Close'][-2]) # Yesterday's Value
 print("Current Value:", df['Adj Close'][-1]) # Current's Value
-
-
-# In[6]:
-
 
 new_high = new_high.dropna()
 new_low = new_low.dropna()
@@ -69,42 +51,23 @@ new_low = new_low.dropna()
 #nhnl = new_high - new_low
 
 
-# In[7]:
-
-
 # 1. Cumulative New High/Low Line
 # Today's Value = Yesterday's Value + (Today's New Highs - Today's New Lows) 
 df['CNHL'] = df['Adj Close'][1] + (new_high - new_low)
-
-
-# In[8]:
-
 
 # 2. New-High Minus New-Low Oscillator 
 # Oscillator = Today\'s New Highs – Today\'s New Lows
 df['Oscillator'] = new_high - new_low
 
-
-# In[9]:
-
-
 # 3. New High/Low Ratio
 # Ratio = Today\'s New Highs / Today\'s New Lows 
 df['Ratio'] = new_high / new_low
-
-
-# In[10]:
-
 
 # 4. Percentage of New-High to New High + New Low 
 # % New Highs = Today\'s New Highs / (Today\'s New Highs + Today\'s New Lows) 
 # % New Lows = Today\'s New Lows / (Today\'s New Highs + Today\'s New Lows) 
 df['NH'] = new_high/ (new_high + new_low)
 df['NL'] = new_high/ (new_high + new_low)
-
-
-# In[11]:
-
 
 # 5. Percentage of New Highs to Total Market 
 # % New Highs = Today\'s New Highs / Total # of Listed Stocks in Given Market 
@@ -149,7 +112,6 @@ ax3.grid()
 
 
 from matplotlib import dates as mdates
-import datetime as dt
 
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()

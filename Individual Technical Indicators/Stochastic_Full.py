@@ -31,14 +31,7 @@ df['Full_%K'] = df['Fast_%K'].rolling(s).mean()
 df['Full_%D'] = df['Full_%K'].rolling(s).mean()
 
 
-# In[4]:
-
-
 df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -57,15 +50,9 @@ ax2.grid()
 ax2.set_ylabel('Full Stochastic')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Full Stochastic
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -73,9 +60,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
@@ -106,4 +90,4 @@ ax2.grid()
 ax2.set_ylabel('Full Stochastic')
 ax2.legend(loc='best')
 ax2.set_xlabel('Date')
-
+plt.show()

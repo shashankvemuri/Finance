@@ -39,14 +39,7 @@ nvi = nvi.replace([np.inf, -np.inf], np.nan).fillna(1000)
 df['NVI'] = pd.Series(nvi)
 
 
-# In[4]:
-
-
 df.head()
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -61,15 +54,9 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Negative Volume Index')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with Negative Volume Index
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -77,9 +64,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
@@ -105,4 +89,4 @@ ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Negative Volume Index')
 ax2.set_xlabel('Date')
-
+plt.show()

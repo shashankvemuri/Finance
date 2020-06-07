@@ -32,18 +32,11 @@ df['RS'] = df['AVG_Gain']/df['AVG_Loss']
 df['RSI'] = 100 - (100/(1+df['RS']))
 
 
-# In[4]:
-
-
 # Simple way to do RSI
 import talib as ta
 
 df['RSI_ta'] = ta.RSI(df['Adj Close'], timeperiod=14)
 df.head(20)
-
-
-# In[5]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -60,15 +53,9 @@ ax2.axhline(y=30, color='red')
 ax2.grid()
 ax2.set_ylabel('RSI')
 ax2.set_xlabel('Date')
-
-
+plt.show()
 # ## Candlestick with RSI
-
-# In[6]:
-
-
 from matplotlib import dates as mdates
-import datetime as dt
 
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -76,9 +63,6 @@ dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.reset_index()
 dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
 dfc.head()
-
-
-# In[7]:
 
 
 from mplfinance.original_flavor import candlestick_ohlc
@@ -108,10 +92,6 @@ ax2.grid()
 ax2.set_ylabel('RSI')
 ax2.set_xlabel('Date')
 ax2.legend(loc='best')
-
-
-# In[8]:
-
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
