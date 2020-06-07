@@ -8,7 +8,7 @@ yf.pdr_override()
 import datetime as dt
 
 # input
-symbol = 'AAPL'
+symbol = 'FB'
 start = dt.date.today() - dt.timedelta(days = 365*3)
 end = dt.date.today()
 

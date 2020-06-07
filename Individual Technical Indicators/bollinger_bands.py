@@ -8,7 +8,7 @@ yf.pdr_override()
 import datetime as dt 
 
 # input
-symbol = 'AAPL'
+symbol = 'FB'
 start = dt.date.today() - dt.timedelta(days = 365*4)
 end = dt.date.today()
 
@@ -27,7 +27,7 @@ plt.figure()
 df[['Adj Close', 'Upper Bollinger Band','Lower Bollinger Band']].plot(figsize=(14,7))
 plt.ylabel('Price')
 plt.xlabel('Date')
-plt.title('Stock Closing Price of Bollinger BAnds')
+plt.title(f'{symbol} Bollinger Bands')
 plt.legend(loc='best')
 plt.show()
 
