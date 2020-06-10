@@ -35,8 +35,8 @@ print(round(cash_to_invest, 2))
 
 # input
 symbols = ['ZROZ','AAPL','SB']
-start = '2012-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*7)
+end = dt.datetime.now()
 
 df = pd.DataFrame()
 for s in symbols:

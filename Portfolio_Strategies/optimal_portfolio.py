@@ -6,19 +6,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.optimize import fmin
 import math
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
+import datetime as dt
+from dateutil import relativedelta
 
 # input
 symbols = ['BAC','AAPL', 'JNJ']
-start = '2012-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*7)
+end = dt.datetime.now()
 
 rf = 0.003
 
