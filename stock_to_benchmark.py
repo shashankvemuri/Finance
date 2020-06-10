@@ -177,7 +177,7 @@ def return_histogram(returns):
     ''' Plots a histogram of the returns. '''
     plt.figure(figsize=(9, 5))
     x = np.linspace(min(returns), max(returns), 100)
-    plt.hist(np.array(returns), bins=50, normed=True)
+    plt.hist(np.array(returns), bins=50, density=True)
     y = dN(x, np.mean(returns), np.std(returns))
     plt.plot(x, y, linewidth=2)
     plt.xlabel('Log Returns')

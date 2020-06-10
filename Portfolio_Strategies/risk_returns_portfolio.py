@@ -1,5 +1,3 @@
-# # Portfolio Risk and Returns
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,7 +10,6 @@ yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
 
-
 # input
 symbols = ['AAPL','MSFT','AMD','NVDA']
 start = dt.datetime.now() - dt.timedelta(days = 365*7)
@@ -22,12 +19,11 @@ df = pd.DataFrame()
 for s in symbols:
     df[s] = yf.download(s,start,end)['Adj Close']
 
-df.head()
-
 stock_rets = df.pct_change().dropna()
 
 sns.set(style='ticks')
 ax = sns.pairplot(stock_rets, diag_kind='hist')
+plt.show()
 
 nplot = len(stock_rets.columns)
 for i in range(nplot) :
@@ -50,18 +46,17 @@ sns.heatmap(corr,
         xticklabels=corr.columns,
         yticklabels=corr.columns,
             cmap="Blues")
+plt.show()
 
 # Box plot
 stock_rets.plot(kind='box')
-
 rets = stock_rets.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -74,11 +69,12 @@ rets = stock_rets.dropna()
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
 plt.title("Return vs. Risk for Stocks", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -89,16 +85,14 @@ rest_rets = rets.corr()
 pair_value = rest_rets.abs().unstack()
 pair_value.sort_values(ascending = False)
 
-
 # Normalized Returns Data
 Normalized_Value = ((rets[:] - rets[:].min()) /(rets[:].max() - rets[:].min()))
-Normalized_Value.head()
 
-Normalized_Value.corr()
+print(Normalized_Value.corr())
 
 normalized_rets = Normalized_Value.corr()
 normalized_pair_value = normalized_rets.abs().unstack()
-normalized_pair_value.sort_values(ascending = False)
+print(normalized_pair_value.sort_values(ascending = False))
 
 print("Stock returns: ")
 print(rets.mean())
@@ -109,11 +103,8 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 rf = 0.01
 table['Sharpe_Ratio'] = (table['Returns'] - rf) / table['Risk']
-table
-
+print(table)

@@ -1,11 +1,7 @@
-# # Commodity Portfolio
-
-# ## Commodity is raw material or primary agricultural product that can be bought and sold, such as copper or coffee.
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
+import scipy.stats.norm.pdf as normpdf
 import seaborn as sns
 from tabulate import tabulate
 from scipy.stats import norm
@@ -42,10 +38,9 @@ for s in symbols:
 returns = pd.DataFrame()
 for s in symbols: 
     returns[s + " Return"] = (np.log(1 + df[s].pct_change())).dropna()
-    
-returns.head(4)
 
 sns.pairplot(returns[1:])
+plt.show()
 
 # dates each bank stock had the best and worst single day returns. 
 print('Best Day Returns')
@@ -56,24 +51,23 @@ print('Worst Day Returns')
 print('-'*20)
 print(returns.idxmin())
 
-plt.figure(figsize=(17,13))
+plt.figure(figsize=(14,7))
 
 for r in returns:
     sns.kdeplot(returns.ix["2012-01-01" : "2013-12-31 "][r])
 
-returns.corr()
-
+print(returns.corr())
 
 # Heatmap for return of all the banks
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(returns.corr(), cmap="cool",linewidths=.1, annot= True)
-
 sns.clustermap(returns.corr(), cmap="Wistia",linewidths=.1, annot= True)
+plt.show()
 
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(df.corr(), cmap="hot",linewidths=.1, annot= True)
-
 sns.clustermap(df.corr(), cmap="copper",linewidths=.1, annot= True)
+plt.show()
 
 Cash = 100000
 print('Percentage of invest:')
@@ -142,10 +136,6 @@ print(portReturn)
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
 
-returns.head()
-
-returns.tail()
-
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
 print(daily_cum_ret.tail())
@@ -186,9 +176,9 @@ print("${}".format(int(-var95 * 100000)))
 mean = np.mean(returns['Portfolio'])
 std_dev = np.std(returns['Portfolio'])
 
-returns['Portfolio'].hist(bins=50, normed=True, histtype='stepfilled', alpha=0.5)
+returns['Portfolio'].hist(bins=50, density=True, histtype='stepfilled', alpha=0.5)
 x = np.linspace(mean - 3*std_dev, mean + 3*std_dev, 100)
-plt.plot(x, mlab.normpdf(x, mean, std_dev), "r")
+plt.plot(x, normpdf(x, mean, std_dev), "r")
 plt.title('Histogram of Returns')
 plt.show()
 
@@ -293,15 +283,13 @@ sns.heatmap(corr,
 
 # Box plot
 returns.plot(kind='box')
-
 rets = returns.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -313,11 +301,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -327,11 +316,8 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()) :
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 rf = 0.001
 table['Sharpe_Ratio'] = ((table['Returns'] - rf) / table['Risk']) * np.sqrt(252)
-table
-
+print(table)

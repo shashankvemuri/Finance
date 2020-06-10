@@ -1,15 +1,7 @@
-# # Long-term Investment in SPY
-
-# https://finance.yahoo.com/quote/SPY?p=SPY
-
-# If you have time, is good to invest in SPY for long-term investment.
-
-# ## SPY Market
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
+import scipy.stats.norm.pdf as normpdf
 import seaborn as sns
 from tabulate import tabulate
 import math
@@ -29,14 +21,9 @@ end = dt.datetime.now()
 # Read data 
 df = yf.download(symbol,start,end)['Adj Close']
 
-df.min()
-
-df.max()
-
 delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
-
 
 # ### Starting Cash with 100k to invest in Bonds
 Cash = 100000
@@ -56,11 +43,6 @@ Current_Value = round(shares * df.iloc[-1], 2)
 print('{}: ${}'.format(symbol, Current_Value))
 
 returns = df.pct_change().dropna()
-
-returns.head()
-
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -132,6 +114,7 @@ plt.show()
 
 # Box plot
 returns.plot(kind='box')
+plt.show()
 
 print("Stock returns: ")
 print(returns.mean())
@@ -142,7 +125,6 @@ print(returns.std())
 rf = 0.001
 Sharpe_Ratio = ((returns.mean() - rf) / returns.std()) * np.sqrt(252)
 print('Sharpe Ratio: ', Sharpe_Ratio)
-
 
 # ### Value-at-Risk 99% Confidence
 # 99% confidence interval
@@ -159,7 +141,6 @@ print("{:.1f}%".format(-var_1_perc*100))
 
 print('Value-at-Risk of 99% for 100,000 investment')
 print("${}".format(int(-var99 * 100000)))
-
 
 # ### Value-at-Risk 95% Confidence
 # 95% confidence interval
@@ -180,9 +161,9 @@ print("${}".format(int(-var95 * 100000)))
 mean = np.mean(returns)
 std_dev = np.std(returns)
 
-returns.hist(bins=50, normed=True, histtype='stepfilled', alpha=0.5)
+returns.hist(bins=50, density=True, histtype='stepfilled', alpha=0.5)
 x = np.linspace(mean - 3*std_dev, mean + 3*std_dev, 100)
-plt.plot(x, mlab.normpdf(x, mean, std_dev), "r")
+plt.plot(x, normpdf(x, mean, std_dev), "r")
 plt.title('Histogram of Returns')
 plt.show()
 
@@ -191,4 +172,3 @@ VaR_95 = norm.ppf(1-0.95, mean, std_dev)
 VaR_99 = norm.ppf(1-0.99, mean, std_dev)
 
 print(tabulate([['90%', VaR_90], ['95%', VaR_95], ['99%', VaR_99]], headers=['Confidence Level', 'Value at Risk']))
-

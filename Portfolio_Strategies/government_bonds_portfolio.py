@@ -16,7 +16,6 @@ yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
 
-
 # input
 symbols = ['SHY','ITE','VGLT','SPIP']
 start = dt.datetime.now() - dt.timedelta(days = 365*8)
@@ -25,14 +24,9 @@ end = dt.datetime.now()
 # Read data 
 df = yf.download(symbols,start,end)['Adj Close']
 
-df.min()
-
-df.max()
-
 delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
-
 
 # ### Starting Cash with 100k to invest in Bonds
 Cash = 100000
@@ -77,7 +71,6 @@ print('Total Value: $%s' % round(sum(result),2))
 returns = df.pct_change()
 returns = returns.dropna()
 
-
 # Calculate mean returns
 meanDailyReturns = returns.mean()
 print(meanDailyReturns)
@@ -101,10 +94,6 @@ print(portReturn)
 
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
-
-returns.head()
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -205,18 +194,17 @@ sns.heatmap(corr,
         xticklabels=corr.columns,
         yticklabels=corr.columns,
             cmap="Blues")
+plt.show()
 
 # Box plot
 returns.plot(kind='box')
-
 rets = returns.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -228,11 +216,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -248,11 +237,8 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 rf = 0.001
 table['Sharpe_Ratio'] = ((table['Returns'] - rf) / table['Risk']) * np.sqrt(252)
-table
-
+print(table)
