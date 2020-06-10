@@ -14,19 +14,15 @@ yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
 
-
 # input
 symbols = ['BAC','WFC','MS','C']
-start = '2010-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*10)
+end = dt.datetime.now()
 
 # Read data 
 df = yf.download(symbols,start,end)['Adj Close']
 
-
-d1 = dt.datetime.strptime(str(start), "%Y-%m-%d")
-d2 = dt.datetime.strptime(str(end), "%Y-%m-%d")
-delta = relativedelta.relativedelta(d2,d1)
+delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
 

@@ -16,15 +16,14 @@ from dateutil import relativedelta
 # input
 # Machine Learning Stock
 symbols = ['GOOGL','MSFT','FB','AMZN','NFLX','CRM','ADBE','MTCH','IAC','TTD','FIVN','V','MA','PANW','IBM','FTNT','NVDA','INTC','CUB','IBM','ACN','EPAM']
-start = '2017-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*2)
+end = dt.datetime.now()
 
 df = pd.DataFrame()
 for s in symbols:
     df[s] = yf.download(s,start,end)['Adj Close']
-d1 = dt.datetime.strptime(str(start), "%Y-%m-%d")
-d2 = dt.datetime.strptime(str(end), "%Y-%m-%d")
-delta = relativedelta.relativedelta(d2,d1)
+
+delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
 

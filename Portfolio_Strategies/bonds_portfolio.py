@@ -15,28 +15,20 @@ import seaborn as sns
 from tabulate import tabulate
 from scipy.stats import norm
 import math 
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
+import datetime as dt
 
 
 # input
 symbols = ['SPY','FIHBX','FBTAX','DBC']
-start = '2014-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*5)
+end = dt.datetime.now()
 
 # Read data 
 dataset = yf.download(symbols,start,end)['Adj Close']
-
-# View Columns
-dataset.head()
-
-dataset.tail()
-
 
 # ### Starting Cash with 100k to invest in Bonds
 Cash = 100000

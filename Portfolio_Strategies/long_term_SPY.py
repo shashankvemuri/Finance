@@ -14,31 +14,26 @@ import seaborn as sns
 from tabulate import tabulate
 import math
 from scipy.stats import norm
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
 import yfinance as yf
 yf.pdr_override()
-
+import datetime as dt
+from dateutil import relativedelta
 
 # input
 symbol = 'SPY'
-start = '2007-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*12)
+end = dt.datetime.now()
 
 # Read data 
 df = yf.download(symbol,start,end)['Adj Close']
 
-
-
 df.min()
 
 df.max()
-d1 = dt.datetime.strptime(str(start), "%Y-%m-%d")
-d2 = dt.datetime.strptime(str(end), "%Y-%m-%d")
-delta = relativedelta.relativedelta(d2,d1)
+
+delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
 

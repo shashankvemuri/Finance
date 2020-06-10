@@ -16,17 +16,16 @@ from dateutil import relativedelta
 # input
 # Big Data Stock
 symbols = ['SPLK','NEWR','AYX','DOMO','ESTC','CLDR','TLND','YEXT','HDP','ORCL','MDB']
-start = '2018-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365)
+end = dt.datetime.now()
 
 df = yf.download(symbols,start,end)['Adj Close']
 
 #df = pd.DataFrame()
 #for s in symbols:
 #    df[s] = yf.download(s,start,end)['Adj Close']
-d1 = dt.datetime.strptime(str(start), "%Y-%m-%d")
-d2 = dt.datetime.strptime(str(end), "%Y-%m-%d")
-delta = relativedelta.relativedelta(d2,d1)
+
+delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
 
