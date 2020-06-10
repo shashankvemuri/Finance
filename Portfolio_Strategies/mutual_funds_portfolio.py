@@ -23,17 +23,11 @@ from dateutil import relativedelta
 
 # input
 symbols = ['SPY','FIHBX','FBTAX','DBC']
-start = '2014-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*5)
+end = dt.datetime.now()
 
 # Read data 
 dataset = yf.download(symbols,start,end)['Adj Close']
-
-# View Columns
-dataset.head()
-
-dataset.tail()
-
 
 # ## Starting Cash with 100k to invest in Mutual Funds
 Cash = 100000

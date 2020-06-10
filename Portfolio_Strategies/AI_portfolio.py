@@ -19,9 +19,7 @@ df = pd.DataFrame()
 for s in symbols:
     df[s] = yf.download(s,start,end)['Adj Close']
 
-d1 = dt.datetime.strptime(str(start), "%Y-%m-%d")
-d2 = dt.datetime.strptime(str(end), "%Y-%m-%d")
-delta = relativedelta.relativedelta(d2,d1)
+delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
 

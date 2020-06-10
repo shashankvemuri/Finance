@@ -15,8 +15,8 @@ from dateutil import relativedelta
 
 # input
 symbols = ['AAPL','MSFT','AMD','NVDA']
-start = '2012-01-01'
-end = '2019-09-11'
+start = dt.datetime.now() - dt.timedelta(days = 365*7)
+end = dt.datetime.now()
 
 df = pd.DataFrame()
 for s in symbols:

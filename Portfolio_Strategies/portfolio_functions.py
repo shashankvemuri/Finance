@@ -18,8 +18,8 @@ def get_historical_price(ticker, start_date, end_date):
     return df
 
 symbols = ['FB','JNJ','LMT']
-start = '2012-01-01'
-end = '2019-01-01'
+start = dt.datetime.now() - dt.timedelta(days = 365*7)
+end = dt.datetime.now()
 
 closes = get_historical_price(symbols, start, end)
 
