@@ -1,16 +1,7 @@
-# # Bonds Portfolio
-
-# http://www.buschinvestments.com/Types-of-Bonds.c71.htm
-
-# Treasury Securities  
-# Municipal Bonds  
-# Corporate Bonds  
-# Zero-Coupon Bonds  
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
+import scipy.stats.norm.pdf as normpdf
 import seaborn as sns
 from tabulate import tabulate
 from scipy.stats import norm
@@ -84,7 +75,6 @@ print(stdDailyReturns)
 # Define weights for the portfolio
 weights = np.array([0.50, 0.10, 0.20, 0.20])
 
-
 # Calculate the covariance matrix on daily returns
 cov_matrix = (returns.cov())*250
 print (cov_matrix)
@@ -97,10 +87,6 @@ print(portReturn)
 
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
-
-returns.head()
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -139,9 +125,9 @@ print("${}".format(int(-var95 * 100000)))
 mean = np.mean(returns['Portfolio'])
 std_dev = np.std(returns['Portfolio'])
 
-returns['Portfolio'].hist(bins=50, normed=True, histtype='stepfilled', alpha=0.5)
+returns['Portfolio'].hist(bins=50, density=True, histtype='stepfilled', alpha=0.5)
 x = np.linspace(mean - 3*std_dev, mean + 3*std_dev, 100)
-plt.plot(x, mlab.normpdf(x, mean, std_dev), "r")
+plt.plot(x, normpdf(x, mean, std_dev), "r")
 plt.title('Histogram of Returns')
 plt.show()
 
@@ -258,6 +244,7 @@ plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -269,11 +256,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk for Bonds Portfolio", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -289,11 +277,8 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 rf = 0.01
 table['Sharpe_Ratio'] = (table['Returns'] - rf) / table['Risk']
-table
-
+print (table)

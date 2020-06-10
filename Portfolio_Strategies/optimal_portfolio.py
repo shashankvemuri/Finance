@@ -1,5 +1,3 @@
-# # Constructing an Optimal Portfolio
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,7 +12,7 @@ import datetime as dt
 from dateutil import relativedelta
 
 # input
-symbols = ['BAC','AAPL', 'JNJ']
+symbols = ['FB','AAPL', 'MRK']
 start = dt.datetime.now() - dt.timedelta(days = 365*7)
 end = dt.datetime.now()
 
@@ -74,4 +72,3 @@ print('Optimal weights:')
 print(final_weight)
 print('Sharpe ratio:')
 print(round(final_sharpe,4))
-

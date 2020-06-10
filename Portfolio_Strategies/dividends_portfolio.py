@@ -42,9 +42,8 @@ returns = pd.DataFrame()
 for s in symbols: 
     returns[s + " Return"] = (np.log(1 + df[s].pct_change())).dropna()
     
-returns.head(4)
-
 sns.pairplot(returns[1:])
+plt.show()
 
 # dates each bank stock had the best and worst single day returns. 
 print('Best Day Returns')
@@ -55,24 +54,23 @@ print('Worst Day Returns')
 print('-'*20)
 print(returns.idxmin())
 
-plt.figure(figsize=(17,13))
+plt.figure(figsize=(14,7))
 
 for r in returns:
     sns.kdeplot(returns.ix["2011-01-01" : "2011-12-31 "][r])
 
-returns.corr()
-
+print(returns.corr())
 
 # Heatmap for return of all the banks
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(returns.corr(), cmap="cool",linewidths=.1, annot= True)
-
 sns.clustermap(returns.corr(), cmap="Wistia",linewidths=.1, annot= True)
+plt.show()
 
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(df.corr(), cmap="hot",linewidths=.1, annot= True)
-
 sns.clustermap(df.corr(), cmap="copper",linewidths=.1, annot= True)
+plt.show()
 
 Cash = 100000
 print('Percentage of invest:')
@@ -114,12 +112,10 @@ for i, x, y, z in zip(df.columns, percent_invest, df.iloc[0], df.iloc[-1]):
 print('Total Value: $%s' % round(sum(result),2))
 
 stock = yfd.Tickers('ALX BLK SPG LMT')
-stock
-
-s1_dividend = stock.ALX.dividends['2007-01-01':].sum()
-s2_dividend = stock.BLK.dividends['2007-01-01':].sum()
-s3_dividend = stock.SPG.dividends['2007-01-01':].sum()
-s4_dividend = stock.LMT.dividends['2007-01-01':].sum()
+s1_dividend = stock.ALX.dividends[str(start):].sum()
+s2_dividend = stock.BLK.dividends[str(start):].sum()
+s3_dividend = stock.SPG.dividends[str(start):].sum()
+s4_dividend = stock.LMT.dividends[str(start):].sum()
 
 data = [s1_dividend, s2_dividend, s3_dividend, s4_dividend]
 
@@ -149,4 +145,3 @@ print('Total Dividends: $%s' % round(sum(dividend),2))
 
 print('Total Money: $%s' % round((sum(dividend) + sum(result)),2))
 print('Total Profit: $%s' % (round((sum(dividend) + sum(result)),2) - Cash))
-

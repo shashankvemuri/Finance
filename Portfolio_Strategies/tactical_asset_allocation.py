@@ -1,7 +1,3 @@
-# # Tactical Asset Allocation
-
-# https://www.investopedia.com/terms/t/tacticalassetallocation.asp
-
 # ### Tactical Asset Allocation (TAA) Basics 
 # Cash = 10%  
 # Bonds = 35%  
@@ -25,7 +21,6 @@ yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
 
-
 Cash = 100000.00
 Cash_5 = Cash * 0.05
 
@@ -42,20 +37,12 @@ df = pd.DataFrame()
 for s in symbols:
     df[s] = yf.download(s,start,end)['Adj Close']
 
-df.head()
-
-df.tail()
-
 print('Percentage of invest:')
 percent_invest = [0.35, 0.45, 0.15]
 names = ['Bonds', 'Stocks', 'Commodities']
 for i, x in zip(names, percent_invest):
     cost = x * cash_to_invest
     print('{}: {}'.format(i, cost))
-
-df.iloc[0]
-
-df.ix[-1]
 
 print('Number of Shares:')
 percent_invest = [0.35, 0.45, 0.15]
@@ -71,7 +58,6 @@ for i, x, y in zip(df.columns, percent_invest, df.iloc[0]):
     shares = int(cost/y)
     Begin_Value = round(shares * y, 2)
     print('{}: ${}'.format(i, Begin_Value))
-
 
 print('Current Value:')
 percent_invest = [0.35, 0.45, 0.15]
@@ -117,10 +103,6 @@ print(portReturn)
 
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
-
-returns.head()
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -221,18 +203,17 @@ sns.heatmap(corr,
         xticklabels=corr.columns,
         yticklabels=corr.columns,
             cmap="Reds")
+plt.show()
 
 # Box plot
 returns.plot(kind='box')
-
 rets = returns.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -244,11 +225,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -264,11 +246,8 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 rf = 0.01
 table['Sharpe_Ratio'] = (table['Returns'] - rf) / table['Risk']
-table
-
+print(table)

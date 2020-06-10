@@ -26,7 +26,7 @@ print('%s years' % delta.years)
 number_of_years = delta.years
 days = (df.index[-1] - df.index[0]).days
 
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(df)
 plt.title('Artificial Intelligence Stocks Closing Price')
 plt.legend(labels=df.columns)
@@ -43,13 +43,13 @@ plt.show()
 
 stock_rets = df.pct_change().dropna()
 
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(stock_rets)
 plt.title('Artificial Intelligence Stocks Returns')
 plt.legend(labels=stock_rets.columns)
 plt.show()
 
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(stock_rets.cumsum())
 plt.title('Artificial Intelligence Stocks Returns Cumulative Sum')
 plt.legend(labels=stock_rets.columns)
@@ -86,7 +86,7 @@ plt.show()
 stock_rets.plot(kind='box',figsize=(12,8))
 rets = stock_rets.dropna()
 
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
 
 plt.title('Stocks Risk & Returns')
@@ -106,7 +106,7 @@ rets = stock_rets.dropna()
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)

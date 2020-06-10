@@ -1,7 +1,3 @@
-# # Bank Portfolio
-
-# ## Invest in Bank Stocks
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -40,9 +36,8 @@ returns = pd.DataFrame()
 for s in symbols: 
     returns[s + " Return"] = (np.log(1 + df[s].pct_change())).dropna()
     
-returns.head(4)
-
 sns.pairplot(returns[1:])
+plt.show()
 
 # dates each bank stock had the best and worst single day returns. 
 print('Best Day Returns')
@@ -53,20 +48,20 @@ print('Worst Day Returns')
 print('-'*20)
 print(returns.idxmin())
 
-plt.figure(figsize=(17,13))
+plt.figure(figsize=(14,7))
 
 for r in returns:
     sns.kdeplot(returns.ix["2011-01-01" : "2011-12-31 "][r])
-
-returns.corr()
+    plt.show()
+print(returns.corr())
 
 # Heatmap for return of all the banks
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(returns.corr(), cmap="cool",linewidths=.1, annot= True)
 
 sns.clustermap(returns.corr(), cmap="Wistia",linewidths=.1, annot= True)
 
-plt.figure(figsize=(15,10))
+plt.figure(figsize=(14,7))
 sns.heatmap(df.corr(), cmap="hot",linewidths=.1, annot= True)
 
 sns.clustermap(df.corr(), cmap="copper",linewidths=.1, annot= True)
