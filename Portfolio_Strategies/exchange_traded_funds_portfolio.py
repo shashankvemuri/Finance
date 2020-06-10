@@ -1,15 +1,3 @@
-# # Exchange-traded funds (ETFs)
-
-# https://www.fool.com/investing/etf/2017/07/31/what-types-of-etfs-are-best-for-you.aspx  
-
-# Broad-market ETFs  
-# Sector ETFs  
-# Dividend ETFs  
-# Style-based ETFs  
-# Commodity ETFs  
-# Currency ETFs  
-# Bond ETFs  
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,7 +9,6 @@ import yfinance as yf
 yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
-
 
 # input
 symbols = ['SPY','FIHBX','FBTAX','DBC']
@@ -85,7 +72,6 @@ print(stdDailyReturns)
 # Define weights for the portfolio
 weights = np.array([0.25, 0.25, 0.25, 0.25])
 
-
 # Calculate the covariance matrix on daily returns
 cov_matrix = (returns.cov())*250
 print (cov_matrix)
@@ -98,10 +84,6 @@ print(portReturn)
 
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
-
-returns.head()
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -202,18 +184,17 @@ sns.heatmap(corr,
         xticklabels=corr.columns,
         yticklabels=corr.columns,
             cmap="Blues")
+plt.show()
 
 # Box plot
 returns.plot(kind='box')
-
 rets = returns.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -225,11 +206,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -245,7 +227,5 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
-
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))

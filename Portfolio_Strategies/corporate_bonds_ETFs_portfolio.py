@@ -1,9 +1,3 @@
-# # Corporate Bonds ETFs Portfolio
-
-# http://www.buschinvestments.com/Types-of-Bonds.c71.htm
-
-#  ## Corporate Bonds  
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,7 +10,6 @@ yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
 
-
 # input
 symbols = ['LQD','VCIT','VCSH','FLOT', 'IGIB']
 start = dt.datetime.now() - dt.timedelta(days = 365*7)
@@ -25,12 +18,9 @@ end = dt.datetime.now()
 # Read data 
 df = yf.download(symbols,start,end)['Adj Close']
 
-
-
 delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
 print('%s years' % delta.years)
-
 
 # ### Starting Cash with 100k to invest in Bonds
 Cash = 100000
@@ -84,7 +74,6 @@ print(meanDailyReturns)
 stdDailyReturns = returns.std()
 print(stdDailyReturns)
 
-
 # Define weights for the portfolio
 weights = np.array([0.20, 0.20, 0.20, 0.20, 0.20])
 
@@ -100,10 +89,6 @@ print(portReturn)
 
 # Create portfolio returns column
 returns['Portfolio'] = returns.dot(weights)
-
-returns.head()
-
-returns.tail()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
@@ -204,18 +189,17 @@ sns.heatmap(corr,
         xticklabels=corr.columns,
         yticklabels=corr.columns,
             cmap="Blues")
+plt.show()
 
 # Box plot
 returns.plot(kind='box')
-
 rets = returns.dropna()
-
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -227,11 +211,12 @@ for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
-plt.title("Return vs. Risk for Core and Satellite", fontsize=20)
+plt.title("Return vs. Risk", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -247,16 +232,11 @@ print(rets.std())
 table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
-table.sort_values(by='Returns')
-
-table.sort_values(by='Risk')
+print(table.sort_values(by='Returns'))
+print(table.sort_values(by='Risk'))
 
 table['Sharpe_Ratio'] = (table['Returns'] / table['Risk']) * np.sqrt(252)
-table
-
-
-# In[ ]:
-
+print(table)
 
 print('Sortino Ratio:')
 for column in rets:
@@ -270,10 +250,3 @@ for column in rets:
     else:
         print('none')
     print(rets[column].name, sortino_ratio)
-
-
-# In[ ]:
-
-
-
-

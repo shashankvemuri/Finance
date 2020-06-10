@@ -1,5 +1,3 @@
-# # Machine Learning Portfolio Risk and Returns
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,7 +9,6 @@ import yfinance as yf
 yf.pdr_override()
 import datetime as dt
 from dateutil import relativedelta
-
 
 # input
 # Machine Learning Stock
@@ -30,14 +27,12 @@ print('%s years' % delta.years)
 number_of_years = delta.years
 
 days = (df.index[-1] - df.index[0]).days
-days
 
-df.head()
-
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(df)
 plt.title('Machine Learning Stocks Closing Price')
 plt.legend(labels=df.columns)
+plt.show()
 
 # Normalize the data
 normalize = (df - df.min())/ (df.max() - df.min())
@@ -46,22 +41,25 @@ plt.figure(figsize=(18,12))
 plt.plot(normalize)
 plt.title('Machine Learning Stocks Normalize')
 plt.legend(labels=normalize.columns)
+plt.show()
 
 stock_rets = df.pct_change().dropna()
 
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(stock_rets)
 plt.title('Machine Learning Stocks Returns')
 plt.legend(labels=stock_rets.columns)
+plt.show()
 
-
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.plot(stock_rets.cumsum())
 plt.title('Machine Learning Stocks Returns Cumulative Sum')
 plt.legend(labels=stock_rets.columns)
+plt.show()
 
 sns.set(style='ticks')
 ax = sns.pairplot(stock_rets, diag_kind='hist')
+plt.show()
 
 nplot = len(stock_rets.columns)
 for i in range(nplot) :
@@ -87,16 +85,14 @@ sns.heatmap(corr,
 
 # Box plot
 stock_rets.plot(kind='box',figsize=(12,8))
-
 rets = stock_rets.dropna()
-
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(),alpha = 0.5)
-
 plt.title('Stocks Risk & Returns')
 plt.xlabel('Expected returns')
 plt.ylabel('Risk')
 plt.grid(which='major')
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()):
     plt.annotate(
@@ -109,11 +105,12 @@ rets = stock_rets.dropna()
 area = np.pi*20.0
 
 sns.set(style='darkgrid')
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(14,7))
 plt.scatter(rets.mean(), rets.std(), s=area)
 plt.xlabel("Expected Return", fontsize=15)
 plt.ylabel("Risk", fontsize=15)
 plt.title("Return vs. Risk for Stocks", fontsize=20)
+plt.show()
 
 for label, x, y in zip(rets.columns, rets.mean(), rets.std()) : 
     plt.annotate(label, xy=(x,y), xytext=(50, 0), textcoords='offset points',
@@ -126,9 +123,8 @@ pair_value.sort_values(ascending = False)
 
 # Normalized Returns Data
 Normalized_Value = ((rets[:] - rets[:].min()) /(rets[:].max() - rets[:].min()))
-Normalized_Value.head()
 
-Normalized_Value.corr()
+print(Normalized_Value.corr())
 
 normalized_rets = Normalized_Value.corr()
 normalized_pair_value = normalized_rets.abs().unstack()
@@ -144,30 +140,17 @@ table = pd.DataFrame()
 table['Returns'] = rets.mean()
 table['Risk'] = rets.std()
 table.sort_values(by='Returns')
-
 table.sort_values(by='Risk')
-
 rf = 0.01
 table['Sharpe Ratio'] = (table['Returns'] - rf) / table['Risk']
-table
-
 table['Max Returns'] = rets.max()
-
 table['Min Returns'] = rets.min()
-
 table['Median Returns'] = rets.median()
-
 total_return = stock_rets[-1:].transpose()
 table['Total Return'] = 100 * total_return
-table
-
 table['Average Return Yearly'] = (1 + total_return)**(1 / number_of_years) - 1
-table
-
 initial_value = df.iloc[0]
 ending_value = df.iloc[-1]
 table['CAGR'] = ((ending_value / initial_value) ** (252.0 / days)) -1
-table
-
 table.sort_values(by='Average Return Yearly')
-
+print(table)

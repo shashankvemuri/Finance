@@ -169,14 +169,6 @@ mpf.plot(df, type = 'ohlc',figratio=(16,6), mav=(short_sma,long_sma),
          volume=True, title= str(stock), style='default')
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
 
 
 
