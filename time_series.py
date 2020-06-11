@@ -24,9 +24,9 @@ df = df.reset_index().rename(columns={'Date':'ds', 'Adj Close':'y'})
 df['y'] = pd.DataFrame(np.log(df['y']))
 
 # plot data
-ax = df['y'].plot(color='#006699');
-ax.set_ylabel('Price');
-ax.set_xlabel('Date');
+ax = df['y'].plot(color='#006699')
+ax.set_ylabel('Price')
+ax.set_xlabel('Date')
 plt.show()
 
 # train test split
@@ -57,7 +57,7 @@ forecast = mdl.predict(future)
 print (forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
 print (forecast['yhat_lower'].head())
 
-mdl.plot(forecast);
+mdl.plot(forecast)
 plt.show()
 
 # plot time series components
@@ -73,8 +73,8 @@ y_true = np.exp(df['y'])
 mse = ((y_hat - y_true) ** 2).mean()
 print('Prediction quality: {:.2f} MSE ({:.2f} RMSE)'.format(mse, math.sqrt(mse)))
 
-plt.plot(y_true, label='Original', color='#006699');
-plt.plot(y_hat, color='#ff0066', label='Forecast');
-plt.ylabel('Price');
-plt.xlabel('Date');
+plt.plot(y_true, label='Original', color='#006699')
+plt.plot(y_hat, color='#ff0066', label='Forecast')
+plt.ylabel('Price')
+plt.xlabel('Date')
 plt.show()

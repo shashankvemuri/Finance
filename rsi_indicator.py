@@ -38,6 +38,7 @@ with tqdm(total=len(tickers), desc="RSI Indicator", bar_format="{l_bar}{bar} [ t
             continue
         
         pbar.update(1)
+        print ('\n')
         print ('-'*50)
 
 print (oversold)
