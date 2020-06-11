@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 
 # define time range 
-start = dt.date.today() - dt.timedelta(days = 365*10)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.datetime.now()
 
-stock='NIO'
+stock='CLDX'
 
 df = yf.download(stock,start, end, interval='1d')
 
@@ -102,4 +102,5 @@ print("Batting Avg: "+ str(batAvg))
 
 mpf.plot(df, type = 'ohlc',figratio=(14,7), mav=(short_sma,long_sma), 
          volume=True, title= str(stock), style='default')
+
 plt.show()
