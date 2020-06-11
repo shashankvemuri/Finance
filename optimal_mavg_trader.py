@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 
 # define time range 
-start = dt.date.today() - dt.timedelta(days = 365)
+start = dt.date.today() - dt.timedelta(days = 365*10)
 end = dt.datetime.now()
 
-stock='CLDX'
+stock='NFLX'
 
 df = yf.download(stock,start, end, interval='1d')
 
