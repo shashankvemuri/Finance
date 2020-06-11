@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# ## Moving Average Strategy Test
-
-# In this work, we will extract specific stock symbol data from Yahoo Finance and elaborate moving average strategy test. Let's first define the stategy. Moving average can be simple or exponential average of stock price in specific range of time such as 20, 50 or 200. Based on your favorite time interval, this can be minutes, days, weeks or even months. Relative position of moving averages can be sign of buying or selling signal.
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -15,55 +5,21 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 
-
-# In[83]:
-
-
 # define time range 
-start = '2016-01-01' # format: YYYY-MM-DD
-end = dt.datetime.now() # today
+start = dt.date(2016,1,1)
+end = dt.datetime.now()
 
-
-# In[84]:
-
-
-# favorite stock symbol 
 stock='AMD'
 
-
-# In[85]:
-
-
 df = yf.download(stock,start, end, interval='1d')
-df.head() 
-
-
-# #### Moving Average Calculation
-
-# In[96]:
-
 
 # Let's calulate Simple Moving Average(SMA)
 short_sma= 20
 long_sma = 50
 SMAs=[short_sma, long_sma]
 
-
-# In[97]:
-
-
 for i in SMAs:
     df["SMA_"+str(i)]= df.iloc[:,4].rolling(window=i).mean()
-
-
-# In[98]:
-
-
-df.tail(3)
-
-
-# In[99]:
-
 
 position=0 # 1 means we have already entered poistion, 0 means not already entered
 counter=0
@@ -98,14 +54,6 @@ for i in df.index:
     counter+=1
 print(percentChange)
             
-            
-
-
-# ### Statistics
-
-# In[90]:
-
-
 gains=0
 numGains=0
 losses=0
@@ -122,11 +70,7 @@ for i in percentChange:
 totReturn=round((totReturn-1)*100,2)
 print("This statistics is from "+str(df.index[0])+" up to now with "+str(numGains+numLosses)+" trades:")
 print("SMAs used: "+str(SMAs))
-print("Total return over "+str(numGains+numLosses)+ " trades: "+ str(totReturn)+"%" )
-
-
-# In[91]:
-
+print("Total return over "+str(numGains+numLosses)+ " trades: "+ str(totReturn)+"%")
 
 if (numGains>0):
     avgGain=gains/numGains
@@ -149,26 +93,12 @@ print("Max Return: "+ maxReturn)
 print("Max Loss: "+ maxLoss)
 print("Gain/loss ratio: "+ ratioRR)
 
-
-# In[92]:
-
-
 if(numGains>0 or numLosses>0):
     batAvg=numGains/(numGains+numLosses)
 else:
     batAvg=0
 print("Batting Avg: "+ str(batAvg))
 
-
-# #### Plotting
-
-# In[95]:
-
-
 mpf.plot(df, type = 'ohlc',figratio=(16,6), mav=(short_sma,long_sma), 
          volume=True, title= str(stock), style='default')
-
-
-
-
-
+plt.show()
