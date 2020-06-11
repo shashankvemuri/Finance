@@ -42,7 +42,7 @@ otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma
 
 for stock in stocklist:
     #n += 1
-    time.sleep(.5)
+    time.sleep(1.5)
     
     print ("\npulling {}".format(stock))
     # rsi value
