@@ -15,7 +15,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 
 warnings.filterwarnings('ignore')
-plt.style.use('fivethirtyeight')
 
 ticker = 'TSLA'
 start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
