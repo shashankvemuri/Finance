@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 
 # define time range 
-start = dt.date(2016,1,1)
+start = dt.date.today() - dt.timedelta(days = 365*10)
 end = dt.datetime.now()
 
-stock='AMD'
+stock='NIO'
 
 df = yf.download(stock,start, end, interval='1d')
 
@@ -34,20 +34,20 @@ for i in df.index:
         if(position==0):
             buyP=close   #buy price
             position=1   # turn position
-            print("Buy at the price"+str(buyP))
+            print("Buy at the price: "+str(buyP))
         
     elif(SMA_short[i] < SMA_long[i]):
         print('Down trend')
         if(position==1):   # have a poistion in down trend
             position=0     # selling position
             sellP=close    # sell price
-            print("Sell at the price"+str(sellP))
+            print("Sell at the price: "+str(sellP))
             perc=(sellP/buyP-1)*100
             percentChange.append(perc)
     if(counter==df["Adj Close"].count()-1 and position==1):
         position=0
         sellP=close
-        print("Sell at the price"+str(sellP))
+        print("Sell at the price: "+str(sellP))
         perc=(sellP/buyP-1)*100
         percentChange.append(perc)
 
@@ -87,6 +87,7 @@ else:
     avgLoss=0
     maxLoss='unknown'
     ratioRR='inf'
+
 print("Average Gain: "+ str(avgGain))
 print("Average Loss: "+ str(avgLoss))
 print("Max Return: "+ maxReturn)
@@ -99,6 +100,6 @@ else:
     batAvg=0
 print("Batting Avg: "+ str(batAvg))
 
-mpf.plot(df, type = 'ohlc',figratio=(16,6), mav=(short_sma,long_sma), 
+mpf.plot(df, type = 'ohlc',figratio=(14,7), mav=(short_sma,long_sma), 
          volume=True, title= str(stock), style='default')
 plt.show()

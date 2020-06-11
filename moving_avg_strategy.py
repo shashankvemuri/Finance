@@ -8,7 +8,7 @@ yf.pdr_override()
 import datetime as dt
 
 # input
-symbol = 'AAPL'
+symbol = 'NIO'
 start = dt.date.today() - dt.timedelta(days = 365*10)
 end = dt.date.today()
 
@@ -31,7 +31,7 @@ ax.set_ylabel('Price')
 ax.set_title('Big Three Trading Strategy')
 
 new_dates = df['2019-01-01':'2020-06-05']
-new_dates.head()
+print(new_dates.head())
 
 plt.figure(figsize=(16,10))
 plt.plot(new_dates['Adj Close'], label='Price')
