@@ -1,4 +1,4 @@
-chromedriver
+chromedriver.exe
 spxTickers.pickle
 keras_sentiment_model/input/glove.6B.50d.txt
 keras_sentiment_model/input/RedditNews.csv
