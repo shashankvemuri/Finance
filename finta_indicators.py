@@ -90,7 +90,7 @@ end = datetime.date.today()
 show_price = True
 
 stock = 'NIO'
-indicators = ['BBANDS']
+indicators = ['RSI']
 
 stock = stock.upper()
 indicators = [x.upper() for x in indicators]
@@ -107,7 +107,7 @@ ohlc = pd.DataFrame(list(zip(opens, highs, lows, closes, volumes)), columns = ["
 
 if show_price == True:
     plt.plot(ohlc.close)
-    plt.plot(TA.BBANDS(ohlc))
+    plt.plot(TA.RSI(ohlc))
     indicators.insert(0, 'Close Price')
     plt.legend(labels = [x for x in indicators], loc="best")
     plt.title(f'{stock} Indicators')
