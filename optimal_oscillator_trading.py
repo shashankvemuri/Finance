@@ -82,8 +82,11 @@ else:
     maxLoss='unknown'
     ratioRR='inf'
 
-print("Average Gain: "+ str(avgGain))
-print("Average Loss: "+ str(avgLoss))
+df['PC'] = df['Close'].pct_change()
+hold = round(df['PC'].sum() * 100, 2)
+print ("Total return for a B&H strategy: " + str(hold)+'%')
+print("Average Gain: "+ str(round(avgGain, 2)))
+print("Average Loss: "+ str(round(avgLoss, 2)))
 print("Max Return: "+ maxReturn)
 print("Max Loss: "+ maxLoss)
 print("Gain/loss ratio: "+ ratioRR)

@@ -5,12 +5,13 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 from finta import TA
+from pylab import rcParams
 
 # define time range 
 start = dt.date.today() - dt.timedelta(days = 365*10)
 end = dt.datetime.now()
 
-stock='NFLX'
+stock='AAPL'
 
 df = yf.download(stock,start, end, interval='1d')
 
@@ -89,8 +90,11 @@ else:
     maxLoss='unknown'
     ratioRR='inf'
 
-print("Average Gain: "+ str(avgGain))
-print("Average Loss: "+ str(avgLoss))
+df['PC'] = df['Close'].pct_change()
+hold = round(df['PC'].sum() * 100, 2)
+print ("Total return for a B&H strategy: " + str(hold)+'%')
+print("Average Gain: "+ str(round(avgGain, 2)))
+print("Average Loss: "+ str(round(avgLoss, 2)))
 print("Max Return: "+ maxReturn)
 print("Max Loss: "+ maxLoss)
 print("Gain/loss ratio: "+ ratioRR)
@@ -103,5 +107,5 @@ print("Batting Avg: "+ str(batAvg))
 
 mpf.plot(df, type = 'ohlc',figratio=(14,7), mav=(short_sma,long_sma), 
          volume=True, title= str(stock), style='default')
-
+rcParams['figure.figsize'] = 15,10
 plt.show()
