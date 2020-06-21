@@ -9,15 +9,11 @@ from sklearn import preprocessing
 from pandas_datareader import DataReader
 from yahoo_fin import stock_info as si      
 import pandas as pd
-from pypfopt.efficient_frontier import EfficientFrontier
-from pypfopt import risk_models
-from pypfopt import expected_returns
 
 pd.set_option('display.max_rows', None)
 
-
 def getStocks(n):
-    driver = webdriver.Chrome(executable_path=r'/Users/shashank/Downloads/chromedriver')
+    driver = webdriver.Chrome(executable_path='/Users/shashank/Documents/Code/Python/Finance/chromedriver.exe')
     url = "https://finance.yahoo.com/screener/predefined/aggressive_small_caps?offset=0&count=202"
     driver.get(url)
     stock_list = []
@@ -40,7 +36,7 @@ def sendMessage(text):
 
     email = ""
     pas = ""
-    sms_gateway = '@tmomail.net'
+    sms_gateway = ''
     smtp = "smtp.gmail.com" 
     port = 587
     
@@ -208,29 +204,5 @@ def predictData(stock, days):
         sendMessage(output)
 
 if __name__ == '__main__':
-    getStocks(40)
-
-'''
-combined = [] 
-for i in range(0, len(predictions)): 
-    combined.append(predictions[i] - error_list[i])
-
-
-# Create a dataframe with each company and their corressponding beta/alpha values
-dataframe = pd.DataFrame(list(zip(stock_list, predictions, error_list, combined)), columns =['Company', 'Prediction', 'Error', 'Combined']) 
-
-# Sorting the dataframe from highest sharpe values to lowest
-df = dataframe.sort_values('Combined', ascending = False)
-df = df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
-df = dataframe.dropna()
-
-df.to_csv(r'/Users/shashank/Downloads/portfolio/predictions.csv')
-
-
-df = pd.read_csv('/Users/shashank/Downloads/portfolio/predictions.csv', index_col=0)
-df = df.set_index(['Company'])
-
-df = df.sort_values('Prediction', ascending = False)
-
-print (df)
-'''
+    getStocks(1)
+    
