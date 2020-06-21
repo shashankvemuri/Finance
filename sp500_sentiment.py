@@ -92,7 +92,6 @@ for ticker in tickers:
     
     mean = round(dataframe['compound'].mean(), 2)
     values.append(mean)
-  
 
 df = pd.read_csv('/Users/shashank/Documents/GitHub/Code/sentiment-values/sentiments-values.csv')
 df['{}'.format(today)] = values
