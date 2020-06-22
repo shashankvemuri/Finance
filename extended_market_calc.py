@@ -9,7 +9,7 @@ import matplotlib.ticker as mticker
 
 yf.pdr_override() 
 
-num_of_years = 40
+num_of_years = 3
 start = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
 now = dt.datetime.now() 
 
