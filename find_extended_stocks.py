@@ -5,11 +5,18 @@ from pandas_datareader import data as pdr
 from pandas_datareader import DataReader
 import time 
 
+pd.set_option('display.max_columns', None)
+
 yf.pdr_override() 
 
 num_of_years = 40
 start = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
 now = dt.datetime.now() 
+
+mylist = []
+today = dt.date.today()
+mylist.append(today)
+today = mylist[0]
 
 #Asks for stock ticker
 stocks = pd.read_csv('russell3000_tickers.csv')['Ticker']
@@ -29,7 +36,7 @@ must_watch_pct = []
 must_watch_mean = []
 must_watch_std = []
 
-for stock in stocks: 
+for stock in stocks[:20]: 
     try:
         time.sleep(1)
         df = DataReader(stock, 'yahoo' ,start, now)
@@ -53,13 +60,13 @@ for stock in stocks:
         print("Standard Dev: " + str(stdev))
         print ('-'*52)
     
-        if abs(float(current)) > abs(float(1*stdev+mean)):
+        if abs(float(current)) > abs(float(1*stdev+mean)) and abs(float(current)) < abs(float(2*stdev+mean)):
             watch.append(stock)
             watch_pct.append(current)
             watch_mean.append(mean)
             watch_std.append(stdev)
             
-        elif abs(float(current)) > abs(float(2*stdev+mean)):
+        elif abs(float(current)) > abs(float(2*stdev+mean)) and abs(float(current)) < abs(float(3*stdev+mean)):
             def_watch.append(stock)
             def_watch_pct.append(current)
             def_watch_mean.append(mean)
@@ -70,25 +77,59 @@ for stock in stocks:
             must_watch_pct.append(current)
             must_watch_mean.append(mean)
             must_watch_std.append(stdev)
+        else:
+            pass
     except:
         pass
     
 print ('Watch:')
-df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)), columns =['Company', 'Current', 'Mean', 'Standard Deviation'])
+df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
 df1 = df1.set_index('Company')
-df1.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/watch.csv')
+
+for n in df1['Current'].tolist():
+    if n < 0:
+        df1['First Band'] = -1*df1['Stdev']+df1['Mean']
+        df1['Second Band'] = -2*df1['Stdev']+df1['Mean']
+        df1['Third Band'] = -3*df1['Stdev']+df1['Mean']
+    else:
+        df1['First Band'] = 1*df1['Stdev']+df1['Mean']
+        df1['Second Band'] = 2*df1['Stdev']+df1['Mean']
+        df1['Third Band'] = 3*df1['Stdev']+df1['Mean']
 print (df1)
 
 print ('\n')
 print ('Def Watch:')
-df2 = pd.DataFrame(list(zip(def_watch, def_watch_pct, def_watch_mean, def_watch_std)), columns =['Company', 'Current', 'Mean', 'Standard Deviation'])
+df2 = pd.DataFrame(list(zip(def_watch, def_watch_pct, def_watch_mean, def_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
 df2 = df2.set_index('Company')
-df2.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/def_watch.csv')
+
+for n in df2['Current'].tolist():
+    if n < 0:
+        df2['First Band'] = -1*df2['Stdev']+df2['Mean']
+        df2['Second Band'] = -2*df2['Stdev']+df2['Mean']
+        df2['Third Band'] = -3*df2['Stdev']+df2['Mean']
+    else:
+        df2['First Band'] = 1*df2['Stdev']+df2['Mean']
+        df2['Second Band'] = 2*df2['Stdev']+df2['Mean']
+        df2['Third Band'] = 3*df2['Stdev']+df2['Mean']
 print (df2)
 
 print ('\n')
 print ('Must Watch:')
-df3 = pd.DataFrame(list(zip(must_watch, must_watch_pct, must_watch_mean, must_watch_std)), columns =['Company', 'Current', 'Mean', 'Standard Deviation'])
+df3 = pd.DataFrame(list(zip(must_watch, must_watch_pct, must_watch_mean, must_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
 df3 = df3.set_index('Company')
-df3.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/must_watch.csv')
+
+for n in df3['Current'].tolist():
+    if n < 0:
+        df3['First Band'] = -1*df3['Stdev']+df3['Mean']
+        df3['Second Band'] = -2*df3['Stdev']+df3['Mean']
+        df3['Third Band'] = -3*df3['Stdev']+df3['Mean']
+    else:
+        df3['First Band'] = 1*df3['Stdev']+df3['Mean']
+        df3['Second Band'] = 2*df3['Stdev']+df3['Mean']
+        df3['Third Band'] = 3*df3['Stdev']+df3['Mean']
+
 print (df3)
+
+df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/watch/{today}.csv')
+df2.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/def_watch/{today}.csv')
+df3.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/must_watch/{today}.csv')
