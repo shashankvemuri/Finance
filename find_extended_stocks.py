@@ -91,10 +91,12 @@ for n in df1['Current'].tolist():
         df1['First Band'] = -1*df1['Stdev']+df1['Mean']
         df1['Second Band'] = -2*df1['Stdev']+df1['Mean']
         df1['Third Band'] = -3*df1['Stdev']+df1['Mean']
+        df1['pct'] = round((df1['Current'] - df1['First Band']) / df1['First Band'] * 100, 2)
     else:
         df1['First Band'] = 1*df1['Stdev']+df1['Mean']
         df1['Second Band'] = 2*df1['Stdev']+df1['Mean']
         df1['Third Band'] = 3*df1['Stdev']+df1['Mean']
+        df1['pct'] = round((df1['Current'] - df1['First Band']) / df1['First Band'] * 100, 2)
 print (df1)
 
 print ('\n')
@@ -107,10 +109,12 @@ for n in df2['Current'].tolist():
         df2['First Band'] = -1*df2['Stdev']+df2['Mean']
         df2['Second Band'] = -2*df2['Stdev']+df2['Mean']
         df2['Third Band'] = -3*df2['Stdev']+df2['Mean']
+        df2['pct'] = round((df2['Current'] - df2['Second Band']) / df2['Second Band'] * 100, 2)
     else:
         df2['First Band'] = 1*df2['Stdev']+df2['Mean']
         df2['Second Band'] = 2*df2['Stdev']+df2['Mean']
         df2['Third Band'] = 3*df2['Stdev']+df2['Mean']
+        df2['pct'] = round((df2['Current'] - df2['Second Band']) / df2['Second Band'] * 100, 2)
 print (df2)
 
 print ('\n')
@@ -123,10 +127,12 @@ for n in df3['Current'].tolist():
         df3['First Band'] = -1*df3['Stdev']+df3['Mean']
         df3['Second Band'] = -2*df3['Stdev']+df3['Mean']
         df3['Third Band'] = -3*df3['Stdev']+df3['Mean']
+        df3['pct'] = round((df3['Current'] - df3['Third Band']) / df3['Third Band'] * 100, 2)
     else:
         df3['First Band'] = 1*df3['Stdev']+df3['Mean']
         df3['Second Band'] = 2*df3['Stdev']+df3['Mean']
         df3['Third Band'] = 3*df3['Stdev']+df3['Mean']
+        df3['pct'] = round((df3['Current'] - df3['Third Band']) / df3['Third Band'] * 100, 2)
 
 print (df3)
 
