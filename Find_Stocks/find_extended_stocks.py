@@ -1,10 +1,8 @@
 import yfinance as yf
 import datetime as dt
 import pandas as pd
-from pandas_datareader import data as pdr
 from pandas_datareader import DataReader
 import time 
-from pandas.util.testing import assert_frame_equal
 
 pd.set_option('display.max_columns', None)
 
@@ -97,7 +95,7 @@ for n in df1['Current'].tolist():
         df1['First Band'] = 1*df1['Stdev']+df1['Mean']
         df1['Second Band'] = 2*df1['Stdev']+df1['Mean']
         df1['Third Band'] = 3*df1['Stdev']+df1['Mean']
-        df1['pct'] = round((df1['Current'] - df1['Second Band']) / df1['Second Band'] * 100, 2)
+        df1['pct'] = round((df1['Current'] - df1['First Band']) / df1['First Band'] * 100, 2)
 print (df1)
 
 print ('\n')
