@@ -5,5 +5,10 @@ keras_sentiment_model/input/RedditNews.csv
 keras_sentiment_model/input/DJIA_table.csv
 keras_sentiment_model/input/Combined_News_DJIA.csv
 .DS_Store
-config.py
+Machine_Learning/config.py
+Find_Stocks/config.py
+Portfolio_Strategies/config.py
+Stock_Analysis/config.py
+Stock_Data/config.py
+Technical_Indicators/config.py
 test.py
