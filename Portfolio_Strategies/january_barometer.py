@@ -4,11 +4,14 @@ import datetime
 import quandl
 import pandas_datareader as dr
 import matplotlib.pyplot as plt
+import config
+from twython import Twython, TwythonError
+
+quandl.ApiConfig.api_key = str(Twython(config.quandl_api_key))
 
 jan2020 = dr.data.get_data_yahoo('^GSPC', start='2020-01-01', end = '2020-1-31')
 
-quandl.ApiConfig.api_key = 'if2AAY-8xBQsvHh71Q1V'
-sp = quandl.get("YALE/SPCOMP", authtoken="if2AAY-8xBQsvHh71Q1V", collapse="daily")
+sp = quandl.get("YALE/SPCOMP", authtoken=quandl.ApiConfig.api_key, collapse="daily")
 sp.reset_index(inplace = True)
 print(sp.tail(12))
 
