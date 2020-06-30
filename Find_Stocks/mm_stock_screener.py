@@ -1,6 +1,6 @@
 import datetime
 import pandas as pd
-from pandas_datareader import DataReader
+from pandas_datareader import data as pdr
 import yfinance as yf
 from pandas import ExcelWriter
 import requests
@@ -9,6 +9,8 @@ import time
 import bs4 as bs
 import pickle
 import talib
+
+yf.pdr_override()
 
 def save_spx_tickers():
     resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
@@ -37,8 +39,8 @@ final = []
 index = []
 n = -1
 
-exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
-otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High", "Failed"])
+exportList = pd.DataFrame(columns=['Stock', "RSI", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
+otherList = pd.DataFrame(columns=['Stock', "RSI", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High", "Failed"])
 
 for stock in stocklist:
     #n += 1
@@ -49,11 +51,11 @@ for stock in stocklist:
     start_date = datetime.datetime.now() - datetime.timedelta(days=365)
     end_date = datetime.date.today()
     
-    df = DataReader(stock, 'yahoo', start=start_date, end=end_date)
+    df = pdr.get_data_yahoo(stock, start=start_date, end=end_date)
     
     df["rsi"] = talib.RSI(df["Close"])
     
-    RS_Rating = df["rsi"].tail(14).mean()
+    RSI = df["rsi"].tail(14).mean()
 
     try:
         smaUsed = [50, 150, 200]
@@ -111,14 +113,14 @@ for stock in stocklist:
             condition_7 = True
         else:
             condition_7 = False
-        # Condition 8: IBD RS rating < 30 and the higher the better
-        if(RS_Rating < 30):
+        # Condition 8: IBD RS rating < 30 and the lower the better
+        if(RSI < 30):
             condition_8 = True
         else:
             condition_8 = False
 
         if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):            
-            exportList = exportList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
+            exportList = exportList.append({'Stock': stock, "RSI": RSI, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week}, ignore_index=True)
             #print (stock + " made the requirements")
         
         else:
@@ -135,7 +137,7 @@ for stock in stocklist:
             for value in false: 
                 print (value)
             
-            otherList = otherList.append({'Stock': stock, "RS_Rating": RS_Rating, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week, "Failed": false}, ignore_index=True)
+            otherList = otherList.append({'Stock': stock, "RSI": RSI, "50 Day MA": moving_average_50, "150 Day Ma": moving_average_150, "200 Day MA": moving_average_200, "52 Week Low": low_of_52week, "52 week High": high_of_52week, "Failed": false}, ignore_index=True)
 
     except Exception as e:
         pass
