@@ -14,9 +14,6 @@ import bs4 as bs
 import pickle
 import talib
 
-tickers = pd.read_csv('/Users/shashank/Documents/Code/Python/Finance/russell3000_tickers.csv')['Ticker'].tolist()
-print (tickers)
-
 yf.pdr_override()
 
 num_of_years = 10
