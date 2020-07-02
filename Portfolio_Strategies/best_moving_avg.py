@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
 import datetime as dt
 
-symbol = "FB"
-days_forward = 2
+symbol = "TSLA"
+days_forward = 10
 
 num_of_years = 10
 start_date = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))

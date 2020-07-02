@@ -11,7 +11,7 @@ now = dt.datetime.now()
 
 stock = input("Enter the stock symbol: ")
 
-while stock != "done":
+while stock != "quit":
 
     df = pdr.get_data_yahoo(stock, start, now)
     
