@@ -11,7 +11,7 @@ from pylab import rcParams
 start = dt.date.today() - dt.timedelta(days = 365*10)
 end = dt.datetime.now()
 
-stock='AAPL'
+stock = 'NIO'
 
 df = yf.download(stock,start, end, interval='1d')
 
