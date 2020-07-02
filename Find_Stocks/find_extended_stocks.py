@@ -18,7 +18,7 @@ mylist.append(today)
 today = mylist[0]
 
 #Asks for stock ticker
-stocks = pd.read_csv('russell3000_tickers.csv')['Ticker']
+stocks = pd.read_csv('/Users/shashank/Documents/Code/Python/Finance/russell3000_tickers.csv')['Ticker']
 
 watch = []
 watch_pct = []
