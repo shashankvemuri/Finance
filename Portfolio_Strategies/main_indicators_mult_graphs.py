@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 yf.pdr_override()
 
 # input
-symbol = 'TSLA'
+symbol = str(input('Enter a ticker: '))
 num_of_years = 1
 start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
 end = dt.date.today()
