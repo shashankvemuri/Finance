@@ -56,15 +56,14 @@ plt.show()
 # ## RSI (Relative Strength Index)
 # RSI
 data['RSI'] = talib.RSI(data['Adj Close'], timeperiod=14)
-# Plotting RSI
-fig,ax = plt.subplots(figsize=(15, 10))
-ax.plot(data.index, data.RSI, label='RSI')
-ax.fill_between(data.index, y1=30, y2=70, color = 'lightcoral', alpha=0.3)
-ax.set_xlabel('Date')
-ax.set_ylabel('RSI')
-ax.set_title(f'Relative Strength Index for {symbol.upper()}')
+fig, (ax1, ax2) = plt.subplots(2)
+fig.suptitle(f'Close Price vs. Relative Strength Index for {symbol.upper()}')
+ax1.plot(data['Adj Close'])
+ax1.set_ylabel('Close')
+ax2.plot(data.index, data.RSI, label='RSI')
+ax2.fill_between(data.index, y1=30, y2=70, color = 'lightcoral', alpha=0.3)
+ax2.set_ylabel('RSI')
 plt.show()
-
 
 # ## OBV (On Balance Volume)
 # OBV
