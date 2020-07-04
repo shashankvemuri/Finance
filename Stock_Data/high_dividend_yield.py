@@ -3,7 +3,7 @@ import config
 import pandas as pd
 from twython import Twython, TwythonError
 
-demo = Twython(config.api_key)
+demo = Twython(config.fmpcloud_api_key)
 
 symbols = pd.read_pickle('spxTickers.pickle')
 DivYield = {}
