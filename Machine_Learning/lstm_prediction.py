@@ -64,7 +64,7 @@ model.add(Dense(1))
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
 
 #train the model
-model.fit(x_train, y_train, batch_size=1, epochs=1)
+model.fit(x_train, y_train, batch_size=1, epochs=5)
 
 #create test dataset
 test_data = scaled_data[train_data_len-60:, :]

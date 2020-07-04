@@ -12,3 +12,5 @@ Stock_Analysis/config.py
 Stock_Data/config.py
 Technical_Indicators/config.py
 test.py
+Stock_Analysis/Secret_Key.txt
+Stock_Analysis/__pycache__/financeAPI.cpython-37.pyc
