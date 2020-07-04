@@ -20,7 +20,6 @@ ticker = 'TSLA'
 start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
 end_date = datetime.date.today()
 
-
 # # Fetching the historic prices 
 df = DataReader(ticker, 'yahoo', start_date, end_date)
 
