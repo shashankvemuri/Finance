@@ -4,22 +4,19 @@ import warnings
 import datetime 
 import numpy as np
 import pandas as pd
-from math import sqrt
 import matplotlib.pyplot as plt
 from tensorflow.keras import Sequential
 from pandas_datareader import DataReader
-from itertools import tee, islice, chain
-from itertools import zip_longest as izip
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.layers import Dense, LSTM
-from pandas.util.testing import assert_frame_equal
 
 warnings.filterwarnings("ignore")
 
 #get the stock quote for the past 10 years
 stock = input("Enter a stock ticker: ")
-start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
+num_of_years = 10
+start_date = datetime.datetime.now() - datetime.timedelta(days=int(365.25*num_of_years))
 end_date = datetime.date.today()
 
 df = DataReader(stock, "yahoo", start_date, end_date)
@@ -103,6 +100,7 @@ plt.show()
 
 print (valid)
 
+# find the accuracy based on predicting day-to-day movements 
 valid_movement = []
 pred_movement = []
 close_prices = valid.Close.tolist()
@@ -130,10 +128,10 @@ for val, pred in zip(valid_movement, pred_movement):
 
 total = len(valid_movement)
 accuracy = n/total
-
 print (f'The accuracy of the LSTM Model predicting the movement of a stock each day is {100 * round(accuracy, 3)}%')
 
 dataframe = pd.DataFrame(list(zip(valid_movement, pred_movement)), columns =['Valid Movement', 'Predicted Movement'])
+print (dataframe)
 
 #get predicted price for next day
 last_60day = data[-60:].values
