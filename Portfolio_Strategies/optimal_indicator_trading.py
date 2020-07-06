@@ -8,10 +8,10 @@ from finta import TA
 from pylab import rcParams
 
 # define time range 
-start = dt.date.today() - dt.timedelta(days = 365*10)
+start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.datetime.now()
 
-stock = 'NIO'
+stock = 'SPY'
 
 df = yf.download(stock,start, end, interval='1d')
 
