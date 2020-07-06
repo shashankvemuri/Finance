@@ -15,3 +15,4 @@ test.py
 Stock_Analysis/Secret_Key.txt
 Stock_Analysis/__pycache__/financeAPI.cpython-37.pyc
 config.py
+Stock_Analysis/Stocker
