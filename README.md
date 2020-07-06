@@ -17,4 +17,4 @@ This folder contains several programs that analyze the data of stocks to find hi
 This folder contains several programs that collect a wide variety of data on stocks either using formulas or parsing financial websites. Examples of this data include finding dividend history, intraday data, value-at-risk (VAR), and a program that collects the historical data from all the S&P 500 companies and saves them to individual csv files. 
 
 ## Technical_Indicators 
-This folder contains a graphical representation of about 140 technical indicators (RSI, Bollinger Bands, moving averages, etc.) in the stock market. Many of the algorithms contained use of Pandas, Matplotlib, TA-Lib and NumPy. The basis of these algorithms were obtained from <a href="https://github.com/TheLastAncientOne">TheLastAncientOne</a>!
+This folder contains a graphical representation of about 140 technical indicators (RSI, Bollinger Bands, moving averages, etc.) in the stock market. Many of the algorithms contained use of Pandas, Matplotlib, TA-Lib and NumPy. The basis of these algorithms were obtained from <a href="https://github.com/LastAncientOne">TheLastAncientOne</a>!
