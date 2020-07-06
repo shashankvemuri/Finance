@@ -5,7 +5,7 @@ A work in progress -- always being updated!
 This folder contains several algorithms that return stocks that show promising data and therefore can be classified as a buy in the stock market. Some of the algorithms include extended market calculators, stock screeners, analyst recommendation parsers, and finding high movers!
 
 ## Machine_Learning
-This folder contains several Machine Learning algorithms that utilize the Scikit-Learn and TensorFlow libraries to predict stock prices, classify stocks into sections for diversification purposes, and algorithmic trading bots. The Keras_Sentiment_Model inside this folder contains a model that calculates the sentiment of Dow Jones Industrial Average (DJIA) news and uses the sentiment to predict future stock market prices.
+This folder contains several Machine Learning algorithms that utilize the Scikit-Learn and TensorFlow libraries to predict stock prices, classify stocks into sections for diversification purposes, and algorithmic trading bots.
 
 ## Portfolio_Strategies 
 This folder contains data on specific portfolios in certain sectors of the market, porfolio optimization algorithms, and backtested trading strategies such as for indicators (moving averages) and oscillators (RSI). Many of the algorithms contained use of Pandas, Matplotlib and NumPy. 
