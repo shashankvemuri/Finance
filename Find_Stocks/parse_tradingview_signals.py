@@ -21,7 +21,7 @@ ticker = 'MRK'
 options = Options()
 options.add_argument("--headless")
 options.add_argument('window-size=1200x600')
-webdriver = webdriver.Chrome(executable_path='/Users/shashank/Documents/GitHub/Code/Finance/chromedriver.exe', options = options)
+webdriver = webdriver.Chrome(executable_path='/Users/shashank/Documents/Code/Python/Finance/chromedriver.exe', options = options)
 
 #Declare variable
 analysis = []
