@@ -52,17 +52,27 @@ plt.show()
 # MACD
 data['macd'], data['macdsignal'], data['macdhist'] = talib.MACD(data['Adj Close'], fastperiod=12, slowperiod=26, signalperiod=9)
 
+# Plot
+rcParams['figure.figsize'] = 15,10
+fig, (ax1, ax2) = plt.subplots(2)
+fig.suptitle(f'Close Price vs. Commodity Channel Index for {symbol.upper()}')
+ax1.plot(data['Adj Close'])
+ax1.set_ylabel('Adj Close')
+
+ax2.plot(data[['macd','macdsignal']])
+ax2.legend(('MACD', 'MACD Signal'))
+ax2.set_ylabel('MACD')
+ax2.set_title(f'Moving Average Convergence Divergence for {symbol.upper()}')
+
 ## CCI (Commodity Channel Index)
 # CCI
 cci = ta.trend.cci(data['High'], data['Low'], data['Close'], n=31, c=0.015)
 
-# Plot
 rcParams['figure.figsize'] = 15,10
 fig, (ax1, ax2) = plt.subplots(2)
-ax1.plot(data[['macd','macdsignal']])
-ax1.legend(('MACD', 'MACD Signal'))
-ax1.set_ylabel('MACD')
-ax1.set_title(f'Moving Average Convergence Divergence for {symbol.upper()}')
+fig.suptitle(f'Close Price vs. Commodity Channel Index for {symbol.upper()}')
+ax1.plot(data['Adj Close'])
+ax1.set_ylabel('Adj Close')
 
 ax2.plot(cci)
 ax2.axhline(y=0, color='r', linestyle='-')
