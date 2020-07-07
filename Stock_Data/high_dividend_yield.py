@@ -1,9 +1,8 @@
 import requests
-import config
+from config import financial_model_prep
 import pandas as pd
-from twython import Twython, TwythonError
 
-demo = Twython(config.fmpcloud_api_key)
+demo = financial_model_prep()
 
 symbols = pd.read_pickle('spxTickers.pickle')
 DivYield = {}
