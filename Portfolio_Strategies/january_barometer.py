@@ -4,10 +4,9 @@ import datetime
 import quandl
 import pandas_datareader as dr
 import matplotlib.pyplot as plt
-import config
-from twython import Twython, TwythonError
+from config import quandl_api
 
-quandl.ApiConfig.api_key = str(Twython(config.quandl_api_key))
+quandl.ApiConfig.api_key = quandl_api()
 
 jan2020 = dr.data.get_data_yahoo('^GSPC', start='2020-01-01', end = '2020-1-31')
 

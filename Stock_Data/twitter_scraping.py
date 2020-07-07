@@ -2,8 +2,9 @@
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-import config
-from twython import Twython
+from config import twitter_api
+
+twitter_consumer_key, twitter_consumer_secret, twitter_access_key, twitter_access_secret = twitter_api()
 
 class StdOutListener(StreamListener):
     def on_data(self, data):
