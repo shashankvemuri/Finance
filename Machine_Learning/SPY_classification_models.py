@@ -5,6 +5,7 @@ import seaborn as sns
 import quandl
 import pyfolio as pf
 from pandas_datareader import DataReader
+from config import quandl_api
 
 #Split
 from sklearn.model_selection import train_test_split,TimeSeriesSplit,GridSearchCV
@@ -25,7 +26,7 @@ from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 import warnings
 warnings.filterwarnings('ignore')
 
-quandl.ApiConfig.api_key = "WLMxat9y7vVtegz9ZEe5"
+quandl.ApiConfig.api_key = quandl_api()
 start = '2000-01-01'
 end = '2020-04-30'
 
