@@ -5,6 +5,7 @@ import requests
 import datetime
 import time
 
+
 stocklist = si.tickers_sp500()
 stocklist = [item.replace(".", "-") for item in stocklist]
 
@@ -19,20 +20,22 @@ n = -1
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
-df = DataReader(stocklist, 'yahoo' ,start=start_date, end=end_date)['Adj Close']
-df.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/all_sp500.csv')
+# df = DataReader(stocklist, 'yahoo' ,start=start_date, end=end_date)['Adj Close']
+# df.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/all_sp500.csv')
 
-index_df = DataReader(index_name, 'yahoo', start=start_date, end=end_date)['Adj Close']
-index_df.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/index_df.csv')
+# index_df = DataReader(index_name, 'yahoo', start=start_date, end=end_date)
+# index_df.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/index_df.csv')['Adj Close']
 
 RS = []
+
+'''
 for stock in stocklist:
     n += 1
     print ("\npulling {} with index {}".format(stock, n))
     
     df = pd.read_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/all_sp500.csv')
-    df = df[stock]    
-    df['Percent Change'] = df['Adj Close'].pct_change()    
+    df = df[f'{stock}']
+    df['Percent Change'] = df.pct_change()    
     stock_return = df['Percent Change'].sum() * 100
     
     index_df = pd.read_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/index_df.csv')
@@ -47,3 +50,9 @@ for stock in stocklist:
 dataframe = pd.DataFrame(list(zip(stocklist, RS)), columns =['Company', 'Relative Strength'])
 dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/RS_Rating/{today}.csv')
 print (dataframe)
+'''
+
+data = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/RS_Rating/{today}.csv', index_col=1)
+data = data.drop(columns = ['Unnamed: 0'])
+data = data.sort_values('Relative Strength', ascending=False)
+print (data.head(50))
