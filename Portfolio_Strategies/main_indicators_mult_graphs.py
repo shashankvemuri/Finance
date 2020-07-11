@@ -5,6 +5,9 @@ import datetime as dt
 import warnings
 import talib 
 import ta
+import numpy as np
+import matplotlib.ticker as mticker
+from pandas_datareader import data as pdr
 
 warnings.filterwarnings("ignore")
 yf.pdr_override()
@@ -99,6 +102,7 @@ plt.show()
 # OBV
 data['OBV'] = talib.OBV(data['Adj Close'], data['Volume'])/10**6
 
+plt.gcf()
 fig, (ax1, ax2) = plt.subplots(2)
 fig.suptitle(f'Close Price vs. On Balance Volume for {symbol.upper()}')
 ax1.plot(data['Adj Close'])
@@ -106,4 +110,66 @@ ax1.set_ylabel('Adj Close')
 
 ax2.plot(data['OBV'])
 ax2.set_ylabel('On Balance Volume (in millions)')
+plt.show()
+
+
+# Extended Market
+fig, ax1 = plt.subplots() 
+
+#Asks for stock ticker
+sma = 50
+limit = 10
+
+#calculates sma and creates a column in the dataframe
+data['SMA'+str(sma)] = data.iloc[:,4].rolling(window=sma).mean() 
+data['PC'] = ((data["Adj Close"]/data['SMA'+str(sma)])-1)*100
+
+mean =data["PC"].mean()
+stdev=data["PC"].std()
+current=data["PC"][-1]
+yday=data["PC"][-2]
+
+print(str(current))
+
+print("Mean: "+str(mean))
+print("Standard Dev: "+str(stdev))
+
+# fixed bin size
+bins = np.arange(-100, 100, 1) 
+rcParams['figure.figsize'] = 15, 10
+plt.xlim([data["PC"].min()-5, data["PC"].max()+5])
+
+plt.hist(data["PC"], bins=bins, alpha=0.5)
+plt.title(symbol+"-- % From "+str(sma)+" SMA Histogram since "+str(start.year))
+plt.xlabel('Percent from '+str(sma)+' SMA (bin size = 1)')
+plt.ylabel('Count')
+
+plt.axvline( x=mean, ymin=0, ymax=1, color='k', linestyle='--')
+plt.axvline( x=stdev+mean, ymin=0, ymax=1, color='gray', alpha=1, linestyle='--')
+plt.axvline( x=2*stdev+mean, ymin=0, ymax=1, color='gray',alpha=.75, linestyle='--')
+plt.axvline( x=3*stdev+mean, ymin=0, ymax=1, color='gray', alpha=.5, linestyle='--')
+plt.axvline( x=-stdev+mean, ymin=0, ymax=1, color='gray', alpha=1, linestyle='--')
+plt.axvline( x=-2*stdev+mean, ymin=0, ymax=1, color='gray',alpha=.75, linestyle='--')
+plt.axvline( x=-3*stdev+mean, ymin=0, ymax=1, color='gray', alpha=.5, linestyle='--')
+
+plt.axvline( x=current, ymin=0, ymax=1, color='r', label = 'today')
+plt.axvline( x=yday, ymin=0, ymax=1, color='blue', label = 'yesterday')
+
+#add more x axis labels
+ax1.xaxis.set_major_locator(mticker.MaxNLocator(14)) 
+
+#Create Plots
+fig2, ax2 = plt.subplots() 
+
+data=data[-150:]
+
+data['PC'].plot(label='close',color='k')
+plt.title(symbol+"-- % From "+str(sma)+" SMA Over last 100 days")
+plt.xlabel('Date') 
+plt.ylabel('Percent from '+str(sma)+' EMA')
+
+#add more x axis labels
+ax2.xaxis.set_major_locator(mticker.MaxNLocator(8)) 
+plt.axhline( y=limit, xmin=0, xmax=1, color='r')
+rcParams['figure.figsize'] = 15, 10
 plt.show()
