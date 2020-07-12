@@ -12,17 +12,19 @@ import ta
 
 pd.set_option('display.max_columns', None)
 
-# define time range 
-num_of_years = 1
-start = dt.date.today() - dt.timedelta(days = 365*num_of_years)
-end = dt.datetime.now()
-
+# define stock and time range 
 stock = input('Enter a stock ticker: ')
+
+
+num_of_years = input('Enter number of years: ')
+num_of_years = float(num_of_years)
+start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
+end = dt.datetime.now()
 
 current_price = round(si.get_live_price(stock), 2)
 df = yf.download(stock,start, end, interval='1d')
 
-signals = ['Moving Average', 'RSI', 'Bollinger Bands', 'MACD', 'CCI']
+signals = ['Moving Average', 'Relative Strength Index', 'Bollinger Bands', 'MACD', 'Commodity Channel Index']
 change = []
 num_of_trades = []
 last_sell = []
@@ -117,9 +119,9 @@ for signal in signals:
         print ("Total return for a B&H strategy: " + str(hold)+'%')
         print("Average Gain: "+ str(round(avgGain, 2)))
         print("Average Loss: "+ str(round(avgLoss, 2)))
-        print("Max Return: "+ maxReturn)
+        print("Max Return: "+ str(maxReturn))
         print("Max Loss: "+ str(maxLoss))
-        print("Gain/loss ratio: "+ ratioRR)
+        print("Gain/loss ratio: "+ str(ratioRR))
         
         if(numGains>0 or numLosses>0):
             batAvg=numGains/(numGains+numLosses)
@@ -138,7 +140,7 @@ for signal in signals:
         gain_loss.append(float(ratioRR))
         battling_avg.append(batAvg)
 
-    elif signal.lower() == 'rsi':
+    elif signal.lower() == 'relative strength index':
         print ('-'*60)
         print ('Relative Strength Index: ')
         
@@ -214,9 +216,9 @@ for signal in signals:
         print ("Total return for a B&H strategy: " + str(hold)+'%')
         print("Average Gain: "+ str(round(avgGain, 2)))
         print("Average Loss: "+ str(round(avgLoss, 2)))
-        print("Max Return: "+ maxReturn)
+        print("Max Return: "+ str(maxReturn))
         print("Max Loss: "+ str(maxLoss))
-        print("Gain/loss ratio: "+ ratioRR)
+        print("Gain/loss ratio: "+ str(ratioRR))
         
         if(numGains>0 or numLosses>0):
             batAvg=numGains/(numGains+numLosses)
@@ -308,9 +310,9 @@ for signal in signals:
         print ("Total return for a B&H strategy: " + str(hold)+'%')
         print("Average Gain: "+ str(round(avgGain, 2)))
         print("Average Loss: "+ str(round(avgLoss, 2)))
-        print("Max Return: "+ maxReturn)
+        print("Max Return: "+ str(maxReturn))
         print("Max Loss: "+ str(maxLoss))
-        print("Gain/loss ratio: "+ ratioRR)
+        print("Gain/loss ratio: "+ str(ratioRR))
         
         if(numGains>0 or numLosses>0):
             batAvg=numGains/(numGains+numLosses)
@@ -403,9 +405,9 @@ for signal in signals:
         print ("Total return for a B&H strategy: " + str(hold)+'%')
         print("Average Gain: "+ str(round(avgGain, 2)))
         print("Average Loss: "+ str(round(avgLoss, 2)))
-        print("Max Return: "+ maxReturn)
+        print("Max Return: "+ str(maxReturn))
         print("Max Loss: "+ str(maxLoss))
-        print("Gain/loss ratio: "+ ratioRR)
+        print("Gain/loss ratio: "+ str(ratioRR))
         
         if(numGains>0 or numLosses>0):
             batAvg=numGains/(numGains+numLosses)
@@ -424,7 +426,7 @@ for signal in signals:
         gain_loss.append(float(ratioRR))
         battling_avg.append(batAvg)
     
-    elif signal.lower() == 'cci':
+    elif signal.lower() == 'commodity channel index':
         print ('-'*60)
         print ('Commodity Channel Index: ')
         
@@ -499,9 +501,9 @@ for signal in signals:
         print ("Total return for a B&H strategy: " + str(hold)+'%')
         print("Average Gain: "+ str(round(avgGain, 2)))
         print("Average Loss: "+ str(round(avgLoss, 2)))
-        print("Max Return: "+ maxReturn)
+        print("Max Return: "+ str(maxReturn))
         print("Max Loss: "+ str(maxLoss))
-        print("Gain/loss ratio: "+ ratioRR)
+        print("Gain/loss ratio: "+ str(ratioRR))
         
         if(numGains>0 or numLosses>0):
             batAvg=numGains/(numGains+numLosses)
