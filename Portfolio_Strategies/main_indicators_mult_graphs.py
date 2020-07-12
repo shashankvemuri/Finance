@@ -70,6 +70,7 @@ ax2.set_title(f'Moving Average Convergence Divergence for {symbol.upper()}')
 ## CCI (Commodity Channel Index)
 # CCI
 cci = ta.trend.cci(data['High'], data['Low'], data['Close'], n=31, c=0.015)
+print (cci)
 
 rcParams['figure.figsize'] = 15,10
 fig, (ax1, ax2) = plt.subplots(2)
