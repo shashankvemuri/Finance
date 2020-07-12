@@ -6,12 +6,16 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 from finta import TA
 from pylab import rcParams
+from yahoo_fin import stock_info as si
 
 # define time range 
-start = dt.date.today() - dt.timedelta(days = 365)
+num_of_years = 10
+start = dt.date.today() - dt.timedelta(days = 365*num_of_years)
 end = dt.datetime.now()
 
-stock = 'SPY'
+stock = 'NFLX'
+
+current_price = round(si.get_live_price(stock), 2)
 
 df = yf.download(stock,start, end, interval='1d')
 
@@ -54,7 +58,7 @@ for i in df.index:
         percentChange.append(perc)
 
     counter+=1
-print(percentChange)
+print ('Current Price: ' + str(current_price))
             
 gains=0
 numGains=0
