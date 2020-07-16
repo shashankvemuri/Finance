@@ -15,7 +15,6 @@ pd.set_option('display.max_columns', None)
 # define stock and time range 
 stock = input('Enter a stock ticker: ')
 
-
 num_of_years = input('Enter number of years: ')
 num_of_years = float(num_of_years)
 start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
