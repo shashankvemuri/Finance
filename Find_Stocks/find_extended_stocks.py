@@ -2,7 +2,8 @@ import yfinance as yf
 import datetime as dt
 import pandas as pd
 from pandas_datareader import DataReader
-import time 
+import time
+from yahoo_fin import stock_info as si
 
 pd.set_option('display.max_columns', None)
 
@@ -18,7 +19,8 @@ mylist.append(today)
 today = mylist[0]
 
 #Asks for stock ticker
-stocks = pd.read_csv('/Users/shashank/Documents/Code/Python/Finance/russell3000_tickers.csv')['Ticker']
+stocks = si.tickers_sp500()
+stocks = [item.replace(".", "-") for item in stocks]
 
 watch = []
 watch_pct = []
