@@ -6,12 +6,13 @@ from pandas_datareader import DataReader
 import pandas as pd
 import datetime
 from pylab import rcParams
+from yahoo_fin import stock_info as si
 
 num_of_years = 5
 start_date = datetime.datetime.now() - datetime.timedelta(days=int(355.25*5))
 end_date = datetime.date.today()
 
-stock = 'MSFT'
+stock = 'NIO'
 index = '^GSPC'
 
 df = DataReader(stock,'yahoo', start_date, end_date)
@@ -65,6 +66,7 @@ for sim in simulations:
     plt.plot(np.arange(0, len(sim.prices)), sim.prices)
 
 plt.title(f'Geometric Brownian Motion for {stock.upper()}')
+plt.axhline(y=si.get_live_price(stock), color='r')
 plt.xlabel('Time')
 plt.ylabel('Price')
 plt.show()
