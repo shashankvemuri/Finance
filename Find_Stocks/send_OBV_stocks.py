@@ -12,7 +12,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText 
 from yahoo_fin import stock_info as si
 
-'''# tickers = gt.get_tickers_filtered(mktcap_min=150000, mktcap_max=10000000)
+'''
+# tickers = gt.get_tickers_filtered(mktcap_min=150000, mktcap_max=10000000)
 tickers = si.tickers_sp500()
 
 print("The amount of stocks chosen to observe: " + str(len(tickers)))
