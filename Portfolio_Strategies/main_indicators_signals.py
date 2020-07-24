@@ -8,6 +8,7 @@ import ta
 from statistics import mean
 import pandas as pd
 import time
+from yahoo_fin import stock_info as si
 
 warnings.filterwarnings("ignore")
 yf.pdr_override()
@@ -17,11 +18,11 @@ num_of_years = 1
 start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
 end = dt.date.today()
 
-tickers = pd.read_pickle('/Users/shashank/Documents/Code/Python/Finance/spxTickers.pickle')
+tickers = si.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers]
 
 frames = []
-for symbol in tickers[:5]:
+for symbol in tickers:
     try:
         ticker = ['{}'.format(symbol)]
         
@@ -141,10 +142,10 @@ for symbol in tickers[:5]:
         dataframe = dataframe.transpose()
         print (dataframe)
         
-        time.sleep(1.5)
+        time.sleep(1)
     except Exception as e:
         continue
 
 df = pd.concat(frames)
-df.to_csv('/Users/shashank/Documents/Code/Python/Outputs/indicator_signals/indicator_signals.csv')
+df.to_csv('../Outputs/indicator_signals/indicator_signals.csv')
 print (df)
