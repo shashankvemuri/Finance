@@ -12,21 +12,8 @@ from yahoo_fin import stock_info as si
 from pandas_datareader import DataReader
 from urllib.request import urlopen, Request
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
-def save_spx_tickers():
-    resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-    soup = bs.BeautifulSoup(resp.text, 'lxml')
-    table = soup.find('table', {'class':'wikitable sortable'})
-    tickers = []
-    for row in table.findAll('tr')[1:]:
-        ticker = row.find_all('td') [0].text.strip()
-        tickers.append(ticker)
         
-    with open('spxTickers.pickle', 'wb') as f:
-            pickle.dump(tickers, f)       
-    return tickers
-        
-stocklist = save_spx_tickers()
+stocklist = pd.read_pickle('../spxTickers.pickle')
 
 # Make the ticker symbols readable by Yahoo Finance
 stocklist = [item.replace(".", "-") for item in stocklist]
