@@ -14,7 +14,7 @@ def lookup_fn(df, key_row, key_col):
         return 0
 
 movementlist = []
-for stock in df['Symbol']:
+for stock in df['Symbol'].tolist()[:5]:
     # get history
     thestock = yf.Ticker(stock)
     hist = thestock.history(period="5d")
@@ -65,17 +65,17 @@ for entry in movementlist:
         thestock = yf.Ticker(str(entry[0]))
         
         if entry[0]=='HJLIW':
-            print("no info")
+            print("no info")   
             
         else:
             a = lookup_stockinfo(thestock)
+            
+            if a == 0 or a == None or a == "":
+                print("no info")     
 
-if a == 0 or a == None or a == "":
-    print("no info")
-
-else:
-    print(a)
-    print('Up '+ str(entry[2]) + "%")
-    print(str(a['sector']))
-    print(str(a['longBusinessSummary']))
-    print("year high "+ str(a['fiftyTwoWeekHigh']))
+            else:
+                print(a)
+                print('Up '+ str(entry[2]) + "%")
+                print(str(a['sector']))
+                print(str(a['longBusinessSummary']))
+                print("year high "+ str(a['fiftyTwoWeekHigh']))
