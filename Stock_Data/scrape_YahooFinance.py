@@ -24,7 +24,6 @@ soup.find_all('table')
 
 # tagged_values = soup.find_all('td', {'class':'Ta(end) Fw(v)'})
 tagged_values = soup.find_all('table')
-print(tagged_values)
 
 values = [x.get_text() for x in tagged_values]
 for value in values:
@@ -45,43 +44,43 @@ def yahooKeyStats(stock):
 
 yahooKeyStats(ticker)
 
-url = urlopen(f'https://finance.yahoo.com/quote/'+ticker+'/key-statistics?p='+ticker).read()
-url = f"https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}"
-bs = webdriver.Chrome('/Users/shashank/Documents/Code/Python/Finance/chromedriver.exe')
-bs.get(url)
+# url = urlopen(f'https://finance.yahoo.com/quote/'+ticker+'/key-statistics?p='+ticker).read()
+# url = f"https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}"
+# bs = webdriver.Chrome('/Users/shashank/Documents/Code/Python/Finance/chromedriver')
+# bs.get(url)
 
-counter1 = bs.find_element_by_xpath("//*[@id=\"Col1-0-KeyStatistics-Proxy\"]/section/div[2]/div[1]/div[1]/div/table/tbody/tr[1]/td[2]")
-url = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}' 
-html = urlopen(url)
-soup = BeautifulSoup(html, "lxml")
+# counter1 = bs.find_element_by_xpath('//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[3]/div[1]/div[2]/div/div[1]/div[1]/table/tbody/tr[1]/td[2]')
+# url = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}' 
+# html = urlopen(url)
+# soup = BeautifulSoup(html, "lxml")
 
-table = soup.find('table')
-rows = table.find_all('tr')
+# table = soup.find('table')
+# rows = table.find_all('tr')
 
-def parse_table(table):
-    return [
-        [cell.get_text().strip() for cell in row.find_all(['th', 'td'])]
-           for row in table.find_all('tr')]
+# def parse_table(table):
+#     return [
+#         [cell.get_text().strip() for cell in row.find_all(['th', 'td'])]
+#            for row in table.find_all('tr')]
 
-parse_table(table)
+# parse_table(table)
 
-url = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}' 
-html = urlopen(url)
-soup = BeautifulSoup(html, "lxml")
-titles = soup.title
+# url = f'https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}' 
+# html = urlopen(url)
+# soup = BeautifulSoup(html, "lxml")
+# titles = soup.title
 
-print(titles.string)
-print(titles.p)
+# print(titles.string)
+# print(titles.p)
 
-url = urllib.request.urlopen(f'https://finance.yahoo.com/quote/'+ticker+'/key-statistics?p='+ticker).read() # read all of the page
-soup = BeautifulSoup(url,'lxml')
+# url = urllib.request.urlopen(f'https://finance.yahoo.com/quote/'+ticker+'/key-statistics?p='+ticker).read() # read all of the page
+# soup = BeautifulSoup(url,'lxml')
 
-all_links=soup.find_all("a")
-for link in all_links:
-    print(link.get("href"))
+# all_links=soup.find_all("a")
+# for link in all_links:
+#     print(link.get("href"))
 
-all_tables=soup.find_all('table')
-print(all_tables)
+# all_tables=soup.find_all('table')
+# print(all_tables)
 
-rows = soup.find_all(['th', 'tr'])
-print(rows)
+# rows = soup.find_all(['th', 'tr'])
+# print(rows)
