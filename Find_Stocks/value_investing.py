@@ -1,9 +1,4 @@
-# Import The Libraries
-
-# For data manipulation
 import pandas as pd
-
-# To extract fundamental data
 from bs4 import BeautifulSoup as bs
 import requests
 import pickle
