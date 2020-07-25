@@ -6,6 +6,8 @@ import pandas as pd
 import datetime
 import time
 
+pd.set_option('display.max_rows', None)
+
 interval = '1M'
 
 options = Options()
@@ -68,14 +70,16 @@ for ticker in tickers:
         valid_tickers.append(ticker)
         
         print (f'{ticker} has an overall recommendation of {signal}')
-        print ()
-        
-        time.sleep(1)
+        print ('-'*60)
         
     except:
         continue
     
 dataframe = pd.DataFrame(list(zip(valid_tickers, signals, buys, sells, neutrals)), columns =['Tickers', 'Signals', 'Buys', 'Sells', 'Neutrals'])
+dataframe = dataframe.set_index('Tickers')
 dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}.csv')
-dataframe = dataframe.sort_values('Buys', ascending=False)
-print (dataframe)
+
+dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}.csv', index_col=1)
+# dataframe = dataframe.drop(columns = 'Unnamed: 0')
+dataframe = dataframe.sort_values('Signals', ascending=False)
+print (dataframe.head(15))
