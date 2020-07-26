@@ -9,13 +9,14 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 yf.pdr_override()
 
-num_of_years = 1
+num_of_years = 40
 start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
 end = dt.date.today()
 
-tickers = si.tickers_nasdaq()
+tickers = si.tickers_sp500()
+tickers = [item.replace(".", "-") for item in tickers]
 dataset = pdr.get_data_yahoo(tickers, start, end)['Adj Close']
-dataset.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/NASDAQ_prices.csv')
+dataset.to_csv('/Users/shashank/Documents/Code/TradeView/static/data/S&P500_stock_prices.csv')
 # dataset = pd.read_csv('/Users/shashank/Documents/Code/Python/Research/s&p500/betaDistribution/S&P500_stock_prices.csv', index_col=0, parse_dates = True)
 
 stocks_returns = np.log(dataset/dataset.shift(1))
@@ -36,11 +37,11 @@ def get_redundant_pairs(df):
             pairs_to_drop.add((cols[i], cols[j]))
     return pairs_to_drop
 
-def get_top_abs_correlations(df, n):
+def get_top_abs_correlations(df):
     au_corr = df.corr().abs().unstack()
     labels_to_drop = get_redundant_pairs(df)
     au_corr = au_corr.drop(labels=labels_to_drop).sort_values(ascending=False)
-    return au_corr[0:n]
+    return au_corr
 
 print("\nTop Absolute Correlations")
-print(get_top_abs_correlations(stocks_returns, 50))
+print(get_top_abs_correlations(stocks_returns))
