@@ -23,7 +23,7 @@ end = dt.datetime.now()
 current_price = round(si.get_live_price(stock), 2)
 df = yf.download(stock,start, end, interval='1d')
 
-signals = ['Moving Average', 'Relative Strength Index', 'Bollinger Bands', 'MACD', 'Commodity Channel Index']
+signals = ['Moving Average', 'Relative Strength Index', 'Bollinger Bands', 'MACD', 'Commodity Channel Index', 'Extended Market Calculator']
 change = []
 num_of_trades = []
 last_sell = []
@@ -432,7 +432,7 @@ for signal in signals:
         position=0 # 1 means we have already entered poistion, 0 means not already entered
         counter=0
         percentChange=[]   # empty list to collect %changes 
-        cci = ta.trend.cci(df['High'], df['Low'], df['Close'], n=31, c=0.015)
+        cci = talib.CCI(df['High'], df['Low'], df['Close'], timeperiod=14)
         for i in df.index:
             cci = cci
             close=df['Adj Close'][i]
@@ -521,6 +521,107 @@ for signal in signals:
         gain_loss.append(float(ratioRR))
         battling_avg.append(batAvg)
 
+    if signal.lower() == 'extended market calculator':
+        #Asks for stock ticker
+        sma = 50
+        limit = 10
+        
+        #calculates sma and creates a column in the dfframe
+        df['SMA'+str(sma)] = df.iloc[:,4].rolling(window=sma).mean() 
+        df['PC'] = ((df["Adj Close"]/df['SMA'+str(sma)])-1)*100
+        
+        position=0 # 1 means we have already entered poistion, 0 means not already entered
+        counter=0
+        percentChange=[]   # empty list to collect %changes 
+        
+        n = -1
+        for i in df.index:
+            n = n + 1 
+            mean =df["PC"].mean()
+            stdev=df["PC"].std()
+            current=df["PC"][n]
+            close=df['Adj Close'][i]
+            
+            if(current < -2*stdev+mean):
+                if(position==0):
+                    buyP=close   #buy price
+                    position=1   # turn position
+                
+            elif(current > 2*stdev+mean):
+                if(position==1):   # have a poistion in down trend
+                    position=0     # selling position
+                    sellP=close    # sell price
+    
+                    perc=(sellP/buyP-1)*100
+                    percentChange.append(perc)
+            if(counter==df["Adj Close"].count()-1 and position==1):
+                position=0
+                sellP=close
+
+                perc=(sellP/buyP-1)*100
+                percentChange.append(perc)
+        
+            counter+=1
+        
+        gains=0
+        numGains=0
+        losses=0
+        numLosses=0
+        totReturn=1
+        for i in percentChange:
+            if(i>0):
+                gains+=i
+                numGains+=1
+            else:
+                losses+=i
+                numLosses+=1
+            totReturn = totReturn*((i/100)+1)
+        totReturn=round((totReturn-1)*100,2)
+        print("These statistics are from "+str(start)+" up till now with "+str(numGains+numLosses)+" trades:")
+        print("Total return over "+str(numGains+numLosses)+ " trades: "+ str(totReturn)+"%")
+        
+        if (numGains>0):
+            avgGain=gains/numGains
+            maxReturn= str(max(percentChange))
+        else:
+            avgGain=0
+            maxReturn=np.nan
+        
+        if(numLosses>0):
+            avgLoss=losses/numLosses
+            maxLoss=str(min(percentChange))
+            ratioRR=str(-avgGain/avgLoss)  # risk-reward ratio
+        else:
+            avgLoss=0
+            maxLoss=np.nan
+            ratioRR='inf'
+        
+        df['PC'] = df['Close'].pct_change()
+        hold = round(df['PC'].sum() * 100, 2)
+        print ("Total return for a B&H strategy: " + str(hold)+'%')
+        print("Average Gain: "+ str(round(avgGain, 2)))
+        print("Average Loss: "+ str(round(avgLoss, 2)))
+        print("Max Return: "+ str(maxReturn))
+        print("Max Loss: "+ str(maxLoss))
+        print("Gain/loss ratio: "+ str(ratioRR))
+        
+        if(numGains>0 or numLosses>0):
+            batAvg=numGains/(numGains+numLosses)
+        else:
+            batAvg=0
+        print("Batting Avg: "+ str(batAvg))
+        change.append(totReturn)
+        trades = numGains+numLosses
+        num_of_trades.append(trades)
+        last_sell.append(sellP)
+        last_buy.append(buyP)
+        average_gain.append(avgGain)
+        average_loss.append(avgLoss)
+        max_return.append(float(maxReturn))
+        max_loss.append(float(maxLoss))
+        gain_loss.append(float(ratioRR))
+        battling_avg.append(batAvg)
+        
 prices = df['Adj Close'].tolist()
 first_price = prices[0]
 
