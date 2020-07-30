@@ -55,7 +55,7 @@ while stock != "quit":
 
     
     for index in range(len(pivots)):
-        print(str(pivots[index])+": "+str(dates[index]))
+        print(str(pivots[index])+": "+str(dates[index].date()))
         
         plt.plot_date([dates[index], dates[index]+timeD],
         [pivots[index], pivots[index]], linestyle = "-", linewidth = 2, marker = ",")
