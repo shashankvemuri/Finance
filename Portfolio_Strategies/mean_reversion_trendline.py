@@ -22,7 +22,7 @@ end = datetime.datetime.now()
 
 
 # Make the ticker symbols readable by Yahoo Finance
-stocklist = pd.read_pickle('spxTickers.pickle')
+stocklist = pd.read_pickle('../spxTickers.pickle')
 stocklist = [item.replace(".", "-") for item in stocklist]
 
 mylist = []
