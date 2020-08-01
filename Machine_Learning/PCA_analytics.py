@@ -16,13 +16,11 @@ num_of_years = 1
 start_date = datetime.date.today() - datetime.timedelta(days= (int(365.25*num_of_years)))
 end_date = datetime.date.today()
 
-'''
 # Get Data (if needed)
-# tickers = si.tickers_sp500()
-# tickers = [item.replace('.', '-') for item in tickers]
+tickers = si.tickers_sp500()
+tickers = [item.replace('.', '-') for item in tickers]
 # prices = pdr.get_data_yahoo(tickers, start_date, end_date)['Adj Close']
 # prices.to_csv('/Users/shashank/Documents/Code/Python/Outputs/csv/S&P500_stock_prices.csv')
-'''
 
 # Get Market Data
 index = '^GSPC'
