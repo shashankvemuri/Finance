@@ -16,7 +16,7 @@ df = DataReader(ticker, 'yahoo', start, now)
 df.columns = ['high', 'low', 'open', 'close', 'volume', 'adj close']
 df = df[['open', 'close', 'high', 'low', 'volume']]
 stock = StockDataFrame.retype(df)
-print (stock['rsi_12'])
+print (stock['rsi_3'])
 
 plt.gcf()
 plt.plot(stock['boll'])
