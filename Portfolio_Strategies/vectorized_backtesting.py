@@ -3,16 +3,19 @@ import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 import datetime
+from yahoo_fin import stock_info as si
 
 plt.rcParams['figure.figsize'] = (15, 10)
 
-tickers = ['AAPL', 'AMZN', 'TSLA', 'NIO', 'AMD', 'NVDA', 'REGN', 'DXCM']
+tickers = si.tickers_dow()
+individual_stock = input(f"Which of the following stocks would you like to backtest \n{tickers}\n:")
+
 num_of_years = 1
 start = datetime.date.today() - datetime.timedelta(days = int(365.25*num_of_years))
 yf_prices = yf.download(tickers, start=start)
 
 # Individual Stock Strategy
-prices = yf_prices['Adj Close'][tickers[0]]
+prices = yf_prices['Adj Close'][individual_stock]
 rs = prices.apply(np.log).diff(1).fillna(0)
 
 w1 = 5
@@ -21,18 +24,18 @@ ma_x = prices.rolling(w1).mean() - prices.rolling(w2).mean()
 pos = ma_x.apply(np.sign)
 
 fig, ax = plt.subplots(2,1)
-ma_x.plot(ax=ax[0], title=f'{tickers[0]} Moving Average Crossovers and Positions')
+ma_x.plot(ax=ax[0], title=f'{individual_stock} Moving Average Crossovers and Positions')
 pos.plot(ax=ax[1])
 plt.show()
 
 my_rs = pos.shift(1)*rs
 plt.subplots()
-my_rs.cumsum().apply(np.exp).plot(title=f'{tickers[0]} MA Strategy Performance')
+my_rs.cumsum().apply(np.exp).plot(title=f'{individual_stock} MA Strategy Performance')
 rs.cumsum().apply(np.exp).plot()
-plt.legend([f'{tickers[0]} MA Performace', f'{tickers[0]} Buy and Hold Performnace'])
+plt.legend([f'{individual_stock} MA Performace', f'{individual_stock} Buy and Hold Performnace'])
 plt.show()
 
-print (f'Performance Statistics for {tickers[0]} ({num_of_years} years):')
+print (f'Performance Statistics for {individual_stock} ({num_of_years} years):')
 print ('Moving Average Return: ' + str(100 * round(my_rs.cumsum().apply(np.exp).tolist()[-1], 4)) + '%')
 print('Buy and Hold Return: ' + str(100 * round(rs.cumsum().apply(np.exp).tolist()[-1], 4)) + '%')
 

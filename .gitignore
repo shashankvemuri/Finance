@@ -22,3 +22,4 @@ Machine_Learning/graph.gexf
 Find_Stocks/dow.csv
 Find_Stocks/bench.csv
 Portfolio_Strategies/ipython.html
+*.pyc
