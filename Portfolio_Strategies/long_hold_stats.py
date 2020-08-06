@@ -47,8 +47,6 @@ returns = df.pct_change().dropna()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
-print ('\nCumulative Returns: ')
-print(daily_cum_ret.tail())
 
 # Print the mean
 print("\nmean: " + str(round(returns.mean()*100, 2)))
