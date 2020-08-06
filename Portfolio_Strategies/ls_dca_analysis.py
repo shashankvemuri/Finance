@@ -6,16 +6,14 @@ import seaborn as sns
 import matplotlib.ticker as ticker
 import numpy as np
 
-# Pull data for ticker, adj is split & dividend adjusted
+plt.rcParams['figure.figsize'] = (15, 10)
+
 num_of_years = 20
 start_date = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
 end_date = dt.datetime.now() 
-
-stock = 'AMD'
+stock = input('Enter a ticker: ')
 
 data = DataReader(stock, "yahoo", start_date, end_date)
-
-plt.rcParams['figure.figsize'] = (15, 10)
 
 def lumpsum(invest_date, principal=10000): 
     invest_price = data.loc[invest_date]['Adj Close']
@@ -26,36 +24,21 @@ def lumpsum(invest_date, principal=10000):
     return principal*(1+investment_return)
 
 def dollar_cost_average(invest_date, periods=12, freq='30D', principal=10000): 
-    
-    # Get DCA dates
     dca_dates =  investment_dates_all = pd.date_range(invest_date, periods=periods, freq=freq)
-    
-    # Filter out ones past the last data day
     dca_dates = dca_dates[dca_dates < data.index[-1]]
     
-    # Figure out how many dates we cut off
     cut_off_count = 12 - len(dca_dates)
-
-    # Amount you have in cash and not the market
     value = cut_off_count*(principal/periods)
     
     for date in dca_dates:
-        # Get an actual trading day
         trading_date = data.index[data.index.searchsorted(date)]
-
-        # Calculate lumpsum value if invested on that date, add to value
         value += lumpsum(trading_date, principal= principal/periods)
-    
     return value
-
 
 # Plot ticker 
 data_price = data['Adj Close']
 
 fig, ax = plt.subplots()
-
-# Style and size
-fig.set_size_inches(15, 10)
 
 # Plot Series
 ax.plot(data.index, data_price, color='black')
@@ -68,15 +51,12 @@ ax.set_ylabel('Price ($)', size=14)
 ax.set_xlabel('Date', size=14)
 plt.show()
 
-
 # Lump Sum 
 lump_sum = [lumpsum(x) for x in data.index]
-
 # Dollar Cost Average 
 dca = [dollar_cost_average(i) for i in data.index]
 
 # Plot Together
-# size
 fig, ax = plt.subplots()
 
 # Plot Series
