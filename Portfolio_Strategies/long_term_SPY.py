@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy.stats.norm.pdf as normpdf
+from scipy.stats import norm
 import seaborn as sns
 from tabulate import tabulate
 import math
-from scipy.stats import norm
 import warnings
 warnings.filterwarnings("ignore")
 import yfinance as yf
@@ -14,8 +13,10 @@ import datetime as dt
 from dateutil import relativedelta
 
 # input
-symbol = 'SPY'
-start = dt.datetime.now() - dt.timedelta(days = 365*12)
+symbol = input('Enter a ticker: ')
+num_of_years = float(input('Enter the number of years: '))
+
+start = dt.datetime.now() - dt.timedelta(days = int(365.25*num_of_years))
 end = dt.datetime.now()
 
 # Read data 
@@ -23,21 +24,21 @@ df = yf.download(symbol,start,end)['Adj Close']
 
 delta = relativedelta.relativedelta(start,end)
 print('How many years of investing?')
-print('%s years' % delta.years)
+print('%s years' % num_of_years)
 
 # ### Starting Cash with 100k to invest in Bonds
 Cash = 100000
 
-print('Number of Shares:')
+print('\nNumber of Shares:')
 shares = int(Cash/df.iloc[0])
 print('{}: {}'.format(symbol, shares))
 
-print('Beginning Value:')
+print('\nBeginning Value:')
 shares = int(Cash/df.iloc[0])
 Begin_Value = round(shares * df.iloc[0], 2)
 print('{}: ${}'.format(symbol, Begin_Value))
 
-print('Current Value:')
+print('\nCurrent Value:')
 shares = int(Cash/df.iloc[0])
 Current_Value = round(shares * df.iloc[-1], 2)
 print('{}: ${}'.format(symbol, Current_Value))
@@ -46,34 +47,30 @@ returns = df.pct_change().dropna()
 
 # Calculate cumulative returns
 daily_cum_ret=(1+returns).cumprod()
+print ('\nCumulative Returns: ')
 print(daily_cum_ret.tail())
 
 # Print the mean
-print("mean : ", returns.mean()*100)
+print("\nmean: " + str(round(returns.mean()*100, 2)))
 
 # Print the standard deviation
-print("Std. dev: ", returns.std()*100)
+print("Std. dev: " + str(round(returns.std()*100, 2)))
 
 # Print the skewness
-print("skew: ", returns.skew())
+print("skew: " + str(round(returns.skew(), 2)))
 
 # Print the kurtosis
-print("kurt: ", returns.kurtosis())
+print("kurt: " + str(round(returns.kurtosis(), 2)))
 
 # Calculate total return and annualized return from price data 
-total_return = (returns[-1] - returns[0]) / returns[0]
-print(total_return)
+total_return = round(daily_cum_ret.tolist()[-1], 4) * 100
+print('\nTotal Return: ' + str(total_return) + '%')
 
 # Annualize the total return over 12 year 
 annualized_return = ((1+total_return)**(1/12))-1
 
 # Calculate annualized volatility from the standard deviation
 vol_port = returns.std() * np.sqrt(250)
-
-# Calculate the Sharpe ratio 
-rf = 0.001
-sharpe_ratio = (annualized_return - rf) / vol_port
-print(sharpe_ratio)
 
 # Create a downside return column with the negative returns only
 target = 0
@@ -88,13 +85,13 @@ rf = 0.01
 sortino_ratio = (expected_return - rf)/down_stdev
 
 # Print the results
-print("Expected return: ", expected_return*100)
 print('-' * 50)
-print("Downside risk:")
-print(down_stdev*100)
+print("Expected return: " + str(round(expected_return*100, 2)))
 print('-' * 50)
-print("Sortino ratio:")
-print(sortino_ratio)
+print("Downside risk: " + str(round(down_stdev*100, 2)))
+print('-' * 50)
+print("Sortino ratio: " + str(round(sortino_ratio, 2)))
+print('-' * 50)
 
 # Calculate the max value 
 roll_max = returns.rolling(center=False,min_periods=1,window=252).max()
@@ -105,70 +102,62 @@ daily_draw_down = returns/roll_max - 1.0
 # Calculate the minimum (negative) daily draw-down
 max_daily_draw_down = daily_draw_down.rolling(center=False,min_periods=1,window=252).min()
 
-# Plot the results
-plt.figure(figsize=(15,15))
-plt.plot(returns.index, daily_draw_down, label='Daily drawdown')
-plt.plot(returns.index, max_daily_draw_down, label='Maximum daily drawdown in time-window')
-plt.legend()
-plt.show()
-
-# Box plot
-returns.plot(kind='box')
-plt.show()
-
-print("Stock returns: ")
-print(returns.mean())
-print('-' * 50)
-print("Stock risk:")
-print(returns.std())
+# =============================================================================
+# # Plot the results
+# plt.figure(figsize=(15,10))
+# plt.plot(returns.index, daily_draw_down, label='Daily drawdown')
+# plt.plot(returns.index, max_daily_draw_down, label='Maximum daily drawdown in time-window')
+# plt.legend()
+# plt.show()
+# 
+# # Box plot
+# plt.subplots()
+# returns.plot(kind='box')
+# plt.show()
+# =============================================================================
 
 rf = 0.001
 Sharpe_Ratio = ((returns.mean() - rf) / returns.std()) * np.sqrt(252)
-print('Sharpe Ratio: ', Sharpe_Ratio)
+
+print("\nStock returns: " + str(round(returns.mean(), 2)))
+print("Stock risk: " + str(round(returns.std(), 2)))
+print('Sharpe Ratio: ' + str(round(Sharpe_Ratio, 2)))
 
 # ### Value-at-Risk 99% Confidence
 # 99% confidence interval
 # 0.01 empirical quantile of daily returns
 var99 = round((returns).quantile(0.01), 3)
 
-print('Value at Risk (99% confidence)')
-print(var99)
+print('\nValue at Risk (99% confidence): ' + str(var99))
 
 # the percent value of the 5th quantile
-print('Percent Value-at-Risk of the 5th quantile')
 var_1_perc = round(np.quantile(var99, 0.01), 3)
-print("{:.1f}%".format(-var_1_perc*100))
+print('Percent Value-at-Risk of the 5th quantile: {:.1f}%'.format(-var_1_perc*100))
 
-print('Value-at-Risk of 99% for 100,000 investment')
-print("${}".format(int(-var99 * 100000)))
+print('Value-at-Risk of 99% for 100,000 investment: ${}'.format(int(-var99 * 100000)))
 
 # ### Value-at-Risk 95% Confidence
-# 95% confidence interval
-# 0.05 empirical quantile of daily returns
 var95 = round((returns).quantile(0.05), 3)
-
-print('Value at Risk (95% confidence)')
-print(var95)
-
-print('Percent Value-at-Risk of the 5th quantile')
-print("{:.1f}%".format(-var95*100))
+print('Value at Risk (95% confidence): ' + str(var95))
+print('Percent Value-at-Risk of the 5th quantile: {:.1f}%'.format(-var95*100))
 
 # VaR for 100,000 investment
-print('Value-at-Risk of 99% for 100,000 investment')
 var_100k = "${}".format(int(-var95 * 100000))
-print("${}".format(int(-var95 * 100000)))
+print('Value-at-Risk of 99% for 100,000 investment: ${}'.format(int(-var95 * 100000)))
 
-mean = np.mean(returns)
-std_dev = np.std(returns)
-
-returns.hist(bins=50, density=True, histtype='stepfilled', alpha=0.5)
-x = np.linspace(mean - 3*std_dev, mean + 3*std_dev, 100)
-plt.plot(x, normpdf(x, mean, std_dev), "r")
-plt.title('Histogram of Returns')
-plt.show()
-
-VaR_90 = norm.ppf(1-0.9, mean, std_dev)
-VaR_95 = norm.ppf(1-0.95, mean, std_dev)
-VaR_99 = norm.ppf(1-0.99, mean, std_dev)
-
-print(tabulate([['90%', VaR_90], ['95%', VaR_95], ['99%', VaR_99]], headers=['Confidence Level', 'Value at Risk']))
+# =============================================================================
+# mean = np.mean(returns)
+# std_dev = np.std(returns)
+# 
+# returns.hist(bins=50, density=True, histtype='stepfilled', alpha=0.5)
+# x = np.linspace(mean - 3*std_dev, mean + 3*std_dev, 100)
+# plt.plot(x, norm.normpdf(x, mean, std_dev), "r")
+# plt.title('Histogram of Returns')
+# plt.show()
+# 
+# VaR_90 = norm.ppf(1-0.9, mean, std_dev)
+# VaR_95 = norm.ppf(1-0.95, mean, std_dev)
+# VaR_99 = norm.ppf(1-0.99, mean, std_dev)
+# 
+# print(tabulate([['90%', VaR_90], ['95%', VaR_95], ['99%', VaR_99]], headers=['Confidence Level', 'Value at Risk']))
+# =============================================================================
