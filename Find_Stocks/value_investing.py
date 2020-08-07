@@ -31,7 +31,9 @@ def finviz_parser(stock_list, metric):
                 soup = bs(html, features="lxml")
                 for m in df.columns:
                     df.loc[symbol, m] = fundamental_metric(soup, m)
-            except:
+                time.sleep(1)
+            except Exception as e:
+                print (e)
                 continue
         return df
         
@@ -49,13 +51,21 @@ def finviz_parser(stock_list, metric):
     elif stock_list == si.tickers_sp500():
         path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/sp500/{today}.csv'
         df.to_csv(path)
+    elif stock_list == pd.read_csv('/Users/shashank/Documents/Code/Python/Research/nasdaq100/nasdaq100_tickers.csv')['Ticker'].tolist():
+        path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/nasdaq100/{today}.csv'
+        df.to_csv(path)
     else:
         path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/{today}.csv'
         df.to_csv(path)
         
     driver.close()
     
-stock_list = pd.read_csv('/Users/shashank/Documents/Code/Python/Research/nasdaq100/nasdaq100_tickers.csv')['Ticker'].tolist()
+stock_list = si.tickers_sp500()
+if stock_list == si.tickers_sp500():
+    stock_list = [item.replace(".", "-") for item in stock_list]
+else:
+    pass
+
 metric = ['Dividend',
           'Dividend %',
           'P/E',
@@ -86,6 +96,9 @@ finviz_parser(stock_list, metric)
 #     df = pd.read_csv(path, index_col=0)
 # elif stock_list == si.tickers_sp500():
 #     path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/sp500/{today}.csv'
+#     df = pd.read_csv(path, index_col=0)
+# elif stock_list == pd.read_csv('/Users/shashank/Documents/Code/Python/Research/nasdaq100/nasdaq100_tickers.csv')['Ticker'].tolist():
+#     path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/nasdaq100/{today}.csv'
 #     df = pd.read_csv(path, index_col=0)
 # else:
 #     path = f'/Users/shashank/Documents/Code/Python/Outputs/finviz_fundamentals/{today}.csv'
