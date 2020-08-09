@@ -16,13 +16,13 @@ warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-# Set dates
-start = dt.date.today() - dt.timedelta(days = int(365.25 * 1))
-end = dt.date.today()
-
-# Set tickers
 tickers = si.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers]
+
+# Set dates
+num_of_years = float(input('Enter the number of years: '))
+start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
+end = dt.date.today()
 
 # Get today's date
 mylist = []
@@ -34,12 +34,12 @@ index = 'SPY'
 spy = DataReader(index, 'yahoo', start,end)
 spy['RSI'] = talib.RSI(spy['Adj Close'], timeperiod=14)
 
-# Get Signals
-valid_tickers = []
 signals = []
+accuracies = []
 for symbol in tickers:
     try:
-        df = DataReader(symbol, 'yahoo', start,end)
+        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/csv/prices/{symbol}.csv', index_col=0, parse_dates=True)
+        df = df.truncate(before=start, after=end)
         
         # Technical Indicators
         df['upper_band'], df['middle_band'], df['lower_band'] = talib.BBANDS(df['Adj Close'], timeperiod=14)
@@ -63,7 +63,7 @@ for symbol in tickers:
         df['maPos'] = None
         df['obvPos'] = None
         df['cciPos'] = None
-
+        
         # Calculate Signals
         for row in range(len(df)):
             if (df['Adj Close'].iloc[row] > df['upper_band'].iloc[row]) and (df['Adj Close'].iloc[row-1] < df['upper_band'].iloc[row-1]):
@@ -115,48 +115,29 @@ for symbol in tickers:
                 df['cciPos'].iloc[row] = -1
             
         # Clean up dataframe
+        frame = pd.DataFrame()
+        frame['PC'] = df['Adj Close'].pct_change()
         df = df.drop(columns = ['Open', 'High', 'Low', 'Close', 'Adj Close','Volume', 'upper_band', 'lower_band', 'middle_band', 'lower_band', 'macd', 'macdsignal', 'macdhist','RSI', 'Momentum', 'Z-Score', 'SMA', 'EMA', 'OBV', 'CCI'])
         df['pos'] = df.mean(axis=1)
+        df['PC'] = frame['PC']
         
         # Output
-        print (f'{symbol} done')
-        signals.append(round(mean(df['pos'].tolist()[::-1][:14]), 2))
-        valid_tickers.append(symbol)
-        time.sleep(.5)
-    except:
+        dataframe = pd.DataFrame(zip(df.index, df['PC'].tolist(), df['pos'].tolist()), columns = ['Date', 'Percent Change', 'Signal'])
+        dataframe = dataframe.set_index("Date")
+        dataframe = dataframe.dropna()
+        dataframe['Accuracy'] = dataframe['Signal'].mul(dataframe['Percent Change']).ge(0)
+        accuracy = round(dataframe['Percent Change'].mul(dataframe['Signal']).ge(0).mean(), 2)
+        print (f'Accuracy for {symbol}: ' + str(accuracy))
+        accuracies.append(accuracy)
+        signals.append(df['pos'].tolist()[-1])
+    
+    except Exception as e:
+        print (f'Could not fetch {symbol} because {e}')
+        accuracies.append(np.nan)
         continue
 
-# Output
-dataframe = pd.DataFrame(zip(valid_tickers, signals), columns = ['Tickers', 'Signal'])
-dataframe = dataframe.set_index("Tickers")
-dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/indicator_signals/{today}.csv')
-dataframe = dataframe.sort_values('Signal', ascending=False)
-print(dataframe)
-
-'''
-# Imports
-from pandas_datareader import DataReader
-from yahoo_fin import stock_info as si
-from scipy.stats import zscore
-from statistics import mean
-import datetime as dt
-import pandas as pd
-import numpy as np
-import warnings
-import talib 
-import time
-import ta
-
-# Settings
-warnings.filterwarnings("ignore")
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-
-# Set dates
-start = dt.date.today() - dt.timedelta(days = int(365.25 * 1))
-end = dt.date.today()
-
-dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/indicator_signals/{today}.csv', index_col=0)
-dataframe = dataframe.sort_values('Signal', ascending=False)
-print(dataframe.head(50))
-'''
+final = pd.DataFrame(zip(tickers, accuracies, signals), columns = ['Ticker', 'Accuracy', 'Signal']).set_index('Ticker')
+final = final.sort_values(['Accuracy', 'Signal'], ascending = [False, False])
+final.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/main_indicators/accuracy_{str(num_of_years)}y_sp500.csv')
+print (final.head(100))
+print ('Mean Accuracy: ' + str(round(final['Accuracy'].mean(), 2)))
