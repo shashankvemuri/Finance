@@ -16,30 +16,26 @@ warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-# Set dates
-start = dt.date.today() - dt.timedelta(days = int(365.25 * 1))
-end = dt.date.today()
-
-# Set tickers
-tickers = si.tickers_sp500()
-tickers = [item.replace(".", "-") for item in tickers]
-
 # Get today's date
 mylist = []
 mylist.append(dt.date.today())
 today = mylist[0]
 
-# Get Index Data
-index = 'SPY'
-spy = DataReader(index, 'yahoo', start,end)
-spy['RSI'] = talib.RSI(spy['Adj Close'], timeperiod=14)
+stock = input('Enter a ticker: ')
+num_of_years = float(input('Enter the number of years: '))
 
-# Get Signals
-valid_tickers = []
-signals = []
-for symbol in tickers:
+while stock != 'quit':
     try:
-        df = DataReader(symbol, 'yahoo', start,end)
+        # Set dates
+        start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
+        end = dt.date.today()
+
+        df = DataReader(stock, 'yahoo', start,end)    
+        
+        # Get Index Data
+        index = 'SPY'
+        spy = DataReader(index, 'yahoo', start,end)
+        spy['RSI'] = talib.RSI(spy['Adj Close'], timeperiod=14)
         
         # Technical Indicators
         df['upper_band'], df['middle_band'], df['lower_band'] = talib.BBANDS(df['Adj Close'], timeperiod=14)
@@ -115,48 +111,24 @@ for symbol in tickers:
                 df['cciPos'].iloc[row] = -1
             
         # Clean up dataframe
+        frame = pd.DataFrame()
+        frame['PC'] = df['Adj Close'].pct_change()
         df = df.drop(columns = ['Open', 'High', 'Low', 'Close', 'Adj Close','Volume', 'upper_band', 'lower_band', 'middle_band', 'lower_band', 'macd', 'macdsignal', 'macdhist','RSI', 'Momentum', 'Z-Score', 'SMA', 'EMA', 'OBV', 'CCI'])
         df['pos'] = df.mean(axis=1)
+        df['PC'] = frame['PC']
         
         # Output
-        print (f'{symbol} done')
-        signals.append(round(mean(df['pos'].tolist()[::-1][:14]), 2))
-        valid_tickers.append(symbol)
-        time.sleep(.5)
+        dataframe = pd.DataFrame(zip(df.index, df['PC'].tolist(), df['pos'].tolist()), columns = ['Date', 'Percent Change', 'Signal'])
+        dataframe = dataframe.set_index("Date")
+        dataframe = dataframe.dropna()
+        dataframe['Accuracy'] = dataframe['Signal'].mul(dataframe['Percent Change']).ge(0)
+        accuracy = round(dataframe['Percent Change'].mul(dataframe['Signal']).ge(0).mean(), 2)
+        print (f'Accuracy for {stock.upper()}: ' + str(accuracy))
+        print (f'Signal for {stock.upper()}: ' + str(df['pos'].tolist()[-1]))
+
+        stock = input('Enter another ticker: ')
+        if stock != 'quit':
+            num_of_years = float(input('Enter the number of years: '))
+
     except:
-        continue
-
-# Output
-dataframe = pd.DataFrame(zip(valid_tickers, signals), columns = ['Tickers', 'Signal'])
-dataframe = dataframe.set_index("Tickers")
-dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/indicator_signals/{today}.csv')
-dataframe = dataframe.sort_values('Signal', ascending=False)
-print(dataframe)
-
-'''
-# Imports
-from pandas_datareader import DataReader
-from yahoo_fin import stock_info as si
-from scipy.stats import zscore
-from statistics import mean
-import datetime as dt
-import pandas as pd
-import numpy as np
-import warnings
-import talib 
-import time
-import ta
-
-# Settings
-warnings.filterwarnings("ignore")
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-
-# Set dates
-start = dt.date.today() - dt.timedelta(days = int(365.25 * 1))
-end = dt.date.today()
-
-dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/indicator_signals/{today}.csv', index_col=0)
-dataframe = dataframe.sort_values('Signal', ascending=False)
-print(dataframe.head(50))
-'''
+        print ("there was a problem")
