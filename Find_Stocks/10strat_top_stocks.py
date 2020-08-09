@@ -38,7 +38,7 @@ signals = []
 accuracies = []
 for symbol in tickers:
     try:
-        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/csv/prices/{symbol}.csv', index_col=0, parse_dates=True)
+        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/S&P500/{symbol}.csv', index_col=0, parse_dates=True)
         df = df.truncate(before=start, after=end)
         
         # Technical Indicators
