@@ -68,8 +68,13 @@ else:
 
 metric = ['Dividend',
           'Dividend %',
+          'Market Cap',
+          'Income',
+          'Sales',
           'P/E',
           'Forward P/E',
+          'P/S',
+          'P/C',
           'PEG',
           'P/B',
           'Debt/Eq',
@@ -106,3 +111,14 @@ finviz_parser(stock_list, metric)
 #  
 # print (df)
 # =============================================================================
+
+#criteria ranking
+ROE = 1.2
+ROA = 1.1
+Debt_Ratio = -1.1
+Interest_Coverage = 1.05
+Dividend_Payout_Ratio = 1.01
+PB = -1.10
+PS = -1.05
+Revenue_Growth = 1.25
+Net_Income_Growth = 1.10
