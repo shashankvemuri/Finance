@@ -3,10 +3,8 @@ from yahoo_fin import stock_info as si
 from pandas import ExcelWriter
 import yfinance as yf
 import pandas as pd
-import requests
 import datetime
 import time
-import os
 
 yf.pdr_override()
 
@@ -66,48 +64,28 @@ for stock in stocklist:
             moving_average_200_20 = 0
 
         # Condition 1: Current Price > 150 SMA and > 200 SMA
-        if(currentClose > moving_average_150 > moving_average_200):
-            condition_1 = True
-        else:
-            condition_1 = False
+        condition_1 = (currentClose > moving_average_150 > moving_average_200)
+
         # Condition 2: 150 SMA and > 200 SMA
-        if(moving_average_150 > moving_average_200):
-            condition_2 = True
-        else:
-            condition_2 = False
+        condition_2 = (moving_average_150 > moving_average_200)
+
         # Condition 3: 200 SMA trending up for at least 1 month (ideally 4-5 months)
-        if(moving_average_200 > moving_average_200_20):
-            condition_3 = True
-        else:
-            condition_3 = False
+        condition_3 = (moving_average_200 > moving_average_200_20)
+
         # Condition 4: 50 SMA> 150 SMA and 50 SMA> 200 SMA
-        if(moving_average_50 > moving_average_150 > moving_average_200):
-            #print("Condition 4 met")
-            condition_4 = True
-        else:
-            #print("Condition 4 not met")
-            condition_4 = False
+        condition_4 = (moving_average_50 > moving_average_150 > moving_average_200)
+
         # Condition 5: Current Price > 50 SMA
-        if(currentClose > moving_average_50):
-            condition_5 = True
-        else:
-            condition_5 = False
+        condition_5 = (currentClose > moving_average_50)
+
         # Condition 6: Current Price is at least 30% above 52 week low (Many of the best are up 100-300% before coming out of consolidation)
-        if(currentClose >= (1.3*low_of_52week)):
-            condition_6 = True
-        else:
-            condition_6 = False
+        condition_6 = (currentClose >= (1.3*low_of_52week))
+
         # Condition 7: Current Price is within 25% of 52 week high
-        if(currentClose >= (.75*high_of_52week)):
-            condition_7 = True
-        else:
-            condition_7 = False
+        condition_7 = (currentClose >= (.75*high_of_52week))
             
         # Condition 8: IBD RS_Rating greater than 70
-        if(RS_Rating >= 70):
-            condition_8 = True
-        else:
-            condition_8 = False
+        condition_8 = (RS_Rating >= 70)
 
         if(condition_1 and condition_2 and condition_3 and condition_4 and condition_5 and condition_6 and condition_7 and condition_8):
             final.append(stock)
