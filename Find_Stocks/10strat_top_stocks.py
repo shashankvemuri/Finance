@@ -42,16 +42,16 @@ for symbol in tickers:
         df = df.truncate(before=start, after=end)
         
         # Technical Indicators
-        df['upper_band'], df['middle_band'], df['lower_band'] = talib.BBANDS(df['Adj Close'], timeperiod=14)
+        df['upper_band'], df['middle_band'], df['lower_band'] = talib.BBANDS(df['Adj Close'], timeperiod=7)
         df['macd'], df['macdsignal'], df['macdhist'] = talib.MACD(df['Adj Close'], fastperiod=12, slowperiod=26, signalperiod=9)
-        df['RSI'] = talib.RSI(df['Adj Close'], timeperiod=14)
-        df['Momentum'] = talib.MOM(df['Adj Close'], timeperiod=14)
+        df['RSI'] = talib.RSI(df['Adj Close'], timeperiod=5)
+        df['Momentum'] = talib.MOM(df['Adj Close'], timeperiod=5)
         df['Z-Score'] = zscore(df['Adj Close'])
-        df['SMA'] = talib.SMA(df['Adj Close'], timeperiod = 20)
-        df['EMA'] = talib.EMA(df['Adj Close'], timeperiod = 20)
+        df['SMA'] = talib.SMA(df['Adj Close'], timeperiod = 7)
+        df['EMA'] = talib.EMA(df['Adj Close'], timeperiod = 7)
         df['OBV'] = talib.OBV(df['Adj Close'], df['Volume'])/10**6
         df['OBV'] = df['OBV'].diff()
-        df['CCI'] = ta.trend.cci(df['High'], df['Low'], df['Adj Close'], n=31, c=0.015)
+        df['CCI'] = ta.trend.cci(df['High'], df['Low'], df['Adj Close'], n=7, c=0.015)
         
         # Set signal position columns
         df['bbPos'] = None
@@ -63,7 +63,7 @@ for symbol in tickers:
         df['maPos'] = None
         df['obvPos'] = None
         df['cciPos'] = None
-        
+
         # Calculate Signals
         for row in range(len(df)):
             if (df['Adj Close'].iloc[row] > df['upper_band'].iloc[row]) and (df['Adj Close'].iloc[row-1] < df['upper_band'].iloc[row-1]):
@@ -80,9 +80,9 @@ for symbol in tickers:
             else:
                 df['macdPos'].iloc[row] = 0
         
-            if (df['RSI'].iloc[row] < 30 and spy['RSI'].iloc[row] > 30):
+            if (df['RSI'].iloc[row] < 25 and spy['RSI'].iloc[row] > 25):
                 df['rsiPos'].iloc[row] = 1
-            elif (df['RSI'].iloc[row] > 70 and spy['RSI'].iloc[row] < 70):
+            elif (df['RSI'].iloc[row] > 75 and spy['RSI'].iloc[row] < 75):
                 df['rsiPos'].iloc[row] = -1
             else:
                 df['rsiPos'].iloc[row] = 0
@@ -124,6 +124,7 @@ for symbol in tickers:
         # Output
         dataframe = pd.DataFrame(zip(df.index, df['PC'].tolist(), df['pos'].tolist()), columns = ['Date', 'Percent Change', 'Signal'])
         dataframe = dataframe.set_index("Date")
+        dataframe['Percent Change'] = dataframe['Percent Change'].shift(1)
         dataframe = dataframe.dropna()
         dataframe['Accuracy'] = dataframe['Signal'].mul(dataframe['Percent Change']).ge(0)
         accuracy = round(dataframe['Percent Change'].mul(dataframe['Signal']).ge(0).mean(), 2)
@@ -138,6 +139,6 @@ for symbol in tickers:
 
 final = pd.DataFrame(zip(tickers, accuracies, signals), columns = ['Ticker', 'Accuracy', 'Signal']).set_index('Ticker')
 final = final.sort_values(['Accuracy', 'Signal'], ascending = [False, False])
-final.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/main_indicators/accuracy_{str(num_of_years)}y_sp500.csv')
+final.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/main_indicators/2accuracy_{str(num_of_years)}y_sp500.csv')
 print (final.head(100))
 print ('Mean Accuracy: ' + str(round(final['Accuracy'].mean(), 2)))
