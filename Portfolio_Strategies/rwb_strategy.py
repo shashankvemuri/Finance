@@ -17,7 +17,7 @@ num_of_years = float(num_of_years)
 start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
 now=dt.datetime.now()
 
-while stock != 'quit':
+while stock.lower() != 'quit':
     df=pdr.get_data_yahoo(stock,start,now)
     
     emasUsed=[3,5,8,10,12,15,30,35,40,45,50,60]
@@ -115,7 +115,7 @@ while stock != 'quit':
             
     plt.subplots()
     plt.rcParams['figure.figsize'] = (15, 10)
-    df = df.tail(252*3)
+    df = df.tail(252*5)
     plt.plot(df['Adj Close'], color='g')
     plt.plot(df['Ema_3'], color ='r')
     plt.plot(df['Ema_5'], color ='r')
@@ -129,7 +129,7 @@ while stock != 'quit':
     plt.plot(df['Ema_45'], color ='b')
     plt.plot(df['Ema_50'], color ='b')
     plt.plot(df['Ema_60'], color ='b')
-    plt.title(f'Red White Blue Strategy for {stock.upper()}')
+    plt.title(f'Red White Blue Strategy for {stock.upper()} - {totalR}%')
     plt.ylabel('Price')
     plt.xlabel('Date')
     plt.show()
