@@ -1,11 +1,8 @@
-import pandas as pd
-import numpy as np
 import yfinance as yf
 import datetime as dt
 from pandas_datareader import data as pdr
 import matplotlib.pyplot as plt
 import warnings
-import yahoo_fin.stock_info as si
 
 yf.pdr_override()
 warnings.filterwarnings('ignore')
