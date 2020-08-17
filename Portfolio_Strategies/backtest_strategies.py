@@ -2,20 +2,17 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import datetime as dt
-import matplotlib.pyplot as plt
-import mplfinance as mpf
-from finta import TA
-from pylab import rcParams
+import warnings
 from yahoo_fin import stock_info as si
 import talib
-import ta
 
+warnings.filterwarnings('ignore')
 pd.set_option('display.max_columns', None)
 
 stock = input('Enter a stock ticker: ')
-
 num_of_years = input('Enter number of years: ')
 num_of_years = float(num_of_years)
+
 start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
 end = dt.datetime.now()
 
@@ -585,7 +582,7 @@ for signal in signals:
         
     elif signal.lower() == 'red white blue':
         print ('-'*60)
-        print ('REd White Blue: ')
+        print ('Red White Blue: ')
         
         position=0 
         counter=0
@@ -604,14 +601,12 @@ for signal in signals:
         	close=df["Adj Close"][i]
         	
         	if(cmin>cmax):
-        		print("Red White Blue")
         		if(position==0):
         			bp=close
         			position=1
         			print("Buying now at "+str(bp))
         
         	elif(cmin<cmax):
-        		print("Blue White Red")
         		if(position==1):
         			position=0
         			sp=close
