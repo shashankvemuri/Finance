@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import datetime
 import calendar
+from flask import render_template
 
 pd.set_option('display.max_columns', None)
 
@@ -9,7 +10,7 @@ class dividend_calendar:
     # class attributes
     calendars = []
     url = 'https://api.nasdaq.com/api/calendar/dividends'
-    hdrs = {'Accept': 'application/json, text/plain, */*',
+    hdrs = {'Accept': 'text/plain, */*',
              'DNT': "1",
              'Origin': 'https://www.nasdaq.com/',
              'Sec-Fetch-Mode': 'cors',
@@ -27,8 +28,7 @@ class dividend_calendar:
     
     def scraper(self, date_str):
         params = {'date': date_str}
-        page=requests.get(self.url,headers=self.hdrs,params=params)
-        dictionary = page.json()
+        dictionary=requests.get(self.url,headers=self.hdrs,params=params).json()
         return dictionary
     
     def dict_to_df(self, dicti):        
@@ -44,22 +44,34 @@ class dividend_calendar:
         self.dict_to_df(dictionary)          
         return dictionary
            
-if __name__ == '__main__':
-    year = 2020
-    month = 8
+def get_dividends(year, month):
+    try:
+        year = int(year)
+        month = int(month)
+
+        month_name = datetime.date(1900, month, 1).strftime('%B')
+
+        days_in_month = calendar.monthrange(year, month)[1]
+        soon = dividend_calendar(year, month)
+        function = lambda days: soon.calendar(days)
+        
+        iterator = list(range(1, days_in_month+1))
+        objects = list(map(function, iterator))
+        
+        concat_df = pd.concat(soon.calendars)
+        final_df = concat_df.dropna(how='any')
+        
+        final_df = final_df.set_index('companyName')
+        final_df = final_df.reset_index()
+        final_df = final_df.drop(columns = ['announcement_Date'])
+        
+        final_df.columns = ['Company Name', 'Ticker', 'Dividend Date', 'Payment Date', 'Record Date', 'Dividend Rate', 'Annual Rate']
+        final_df = final_df.sort_values(['Annual Rate', 'Dividend Date'], ascending=[False, False])
+        final_df = final_df.drop_duplicates()
+        
+        return final_df
+        # return render_template('dividendsOutput.html', year=year, month = month, month_name=month_name, tables=[final_df.to_html(classes='data center table-sortable', index=False)], titles=final_df.columns.values)
     
-    days_in_month = calendar.monthrange(year, month)[1]
-    soon = dividend_calendar(year, month)
-    function = lambda days: soon.calendar(days)
-    
-    iterator = list(range(1, days_in_month+1))
-    objects = list(map(function, iterator))
-    
-    concat_df = pd.concat(soon.calendars)
-    drop_df = concat_df.dropna(how='any')
-    
-    final_df = drop_df.set_index('companyName')
-    final_df = final_df.drop(columns=['announcement_Date'])
-    final_df.columns = ['ticker', 'dividend_date', 'payment_date', 'record_date', 'dividend_rate', 'annual_rate']
-    final_df = final_df.sort_values(['annual_rate', 'dividend_rate'], ascending=[False, False])
-    print (final_df.head(5))
+    except Exception as e:
+        return e
+        # return render_template('error.html', e = e)
