@@ -45,17 +45,6 @@ plt.show()
 dataset['Adj Close']['2018-05-01':'2018-06-01']
 date_range = dataset[['Adj Close','P','R1','S1','R2','S2','R3','S3']]['2018-05-01':'2018-06-01']# Pick Date Ranges
 
-date_range.plot(figsize=(18,12),grid=True)
-plt.title('Stock Pivot Point')
-plt.legend(['Price','P','R1','S1','R2','S2','R3','S3'], loc=0)
-plt.show()
-
-ax = date_range.plot(figsize=(18,12), grid=True) 
-ax.lines[0].set_linewidth(4) # Plot Specific Line
-plt.title('Stock Pivot Point')
-plt.legend()
-plt.show()
-
 P = pd.Series((dataset['High'] + dataset['Low'] + 2*dataset['Close']) / 4)  
 R1 = pd.Series(2 * P - dataset['Low'])  
 S1 = pd.Series(2 * P - dataset['High'])  

@@ -28,7 +28,7 @@ def VWAP():
     vwap = Cumulative_TP_V/Cumulative_V
     return vwap
 
-VWAP()
+print(VWAP())
 
 def Update_VWAP():
     df = get_symbol(stock)
@@ -45,7 +45,7 @@ def Update_VWAP():
     new_vwap = ((df['Adj Close'][-1] - Average_Volume_Each)+(df['Adj Close'][-1] + Average_Volume_Each))/2
     return new_vwap
 
-Update_VWAP()
+print(Update_VWAP())
 
 def VWAP_Column():
     df = get_symbol('AAPL')
@@ -56,4 +56,4 @@ def VWAP_Column():
     vwap_column = (df[['OpenxVolume','HighxVolume','LowxVolume','ClosexVolume']].mean(axis=1))/df['Volume']
     return vwap_column
 
-Update_VWAP()
+print(Update_VWAP())
