@@ -66,19 +66,13 @@ plt.show()
 # Plot some example distributions stock's returns
 xs = np.linspace(-6,6, 1257)
 normal = stats.norm.pdf(xs)
-plt.plot(returns,stats.laplace.pdf(returns), label='Leptokurtic')
 print('Excess kurtosis of leptokurtic distribution:', (stats.laplace.stats(returns)))
-plt.plot(returns, normal, label='Mesokurtic (normal)')
 print('Excess kurtosis of mesokurtic distribution:', (stats.norm.stats(returns)))
-plt.plot(returns,stats.cosine.pdf(returns), label='Platykurtic')
 print('Excess kurtosis of platykurtic distribution:', (stats.cosine.stats(returns)))
-plt.legend()
-plt.show()
 
 print("Excess kurtosis of returns: ", stats.kurtosis(returns))
 
 from statsmodels.stats.stattools import jarque_bera
-
 _, pvalue, _, _ = jarque_bera(returns)
 
 if pvalue > 0.05:

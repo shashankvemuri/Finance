@@ -7,8 +7,6 @@ import statsmodels.api as sm
 from scipy import stats
 
 # BETA, ALPHA, OLS REGRESSION
-
-
 stock = 'MSFT'
 start_date = datetime.datetime(2014,12,28)
 end_date = datetime.date.today()
@@ -18,7 +16,6 @@ sp_500 = DataReader('^GSPC', 'yahoo', start_date, end_date)['Close']
 # joining the closing prices of the two datasets 
 monthly_prices = pd.concat([df, sp_500], axis=1)
 monthly_prices.columns = [stock, '^GSPC']
-
 
 # calculate monthly returns
 monthly_returns = monthly_prices.pct_change(1)
@@ -38,7 +35,6 @@ model = sm.OLS(y, X1)
 results = model.fit()
 print(results.summary())
 
-
 # alternatively scipy linear regression
 slope, intercept, r_value, p_value, std_err = stats.linregress(X, y)
 
@@ -49,7 +45,6 @@ plt.ylabel("Daily Returns")
 fig, ax = plt.subplots()
 plt.show()
 
-
 # Calculate the mean of x and y
 Xmean = np.mean(X)
 ymean = np.mean(y)
@@ -57,7 +52,6 @@ ymean = np.mean(y)
 # Calculate the terms needed for the numerator and denominator of beta
 df['xycov'] = (X.dropna() - Xmean)*(y.dropna() - ymean)
 df['xvar'] = (X.dropna() - Xmean)**2
-
 
 #Calculate beta and alpha
 beta = df['xycov'].sum()/df['xvar'].sum()
@@ -68,7 +62,6 @@ print(f'beta = {beta}')
 # Generate Line
 xlst = np.linspace(np.min(X),np.max(X),100)
 ylst = np.array([beta*xvl+alpha for xvl in xlst])
-
 
 # Plot
 plt.scatter(X, y, alpha=0.5)

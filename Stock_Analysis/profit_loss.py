@@ -36,13 +36,6 @@ plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
 
-plt.figure(figsize=(16,8))
-plt.plot(dataset['End'])
-plt.title('Ending Value for Daily')
-plt.xlabel('Date')
-plt.ylabel('Price')
-plt.show()
-
 # how many shares to get with the current money
 Shares = round(int(float(Start) / dataset['Adj Close'][0]),1)
 Purchase_Price = dataset['Adj Close'][0] # Invest in the Beginning Price

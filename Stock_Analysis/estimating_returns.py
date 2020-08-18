@@ -5,9 +5,12 @@ import numpy as np
 from scipy.stats import norm
 import datetime as dt
 from pandas_datareader import DataReader
+import warnings
+
+warnings.filterwarnings('ignore')
 
 # parameters
-stock = 'NIO'
+stock = 'AAPL'
 higher_bound = 0.3
 lower_bound= 0.2
 

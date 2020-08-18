@@ -7,6 +7,7 @@ import yfinance as yf
 from pandas_datareader import data as pdr
 yf.pdr_override()
 import datetime as dt
+import talib as ta
 
 # inputs 
 stock = 'MSFT'
@@ -14,54 +15,22 @@ start = dt.date.today() - dt.timedelta(days = 365*4)
 end = dt.date.today()
 df = pdr.get_data_yahoo(stock, start, end)
 
-# Daily Returns
 df['Returns'] = round(df['Adj Close'].pct_change(), 4)
-df.head()
-
-# Log Returns
 df['Log Returns'] = np.log(df['Adj Close']) - np.log(df['Adj Close'].shift(1))
-df.head()
-
-# Calculate in Rows using axis=1
 df['Risk'] = round(df[['Open', 'High', 'Low','Adj Close']].std(axis=1), 4)
-df.head()
-
-# VWAP
 df['VWAP'] = round(np.cumsum(df['Volume']*(df['High']+df['Low'])/2) / np.cumsum(df['Volume']), 2)
-df.head()
-
 df['Mean'] = round(df[['Open', 'High', 'Low','Adj Close']].mean(axis=1), 2)
-df.head()
-
 df['Median'] = round(df[['Open', 'High', 'Low','Adj Close']].median(axis=1), 2)
-df.head()
-
-df['Mode'] = round(df[['Open', 'High', 'Low','Adj Close']].mode(axis=1), 2)
-df.head()
-
 df['Variance'] = round(df[['Open', 'High', 'Low','Adj Close']].var(axis=1), 4)
-df.head()
-
 df['Skew'] = round(df[['Open', 'High', 'Low','Adj Close']].skew(axis=1), 4)
-df.head()
-
-df['Skew'] = round(df[['Open', 'High', 'Low','Adj Close']].skew(axis=1), 4)
-df.head()
-
 df['Kurt'] = round(df[['Open', 'High', 'Low','Adj Close']].kurt(axis=1), 4)
-df.head()
-
-# Standard error of the mean
 df['Error'] = df[['Open', 'High', 'Low','Adj Close']].sem(axis=1)
-df.head()
-
-import talib as ta
 
 # Creating Indicators
 n=5
 df['RSI']=ta.RSI(np.array(df['Adj Close'].shift(1)), timeperiod=n)
-df['SMA']= pd.rolling_mean(df['Adj Close'].shift(1),window=n)
-df['Corr']= pd.rolling_corr(df['SMA'],df['Adj Close'].shift(1),window=n)
+# df['SMA']= pd.rolling_mean(df['Adj Close'].shift(1),window=n)
+# df['Corr']= pd.rolling_corr(df['SMA'],df['Adj Close'].shift(1),window=n)
 df['SAR']=ta.SAR(np.array(df['High'].shift(1)),np.array(df['Low'].shift(1)),0.2,0.2)
 
 # Momemtum Indicator Functions
@@ -185,7 +154,7 @@ df['ATR2']=abs(np.array(df['High'].shift(1)) - np.array(df['Adj Close'].shift(1)
 df['ATR3']=abs(np.array(df['Low'].shift(1)) - np.array(df['Adj Close'].shift(1)))
 df['AverageTrueRange'] = df[['ATR1', 'ATR2', 'ATR3']].max(axis=1)
 
-df['EMA']=pd.Series(pd.ewma(df['Adj Close'], span = n, min_periods = n - 1))
+# df['EMA']=pd.Series(pd.ewma(df['Adj Close'], span = n, min_periods = n - 1))
 
 # Statistic Functions
 df['Beta']=ta.BETA(np.array(df['High'].shift(1)),np.array(df['Low'].shift(1)), timeperiod=n)
@@ -205,8 +174,8 @@ df['EMA']=ta.EMA(np.array(df['Adj Close'].shift(1)), timeperiod=n)
 df['HT_TRENDLINE']=ta.HT_TRENDLINE(np.array(df['Adj Close'].shift(1)))
 df['KAMA']=ta.KAMA(np.array(df['Adj Close'].shift(1)), timeperiod=n)
 df['MA']=ta.MA(np.array(df['Adj Close'].shift(1)), timeperiod=n, matype=0)
-df['mama'],df['fama'] = ta.MAMA(np.array(df['Adj Close'].shift(1)), fastlimit=0, slowlimit=0)
-df['MAVP'] =ta.MAVP(np.array(df['Adj Close'].shift(1)),periods, minperiod=2, maxperiod=30, matype=0)
+# df['mama'],df['fama'] = ta.MAMA(np.array(df['Adj Close'].shift(1)), fastlimit=0, slowlimit=0)
+# df['MAVP'] =ta.MAVP(np.array(df['Adj Close'].shift(1)),periods=14, minperiod=2, maxperiod=30, matype=0)
 df['MIDPOINT']=ta.MIDPOINT(np.array(df['Adj Close'].shift(1)), timeperiod=n)
 df['MIDPRICE']=ta.MIDPRICE(np.array(df['High'].shift(1)),np.array(df['Low'].shift(1)), timeperiod=n)
 df['SAR']=ta.SAR(np.array(df['High'].shift(1)),np.array(df['Low'].shift(1)), acceleration=0, maximum=0)
@@ -226,6 +195,7 @@ df['Bol_lower'] = df['Adj Close'].shift(1).rolling(window=20).mean() - 2* df['Ad
 df['Bol_BW'] = ((df['Bol_upper'] - df['Bol_lower'])/df['20d_ma'])*100
 df['Bol_BW_200MA'] = df['Bol_BW'].shift(1).rolling(window=50).mean()
 df['Bol_BW_200MA'] = df['Bol_BW_200MA'].fillna(method='backfill')
-df['20d_ewma'] = df['Adj Close'].shift(1).ewm(span=20).mean()
-df['50d_ewma'] = df['Adj Close'].shift(1).ewm(span=50).mean()
+# df['20d_ewma'] = df['Adj Close'].shift(1).ewm(span=20).mean()
+# df['50d_ewma'] = df['Adj Close'].shift(1).ewm(span=50).mean()
 
+print (df.head())
