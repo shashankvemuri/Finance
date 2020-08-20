@@ -20,7 +20,6 @@ num_of_years = 10
 start = datetime.datetime.now() - datetime.timedelta(int(365.25 * num_of_years))
 end = datetime.datetime.now() 
 
-
 # Make the ticker symbols readable by Yahoo Finance
 stocklist = pd.read_pickle('../spxTickers.pickle')
 stocklist = [item.replace(".", "-") for item in stocklist]
