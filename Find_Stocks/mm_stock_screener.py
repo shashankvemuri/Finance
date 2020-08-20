@@ -10,7 +10,6 @@ yf.pdr_override()
 
 stocklist = si.tickers_sp500()
 stocklist = [item.replace(".", "-") for item in stocklist]
-
 index_name = '^GSPC' # S&P 500
 
 final = []
