@@ -1,14 +1,10 @@
 # Imports
 from pandas_datareader import DataReader
-from yahoo_fin import stock_info as si
 from scipy.stats import zscore
-from statistics import mean
 import datetime as dt
 import pandas as pd
-import numpy as np
 import warnings
 import talib 
-import time
 import ta
 
 # Settings
@@ -128,8 +124,6 @@ while stock != 'quit':
         print (f'Signal for {stock.upper()}: ' + str(df['pos'].tolist()[-1]))
 
         stock = input('Enter another ticker: ')
-        if stock != 'quit':
-            num_of_years = float(input('Enter the number of years: '))
 
     except Exception as e:
         print (e)
