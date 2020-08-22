@@ -6,6 +6,8 @@ import pandas as pd
 import warnings
 import talib 
 import ta
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Settings
 warnings.filterwarnings("ignore")
@@ -109,10 +111,29 @@ while stock != 'quit':
         # Clean up dataframe
         frame = pd.DataFrame()
         frame['PC'] = df['Adj Close'].pct_change()
+        db = df.copy()
         df = df.drop(columns = ['Open', 'High', 'Low', 'Close', 'Adj Close','Volume', 'upper_band', 'lower_band', 'middle_band', 'lower_band', 'macd', 'macdsignal', 'macdhist','RSI', 'Momentum', 'Z-Score', 'SMA', 'EMA', 'OBV', 'CCI'])
         df['pos'] = df.mean(axis=1)
         df['PC'] = frame['PC']
         
+        db = db.reset_index()
+        db['Buy'] = np.where((df['pos'] < 0.7), 1, 0)
+        db['Sell'] = np.where((df['pos'] < -0.3), 1, 0)
+        
+        db['Buy_ind'] = np.where( (db['Buy'] > db['Buy'].shift(1)),1,0)
+        db['Sell_ind'] = np.where( (db['Sell'] > db['Sell'].shift(1)),1,0)
+        
+        plt.gcf()
+        plt.subplots()
+        plt.rcParams['figure.figsize'] = (15, 10)
+        plt.title(f'{stock.upper()} Signals')
+        plt.xlabel('Date')
+        plt.ylabel('Price')
+        plt.plot(db['Date'], db['Adj Close'],linewidth=0.5,color='black')
+        plt.scatter(db.loc[db['Buy_ind'] == 1 , 'Date'].values,db.loc[db['Buy_ind'] == 1, 'Adj Close'].values, label='skitscat', color='green', s=25, marker="^")
+        plt.scatter(db.loc[db['Sell_ind'] == 1 , 'Date'].values,db.loc[db['Sell_ind'] == 1, 'Adj Close'].values, label='skitscat', color='red', s=25, marker="v")
+        plt.show()
+
         # Output
         dataframe = pd.DataFrame(zip(df.index, df['PC'].tolist(), df['pos'].tolist()), columns = ['Date', 'Percent Change', 'Signal'])
         dataframe = dataframe.set_index("Date")
@@ -122,7 +143,7 @@ while stock != 'quit':
         accuracy = round(dataframe['Percent Change'].mul(dataframe['Signal']).ge(0).mean(), 2)
         print (f'Accuracy for {stock.upper()}: ' + str(accuracy))
         print (f'Signal for {stock.upper()}: ' + str(df['pos'].tolist()[-1]))
-
+    
         stock = input('Enter another ticker: ')
 
     except Exception as e:
