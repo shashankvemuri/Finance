@@ -7,11 +7,7 @@ import pandas as pd
 from pandas_datareader import data as pdr
 import yfinance as yf
 from pandas import ExcelWriter
-import requests
-from yahoo_fin import stock_info as si
 import time
-import bs4 as bs
-import pickle
 import talib
 
 yf.pdr_override()
@@ -36,7 +32,7 @@ n = -1
 exportList = pd.DataFrame(columns=['Stock', "RSI", "200 Day MA"])
 otherList = pd.DataFrame(columns=['Stock', "RSI", "200 Day MA", "Failed"])
 
-for stock in stocklist:
+for stock in stocklist[:5]:
     #n += 1
     time.sleep(1.5)
     
