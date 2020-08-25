@@ -18,6 +18,7 @@ def insider_trades():
         trades.columns = ['Ticker', 'Owner', 'Relationship', 'Date', 'Transaction', 'Cost', '#Shares', 'Value', '#Shares Total', 'SEC Form 4']
         trades = trades.sort_values('Date', ascending=False)
         trades = trades.set_index('Date')
+        trades = trades.drop('Date')
         trades = trades.iloc[2:]
         return trades.head()
     except Exception as e:
