@@ -48,7 +48,7 @@ dfc = df.copy()
 dfc = dfc.reset_index()
 
 from matplotlib import dates as mdates
-dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
+dfc['Date'] = mdates.date2num(dfc['Date'].tolist())
 
 # This one has not date and is convert to number
 from mplfinance.original_flavor import candlestick_ohlc
