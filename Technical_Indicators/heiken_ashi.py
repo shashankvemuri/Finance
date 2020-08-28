@@ -32,7 +32,7 @@ HA = df[['HA_Open','HA_High','HA_Low','HA_Close', 'Volume']]
 
 from matplotlib import dates as mdates
 dfc = HA.reset_index()
-dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
+dfc['Date'] = mdates.date2num(dfc['Date'].tolist())
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -61,7 +61,7 @@ plt.show()
 from matplotlib import dates as mdates
 
 cs = df.reset_index()
-cs['Date'] = mdates.date2num(cs['Date'].astype(dt.date))
+cs['Date'] = mdates.date2num(cs['Date'].tolist())
 cs.head()
 
 cs = cs[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
