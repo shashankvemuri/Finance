@@ -46,7 +46,7 @@ dfc['QStick'] = (dfc['Adj Close'] - dfc['Open']).rolling(10).mean()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
 dfc = dfc.dropna()
 dfc = dfc.reset_index()
-dfc['Date'] = mdates.date2num(dfc['Date'].astype(dt.date))
+dfc['Date'] = mdates.date2num(dfc['Date'].tolist())
 from mplfinance.original_flavor import candlestick_ohlc
 fig = plt.figure(figsize=(16,12))
 ax1 = plt.subplot(2, 1, 1)

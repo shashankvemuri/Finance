@@ -68,7 +68,7 @@ from matplotlib import dates as mdates
 df['VolumePositive'] = df['Open'] < df['Adj Close']
 df = df.dropna()
 df = df.reset_index()
-df['Date'] = mdates.date2num(df['Date'].astype(dt.date))
+df['Date'] = mdates.date2num(df['Date'].tolist())
 
 from mplfinance.original_flavor import candlestick_ohlc
 from matplotlib.dates import MonthLocator, YearLocator
