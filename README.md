@@ -1,11 +1,6 @@
 # Finance
 A work in progress -- always being updated!
 
-## Disclaimer
-<i>
-The material in this repository is purely for educational purposes and should not be taken as professional investment advice. Invest at your own discretion.
-</i>
-
 ## Find_Stocks
 This folder contains several algorithms that return stocks that show promising data and therefore can be classified as a buy in the stock market. Some of the algorithms include extended market calculators, stock screeners, analyst recommendation parsers, and finding high movers!
 
@@ -23,3 +18,8 @@ This folder contains several programs that collect a wide variety of data on sto
 
 ## Technical_Indicators 
 This folder contains a graphical representation of about 140 technical indicators (RSI, Bollinger Bands, moving averages, etc.) in the stock market. Many of the algorithms contained use of Pandas, Matplotlib, TA-Lib and NumPy. The basis of these algorithms were obtained from <a href="https://github.com/LastAncientOne">TheLastAncientOne</a>!
+
+### Disclaimer
+<i>
+The material in this repository is purely for educational purposes and should not be taken as professional investment advice. Invest at your own discretion.
+</i>
