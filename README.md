@@ -1,6 +1,11 @@
 # Finance
 A work in progress -- always being updated!
 
+## Disclaimer
+<i>
+The material in this repository is purely for educational purposes and should not be taken as professional investment advice. Invest at your own discretion.
+</i>
+
 ## Find_Stocks
 This folder contains several algorithms that return stocks that show promising data and therefore can be classified as a buy in the stock market. Some of the algorithms include extended market calculators, stock screeners, analyst recommendation parsers, and finding high movers!
 
