@@ -4,18 +4,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import datetime
-import time
+from yahoo_fin import stock_info as si
 
 pd.set_option('display.max_rows', None)
 
-interval = '1M'
+interval = '1m'
 
 options = Options()
 options.add_argument("--headless")
 options.add_argument('window-size=1200x600')
 webdriver = webdriver.Chrome(executable_path='/Users/shashank/Documents/Code/Python/Finance/chromedriver', options = options)
 
-tickers = pd.read_pickle('../spxTickers.pickle')
+tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
 
 mylist = []
 today = datetime.date.today()
@@ -27,6 +27,7 @@ sells = []
 buys = []
 neutrals = []
 valid_tickers = []
+prices = []
 
 for ticker in tickers:
     try:
@@ -62,12 +63,14 @@ for ticker in tickers:
         num_sell = float(last_analysis[1])
         num_neutral = float(last_analysis[2])
         num_buy = float(last_analysis[3])
+        price = round(si.get_live_price(ticker), 2)
         
         signals.append(signal)
         neutrals.append(num_neutral)
         buys.append(num_buy)
         sells.append(num_sell)
         valid_tickers.append(ticker)
+        prices.append(price)
         
         print (f'{ticker} has an overall recommendation of {signal}')
         print ('-'*60)
@@ -75,11 +78,11 @@ for ticker in tickers:
     except:
         continue
     
-dataframe = pd.DataFrame(list(zip(valid_tickers, signals, buys, sells, neutrals)), columns =['Tickers', 'Signals', 'Buys', 'Sells', 'Neutrals'])
+dataframe = pd.DataFrame(list(zip(valid_tickers, prices, signals, buys, sells, neutrals)), columns =['Tickers', 'Current Price', 'Signals', 'Buys', 'Sells', 'Neutrals'])
 dataframe = dataframe.set_index('Tickers')
-dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}.csv')
+dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}_{interval}.csv')
 
-dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}.csv', index_col=1)
+dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}_{interval}.csv', index_col=0)
 # dataframe = dataframe.drop(columns = 'Unnamed: 0')
 dataframe = dataframe.sort_values('Signals', ascending=False)
 print (dataframe.head(15))

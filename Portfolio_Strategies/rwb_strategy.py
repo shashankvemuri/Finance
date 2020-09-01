@@ -15,8 +15,7 @@ start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
 now=dt.datetime.now()
 
 while stock.lower() != 'quit':
-    df=pdr.get_data_yahoo(stock,start,now)
-    
+    df=pdr.get_data_yahoo(stock,start,now).dropna()
     emasUsed=[3,5,8,10,12,15,30,35,40,45,50,60]
     for x in emasUsed:
     	ema=x
