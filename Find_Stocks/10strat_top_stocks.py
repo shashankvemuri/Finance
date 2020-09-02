@@ -109,10 +109,12 @@ for symbol in tickers:
             else:
                 df['obvPos'].iloc[row] = -1
                 
-            if (df['CCI'].iloc[row] > 0):
+            if (df['CCI'].iloc[row] > 100):
                 df['cciPos'].iloc[row] = 1
-            else:
+            elif (df['Momentum'].iloc[row] < -100):
                 df['cciPos'].iloc[row] = -1
+            else:
+                df['cciPos'].iloc[row] = 0
             
         # Clean up dataframe
         frame = pd.DataFrame()
