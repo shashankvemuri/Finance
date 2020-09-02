@@ -1,5 +1,5 @@
 # Imports
-from pandas_datareader import DataReader
+import yfinance as yf
 from scipy.stats import zscore
 import datetime as dt
 import pandas as pd
@@ -21,18 +21,19 @@ today = mylist[0]
 
 stock = input('Enter a ticker: ')
 num_of_years = float(input('Enter the number of years: '))
+interval = '1wk'
 
 while stock != 'quit':
     try:
         # Set dates
         start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
         end = dt.date.today()
-
-        df = DataReader(stock, 'yahoo', start,end)    
+        
+        df = yf.download(stock, start, end, interval=interval)
         
         # Get Index Data
         index = 'SPY'
-        spy = DataReader(index, 'yahoo', start,end)
+        spy = yf.download(index, start, end, interval=interval)
         spy['RSI'] = talib.RSI(spy['Adj Close'], timeperiod=5)
         
         # Technical Indicators
@@ -51,7 +52,6 @@ while stock != 'quit':
         df['bbPos'] = None
         df['macdPos'] = None
         df['rsiPos'] = None
-        df['spyPos'] = None
         df['zPos'] = None
         df['mPos'] = None
         df['maPos'] = None
@@ -103,10 +103,12 @@ while stock != 'quit':
             else:
                 df['obvPos'].iloc[row] = -1
                 
-            if (df['CCI'].iloc[row] > 0):
+            if (df['CCI'].iloc[row] > 100):
                 df['cciPos'].iloc[row] = 1
-            else:
+            elif (df['Momentum'].iloc[row] < -100):
                 df['cciPos'].iloc[row] = -1
+            else:
+                df['cciPos'].iloc[row] = 0
             
         # Clean up dataframe
         frame = pd.DataFrame()
@@ -117,11 +119,7 @@ while stock != 'quit':
         df['PC'] = frame['PC']
         
         db = db.reset_index()
-        db['Buy'] = np.where((df['pos'] < 0.7), 1, 0)
-        db['Sell'] = np.where((df['pos'] < -0.3), 1, 0)
-        
-        db['Buy_ind'] = np.where( (db['Buy'] > db['Buy'].shift(1)),1,0)
-        db['Sell_ind'] = np.where( (db['Sell'] > db['Sell'].shift(1)),1,0)
+        db['pos'] = df['pos'].tolist()
         
         plt.gcf()
         plt.subplots()
@@ -130,10 +128,10 @@ while stock != 'quit':
         plt.xlabel('Date')
         plt.ylabel('Price')
         plt.plot(db['Date'], db['Adj Close'],linewidth=0.5,color='black')
-        plt.scatter(db.loc[db['Buy_ind'] == 1 , 'Date'].values,db.loc[db['Buy_ind'] == 1, 'Adj Close'].values, label='skitscat', color='green', s=25, marker="^")
-        plt.scatter(db.loc[db['Sell_ind'] == 1 , 'Date'].values,db.loc[db['Sell_ind'] == 1, 'Adj Close'].values, label='skitscat', color='red', s=25, marker="v")
+        plt.scatter(db.loc[db['pos'] > 0.8, 'Date'].values,db.loc[db['pos'] > 0.8, 'Adj Close'].values, label='skitscat', color='green', s=25, marker="^")
+        plt.scatter(db.loc[db['pos'] < -0.3, 'Date'].values,db.loc[db['pos'] < -0.3, 'Adj Close'].values, label='skitscat', color='red', s=25, marker="v")
         plt.show()
-
+        
         # Output
         dataframe = pd.DataFrame(zip(df.index, df['PC'].tolist(), df['pos'].tolist()), columns = ['Date', 'Percent Change', 'Signal'])
         dataframe = dataframe.set_index("Date")
