@@ -1,3 +1,17 @@
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+stock = "NKE"
+data = yf.download(tickers= stock, period="1d", interval="1m")
+print (data.tail())
+df = data['Close']
+fig, ax = plt.subplots()
+plt.plot(df)
+plt.title('Price for {}'.format(stock))
+plt.xlabel('Time')
+plt.ylabel('Price')
+plt.show()
+
 '''
 # Import TimeSeries class
 from alpha_vantage.timeseries import TimeSeries
@@ -44,39 +58,3 @@ intraday_data.index = pd.to_datetime(intraday_data.index)
 intraday_data_10 = intraday_data.resample('10T').agg(ohlcv_dict)
 print (intraday_data_10.head())
 '''
-
-import yfinance as yf
-import matplotlib.pyplot as plt
-
-stock = "NKE"
-data = yf.download(tickers= stock, period="1d", interval="1m")
-print (data.tail())
-df = data['Close']
-fig, ax = plt.subplots()
-plt.plot(df)
-plt.title('Price for {}'.format(stock))
-plt.xlabel('Time')
-plt.ylabel('Price')
-plt.show()
-
-stock1 = "TSLA"
-data1 = yf.download(tickers= stock1, period="1d", interval="1m")
-print (data1.tail())
-df1 = data1['Close']
-fig, ax = plt.subplots()
-plt.plot(df1)
-plt.title('Price for {}'.format(stock1))
-plt.xlabel('Time')
-plt.ylabel('Price')
-plt.show()
-
-stock2 = "ASMB"
-data2 = yf.download(tickers= stock2, period="1d", interval="1m")
-print (data2.tail())
-df2 = data2['Close']
-fig, ax = plt.subplots()
-plt.plot(df2)
-plt.title('Price for {}'.format(stock2))
-plt.xlabel('Time')
-plt.ylabel('Price')
-plt.show()
