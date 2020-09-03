@@ -16,8 +16,8 @@ start = datetime.date.today() - datetime.timedelta(days = int(365.25 * num_of_ye
 end = datetime.date.today()
 
 
-stocks =['A', 'AAPL', 'MSFT', 'INTL', 'AMZN', 'NFLX', 'IBM', 'NVDA', 'CSCO', 'BABA', 'AMD', 'SPY']
-data = pdr.get_data_yahoo(stocks, start, end)['Close']
+stocks = ['CFG', 'KEY', 'JPM', 'SPY']
+data = pdr.get_data_yahoo(stocks, start, end)['Adj Close']
 data = data.dropna()
 
 def find_cointegrated_pairs(data):
