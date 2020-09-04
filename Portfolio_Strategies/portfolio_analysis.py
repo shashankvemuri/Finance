@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Portfolio Analysis
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,13 +9,13 @@ yf.pdr_override()
 import datetime as dt
 
 # Symbols
-symbols = ['AAPL','MSFT','AMD','NVDA']
+symbols = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
 
 # Define weights for the portfolio
-weights = np.array([0.5, 0.2, 0.2, 0.1])
+weights = np.array([0.4935, 0.1638, 0.12050000000000001, 0.0683, 0.056600000000000004, 0.0518, 0.0513])
 
 # Dates
-start = dt.date.today() - dt.timedelta(days = 365)
+start = dt.date(2020, 8, 13)
 end = dt.date.today()
 
 

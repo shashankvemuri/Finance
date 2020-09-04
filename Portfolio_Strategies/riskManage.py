@@ -15,9 +15,9 @@ AvgLoss=5 #Enter Your Average Loss %
 smaUsed=[50,200]
 emaUsed=[21]
 
-stock = input("Enter the stock symbol (enter 'quit' to stop): ")
+tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
 
-while stock != "quit":
+for stock in tickers:
 	df = pdr.get_data_yahoo(stock, start, now)
 	close=df["Adj Close"][-1]
 	maxStop=close*((100-AvgLoss)/100)
@@ -60,5 +60,3 @@ while stock != "quit":
 	print("From 50 day SMA "+ str(pf50)+ "% -Within Max Stop: "+str(check50))
 	print("From 200 Day SMA "+ str(pf200)+ "% -In Danger Zone (Over 100% from 200 SMA): "+str(check200))
 	print()
-
-	stock = input("Enter the stock symbol (enter 'quit' to stop): ")

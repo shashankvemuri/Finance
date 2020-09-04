@@ -7,7 +7,7 @@ import yahoo_fin.stock_info as si
 
 # Parameters
 tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
-intervals = ['1D', '1D', '1D', '1D','1D', '1D', '1D']
+intervals = ['1W', '1W', '1W', '1W','1W', '1W', '1W']
 
 # Lists
 nasdaq = pd.read_csv('../nasdaq_tickers.csv')['Ticker'].tolist()
