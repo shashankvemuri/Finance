@@ -14,10 +14,11 @@ register_matplotlib_converters()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-stocks = ['TGT', 'AMZN', 'NFLX', 'PG', 'NSRGY', 'MDLZ', 'MRK', 'MSFT', 'AAPL']
+stocks = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
+
 n = len(stocks) #number of stocks 
-start = datetime.datetime.now() - datetime.timedelta(days=365)
-end = datetime.datetime.now() - datetime.timedelta(days=90)
+start = datetime.date(2020, 8, 13)
+end = datetime.datetime.now()
 
 df = pdr.get_data_yahoo(stocks, start=start, end=end)['Close']
 print (df.tail())
@@ -202,9 +203,8 @@ def display_ef_with_selected(mean_returns, cov_matrix, risk_free_rate):
 
 display_ef_with_selected(mean_returns, cov_matrix, risk_free_rate)
 
-
 stocks = df
-n = 100000 # total port. value
+n = 1000 # total port. value
 
 # Calculate expected returns and sample covariance
 mu = expected_returns.mean_historical_return(df)
