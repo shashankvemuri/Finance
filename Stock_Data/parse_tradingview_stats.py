@@ -7,10 +7,12 @@ import yahoo_fin.stock_info as si
 
 # Parameters
 tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
-intervals = ['1W', '1W']
+intervals = ['1D', '1D', '1D', '1D','1D', '1D', '1D']
 
 # Lists
-nasdaq = si.tickers_nasdaq()
+nasdaq = pd.read_csv('../nasdaq_tickers.csv')['Ticker'].tolist()
+nyse = pd.read_csv('../nyse_tickers.csv')['Ticker'].tolist()
+amex = pd.read_csv('../amex_tickers.csv')['Ticker'].tolist()
 type_intervals = ['1m', '5m', '15m', '1h', '4h', '1D', '1W', '1M']
 
 # Set up chromedriver
@@ -22,13 +24,16 @@ for ticker, interval in zip(tickers, intervals):
     analysis = []
     try:
         if ticker in nasdaq:
-            index='NASDAQ'
+            exchange='NASDAQ'
+        elif ticker in nyse:
+            exchange='NYSE'
+        elif ticker in amex:
+            exchange='AMEX'
         else:
-            index='NYSE'
+            print (f"Could not find the exchange for {ticker}")
         price = round(si.get_live_price(ticker), 2)
         
-        webdriver.get("https://www.tradingview.com/symbols/{}-{}/technicals".format(index, ticker))
-        webdriver.refresh()
+        webdriver.get("https://www.tradingview.com/symbols/{}-{}/technicals".format(exchange, ticker))
         time.sleep(1)
         
         print ('Ticker: ' + ticker)
@@ -106,3 +111,6 @@ for ticker, interval in zip(tickers, intervals):
         print ('-'*100)
     except Exception as e:
         print (f'Could not retrieve stats for {ticker} because {e}')
+        print ('-'*100)
+    
+webdriver.close()
