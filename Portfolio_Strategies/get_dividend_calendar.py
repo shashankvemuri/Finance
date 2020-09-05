@@ -75,3 +75,5 @@ def get_dividends(year, month):
     except Exception as e:
         return e
         # return render_template('error.html', e = e)
+
+print(get_dividends(2020, 12))
