@@ -81,8 +81,7 @@ headers = json.dumps({
     # 'Pragma': 'no-cache',
     # 'Upgrade': 'websocket'
 })
-
-    
+n    
 # Then create a connection to the tunnel
 ws = create_connection(
     'wss://data.tradingview.com/socket.io/websocket',headers=headers)
