@@ -5,7 +5,6 @@ import yfinance as yf
 import datetime as dt
 from yahoo_fin import stock_info as si
 import pandas as pd
-
 warnings.filterwarnings("ignore")
 yf.pdr_override()
 
@@ -13,17 +12,11 @@ num_of_years = 40
 start = dt.date.today() - dt.timedelta(days = int(365.25*num_of_years))
 end = dt.date.today()
 
-tickers = si.tickers_sp500()
+tickers = si.tickers_dow()
 tickers = [item.replace(".", "-") for item in tickers]
+
 dataset = pdr.get_data_yahoo(tickers, start, end)['Adj Close']
-dataset.to_csv('/Users/shashank/Documents/Code/TradeView/static/data/S&P500_stock_prices.csv')
-# dataset = pd.read_csv('/Users/shashank/Documents/Code/Python/Research/s&p500/betaDistribution/S&P500_stock_prices.csv', index_col=0, parse_dates = True)
-
 stocks_returns = np.log(dataset/dataset.shift(1))
-
-print('Covariance Matrix')
-cov_matrix = stocks_returns.cov()
-print (cov_matrix)
 
 print('\nCorrelation Matrix')
 corr_matrix = stocks_returns.corr()
