@@ -8,6 +8,7 @@ from yahoo_fin import stock_info as si
 from scipy.stats import zscore
 import numpy as np
 
+
 warnings.filterwarnings("ignore")
 yf.pdr_override()
 pd.set_option('display.max_columns', None)
