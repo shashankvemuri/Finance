@@ -118,10 +118,10 @@ for stock in stocklist:
 
 print(exportList)
 
-writer = ExcelWriter('/Users/shashank/Documents/Code/Python/Outputs/mm-screener-output/Export-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/Code/Python/Outputs/strategy/mm-screener-output/Export-Output_{}.xlsx'.format(today))
 exportList.to_excel(writer, "Sheet1")
 writer.save()
 
-writer = ExcelWriter('/Users/shashank/Documents/Code/Python/Outputs/mm-screener-output/Other-Output_{}.xlsx'.format(today))
+writer = ExcelWriter('/Users/shashank/Documents/Code/Python/Outputs/strategy/mm-screener-output/Other-Output_{}.xlsx'.format(today))
 otherList.to_excel(writer, "Sheet1")
 writer.save()
