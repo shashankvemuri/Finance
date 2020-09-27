@@ -37,7 +37,7 @@ must_watch_pct = []
 must_watch_mean = []
 must_watch_std = []
 
-for stock in stocks:
+for stock in stocks[15:50]:
     try:
         time.sleep(1)
         df = DataReader(stock, 'yahoo' ,start, now)
@@ -82,61 +82,72 @@ for stock in stocks:
             pass
     except:
         pass
+
+try:
+    print ('Watch:')
+    df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)))
+    df1 = df1.set_index('Company')
+
+    for n in df1['Current'].tolist():
+        if n < 0:
+            df1['First Band'] = -1*df1['Stdev']+df1['Mean']
+            df1['Second Band'] = -2*df1['Stdev']+df1['Mean']
+            df1['Third Band'] = -3*df1['Stdev']+df1['Mean']
+            df1['pct'] = round((df1['Current'] - df1['Second Band']))
+        else:
+            df1['First Band'] = 1*df1['Stdev']+df1['Mean']
+            df1['Second Band'] = 2*df1['Stdev']+df1['Mean']
+            df1['Third Band'] = 3*df1['Stdev']+df1['Mean']
+            df1['pct'] = round((df1['Current'] - df1['First Band']))
+    print (df1)
+except:
+    pass
+
+try:
+    print ('\n')
+    print ('Def Watch:')
+    df2 = pd.DataFrame(list(zip(def_watch, def_watch_pct, def_watch_mean, def_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
+    df2 = df2.set_index('Company')
     
-print ('Watch:')
-df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
-df1 = df1.set_index('Company')
+    for n in df2['Current'].tolist():
+        if n < 0:
+            df2['First Band'] = -1*df2['Stdev']+df2['Mean']
+            df2['Second Band'] = -2*df2['Stdev']+df2['Mean']
+            df2['Third Band'] = -3*df2['Stdev']+df2['Mean']
+            df2['pct'] = round((df2['Current'] - df2['Second Band']))
+        else:
+            df2['First Band'] = 1*df2['Stdev']+df2['Mean']
+            df2['Second Band'] = 2*df2['Stdev']+df2['Mean']
+            df2['Third Band'] = 3*df2['Stdev']+df2['Mean']
+            df2['pct'] = round((df2['Current'] - df2['Second Band']))
+    print (df2)
+except:
+    pass
 
-for n in df1['Current'].tolist():
-    if n < 0:
-        df1['First Band'] = -1*df1['Stdev']+df1['Mean']
-        df1['Second Band'] = -2*df1['Stdev']+df1['Mean']
-        df1['Third Band'] = -3*df1['Stdev']+df1['Mean']
-        df1['pct'] = round((df1['Current'] - df1['Second Band']) / df1['Second Band'] * 100, 2)
-    else:
-        df1['First Band'] = 1*df1['Stdev']+df1['Mean']
-        df1['Second Band'] = 2*df1['Stdev']+df1['Mean']
-        df1['Third Band'] = 3*df1['Stdev']+df1['Mean']
-        df1['pct'] = round((df1['Current'] - df1['First Band']) / df1['First Band'] * 100, 2)
-print (df1)
+try:
+    print ('\n')
+    print ('Must Watch:')
+    df3 = pd.DataFrame(list(zip(must_watch, must_watch_pct, must_watch_mean, must_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
+    df3 = df3.set_index('Company')
+    
+    for n in df3['Current'].tolist():
+        if n < 0:
+            df3['First Band'] = -1*df3['Stdev']+df3['Mean']
+            df3['Second Band'] = -2*df3['Stdev']+df3['Mean']
+            df3['Third Band'] = -3*df3['Stdev']+df3['Mean']
+            df3['pct'] = round((df3['Current'] - df3['Third Band']))
+        else:
+            df3['First Band'] = 1*df3['Stdev']+df3['Mean']
+            df3['Second Band'] = 2*df3['Stdev']+df3['Mean']
+            df3['Third Band'] = 3*df3['Stdev']+df3['Mean']
+            df3['pct'] = round((df3['Current'] - df3['Third Band']))
+    print (df3)
+except:
+    pass
 
-print ('\n')
-print ('Def Watch:')
-df2 = pd.DataFrame(list(zip(def_watch, def_watch_pct, def_watch_mean, def_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
-df2 = df2.set_index('Company')
-
-for n in df2['Current'].tolist():
-    if n < 0:
-        df2['First Band'] = -1*df2['Stdev']+df2['Mean']
-        df2['Second Band'] = -2*df2['Stdev']+df2['Mean']
-        df2['Third Band'] = -3*df2['Stdev']+df2['Mean']
-        df2['pct'] = round((df2['Current'] - df2['Second Band']) / df2['Second Band'] * 100, 2)
-    else:
-        df2['First Band'] = 1*df2['Stdev']+df2['Mean']
-        df2['Second Band'] = 2*df2['Stdev']+df2['Mean']
-        df2['Third Band'] = 3*df2['Stdev']+df2['Mean']
-        df2['pct'] = round((df2['Current'] - df2['Second Band']) / df2['Second Band'] * 100, 2)
-print (df2)
-
-print ('\n')
-print ('Must Watch:')
-df3 = pd.DataFrame(list(zip(must_watch, must_watch_pct, must_watch_mean, must_watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
-df3 = df3.set_index('Company')
-
-for n in df3['Current'].tolist():
-    if n < 0:
-        df3['First Band'] = -1*df3['Stdev']+df3['Mean']
-        df3['Second Band'] = -2*df3['Stdev']+df3['Mean']
-        df3['Third Band'] = -3*df3['Stdev']+df3['Mean']
-        df3['pct'] = round((df3['Current'] - df3['Third Band']) / df3['Third Band'] * 100, 2)
-    else:
-        df3['First Band'] = 1*df3['Stdev']+df3['Mean']
-        df3['Second Band'] = 2*df3['Stdev']+df3['Mean']
-        df3['Third Band'] = 3*df3['Stdev']+df3['Mean']
-        df3['pct'] = round((df3['Current'] - df3['Third Band']) / df3['Third Band'] * 100, 2)
-
-print (df3)
-
-df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/watch/{today}.csv')
-df2.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/def_watch/{today}.csv')
-df3.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/watchlist/must_watch/{today}.csv')
+try:
+    df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/watch/{today}.csv')
+    df2.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/def_watch/{today}.csv')
+    df3.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/must_watch/{today}.csv')
+except:
+    pass

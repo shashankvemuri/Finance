@@ -1,16 +1,20 @@
 import datetime as dt
 import pandas as pd
 from pandas_datareader import DataReader
-import matplotlib.pyplot as plt
-from pylab import rcParams 
 import yahoo_fin.stock_info as si
 import time
 
 start = dt.datetime(1980,12,1)
 now = dt.datetime.now()
 
-tickers = pd.read_pickle('spxTickers.pickle')
+tickers = pd.read_pickle('../spxTickers.pickle')
+tickers = [item.replace(".", "-") for item in tickers]
 #tickers = si.tickers_nasdaq()
+
+mylist = []
+today = dt.date.today()
+mylist.append(today)
+today = mylist[0]
 
 diff_5 = []
 diff_neither = []
@@ -42,7 +46,7 @@ for ticker in tickers:
         
             if counter==3 and ((index.month != now.month) or (index.year != now.year)):
                 if curentGLV != lastGLV:
-                  print(curentGLV)
+                    pass
                 glDate=currentDate
                 lastGLV=curentGLV
                 counter=0
@@ -73,7 +77,7 @@ for ticker in tickers:
     
         print(message)
         print('-'*100)
-        time.sleep(2)
+        time.sleep(1)
     except Exception as e: 
         print (e)
         pass
@@ -81,8 +85,8 @@ for ticker in tickers:
 df = pd.DataFrame(list(zip(diff_5_tickers, diff_5)), columns =['Company', 'Difference'])
 df1 = pd.DataFrame(list(zip(diff_neither_tickers, diff_neither)), columns =['Company', 'Difference'])
 
-df.to_csv('/Users/shashank/Documents/GitHub/Code/csv/watchlist.csv', index=False)
-df1.to_csv('/Users/shashank/Documents/GitHub/Code/csv/maybe.csv', index=False)
+df.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}.csv', index=False)
+df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}_neither.csv', index=False)
 
 print ('Watchlist: ')
 print (df)
