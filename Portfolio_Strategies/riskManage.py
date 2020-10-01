@@ -10,8 +10,8 @@ yf.pdr_override()
 now = dt.datetime.now()
 start =dt.datetime(2019,1,1)
 
-AvgGain=15 #Enter Your Average Gain %
-AvgLoss=5 #Enter Your Average Loss %
+AvgGain=12 #Enter Your Average Gain %
+AvgLoss=6 #Enter Your Average Loss %
 smaUsed=[50,200]
 emaUsed=[21]
 

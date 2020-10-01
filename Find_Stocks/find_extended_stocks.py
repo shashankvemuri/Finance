@@ -1,17 +1,10 @@
 import yfinance as yf
 import datetime as dt
 import pandas as pd
-from pandas_datareader import DataReader
 import time
 from yahoo_fin import stock_info as si
 
 pd.set_option('display.max_columns', None)
-
-yf.pdr_override() 
-
-num_of_years = 40
-start = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
-now = dt.datetime.now() 
 
 mylist = []
 today = dt.date.today()
@@ -37,12 +30,11 @@ must_watch_pct = []
 must_watch_mean = []
 must_watch_std = []
 
-for stock in stocks[15:50]:
+for stock in stocks:
     try:
-        time.sleep(1)
-        df = DataReader(stock, 'yahoo' ,start, now)
+        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/S&P500/{stock}.csv', index_col=0)
         df = df[['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']]
-    
+        df.index = pd.to_datetime(df.index)
         sma = 50
         limit = 10
         
@@ -85,7 +77,7 @@ for stock in stocks[15:50]:
 
 try:
     print ('Watch:')
-    df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)))
+    df1 = pd.DataFrame(list(zip(watch, watch_pct, watch_mean, watch_std)), columns =['Company', 'Current', 'Mean', 'Stdev'])
     df1 = df1.set_index('Company')
 
     for n in df1['Current'].tolist():
@@ -146,8 +138,8 @@ except:
     pass
 
 try:
-    df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/watch/{today}.csv')
-    df2.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/def_watch/{today}.csv')
-    df3.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watchlist/must_watch/{today}.csv')
-except:
-    pass
+    df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/watch/{today}.csv')
+    df2.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/def_watch/{today}.csv')
+    df3.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/extended-stocks/must_watch/{today}.csv')
+except Exception as e:
+    print (e)
