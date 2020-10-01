@@ -7,7 +7,7 @@ import time
 start = dt.datetime(1980,12,1)
 now = dt.datetime.now()
 
-tickers = pd.read_pickle('../spxTickers.pickle')
+tickers = si.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers]
 #tickers = si.tickers_nasdaq()
 
@@ -26,8 +26,8 @@ for ticker in tickers:
         print (ticker+':')
         price = si.get_live_price(ticker)
         
-        df = DataReader(ticker, 'yahoo', start, now)
-        
+        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/S&P500/{ticker}.csv', index_col=0)
+        df.index = pd.to_datetime(df.index)
         df.drop(df[df["Volume"]<1000].index, inplace=True)
         
         dfmonth=df.groupby(pd.Grouper(freq="M"))["High"].max()
@@ -77,13 +77,14 @@ for ticker in tickers:
     
         print(message)
         print('-'*100)
-        time.sleep(1)
     except Exception as e: 
         print (e)
         pass
     
 df = pd.DataFrame(list(zip(diff_5_tickers, diff_5)), columns =['Company', 'Difference'])
+df = df.reindex(df.Difference.abs().sort_values().index)
 df1 = pd.DataFrame(list(zip(diff_neither_tickers, diff_neither)), columns =['Company', 'Difference'])
+df1 = df1.reindex(df.Difference.abs().sort_values().index)
 
 df.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}.csv', index=False)
 df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}_neither.csv', index=False)

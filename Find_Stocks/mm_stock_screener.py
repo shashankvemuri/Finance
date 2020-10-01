@@ -24,23 +24,22 @@ today = mylist[0]
 exportList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 otherList = pd.DataFrame(columns=['Stock', "RS_Rating", "50 Day MA", "150 Day Ma", "200 Day MA", "52 Week Low", "52 week High"])
 
+start_date = datetime.datetime.now() - datetime.timedelta(days=365)
+end_date = datetime.date.today()
+
+index_df = pdr.get_data_yahoo(index_name, start=start_date, end=end_date).tail(252)
+index_df['Percent Change'] = index_df['Adj Close'].pct_change()
+index_return = index_df['Percent Change'].sum() * 100
+
 for stock in stocklist:
     n += 1
-    time.sleep(1)
     
     print ("\npulling {} with index {}".format(stock, n))
 
-    # RS_Rating 
-    start_date = datetime.datetime.now() - datetime.timedelta(days=365)
-    end_date = datetime.date.today()
+    df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/S&P500/{stock}.csv', index_col=0).tail(252)
     
-    df = pdr.get_data_yahoo(stock, start=start_date, end=end_date)
     df['Percent Change'] = df['Adj Close'].pct_change()    
     stock_return = df['Percent Change'].sum() * 100
-    
-    index_df = pdr.get_data_yahoo(index_name, start=start_date, end=end_date)
-    index_df['Percent Change'] = index_df['Adj Close'].pct_change()
-    index_return = index_df['Percent Change'].sum() * 100
     
     RS_Rating = round((stock_return / index_return) * 10, 2)
     
