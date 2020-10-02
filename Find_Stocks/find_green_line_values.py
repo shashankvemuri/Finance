@@ -4,12 +4,10 @@ from pandas_datareader import DataReader
 import yahoo_fin.stock_info as si
 import time
 
-start = dt.datetime(1980,12,1)
-now = dt.datetime.now()
+now = dt.date.today()
 
 tickers = si.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers]
-#tickers = si.tickers_nasdaq()
 
 mylist = []
 today = dt.date.today()
@@ -17,9 +15,7 @@ mylist.append(today)
 today = mylist[0]
 
 diff_5 = []
-diff_neither = []
 diff_5_tickers = []
-diff_neither_tickers = []
 
 for ticker in tickers:
     try:
@@ -71,9 +67,6 @@ for ticker in tickers:
                 diff = round(diff - 1, 3)
                 diff = diff*100
                 message=(f"Last Green Line for {ticker}: "+str(round(lastGLV, 2))+" on "+str(glDate.strftime('%Y-%m-%d')))
-                
-                diff_neither_tickers.append(ticker)
-                diff_neither.append(diff)
     
         print(message)
         print('-'*100)
@@ -83,14 +76,8 @@ for ticker in tickers:
     
 df = pd.DataFrame(list(zip(diff_5_tickers, diff_5)), columns =['Company', 'Difference'])
 df = df.reindex(df.Difference.abs().sort_values().index)
-df1 = pd.DataFrame(list(zip(diff_neither_tickers, diff_neither)), columns =['Company', 'Difference'])
-df1 = df1.reindex(df.Difference.abs().sort_values().index)
 
 df.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}.csv', index=False)
-df1.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/strategy/glv-stocks/{today}_neither.csv', index=False)
 
 print ('Watchlist: ')
 print (df)
-print('\n')
-print ('Maybe: ')
-print (df1)
