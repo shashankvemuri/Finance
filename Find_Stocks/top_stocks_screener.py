@@ -86,9 +86,6 @@ twit_score2 = []
 for stock in stock_twitter2:
     try:
         score2 = stock.find_all("td",{"class": "datalistcolumn"})
-        
-         
-        
         twit_stock2.append(score2[0].get_text().replace('$','').strip())
         sector2.append(score2[2].get_text().replace('\n','').strip())
         twit_score2.append(score2[4].get_text().replace('\n','').strip())

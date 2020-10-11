@@ -2,25 +2,62 @@ import pandas as pd
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 
-pd.set_option('display.max_colwidth', 60)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 # Set up scraper
-url = ("https://finviz.com/screener.ashx?v=151&f=an_recom_buybetter,fa_pe_profitable,geo_usa,idx_sp500,ind_stocksonly,sh_avgvol_o1000,sh_insttrans_pos,sh_price_o2,ta_rsi_nob60,ta_sma20_sa50,ta_sma50_sa200,targetprice_above&ft=4&o=relativevolume&ar=180")
+url = ("https://finviz.com/screener.ashx?v=152&f=cap_midover,fa_epsyoy1_o20,fa_salesqoq_o20,geo_usa,ind_stocksonly,sh_avgvol_o500,sh_insttrans_pos,sh_price_o10,ta_changeopen_u,ta_highlow52w_a30h,ta_perf_52w50o,ta_perf2_13wup,ta_sma20_pa,ta_sma200_pa,ta_sma50_pa&ft=4&o=-volume&ar=180&c=0,1,2,3,4,5,6,7,14,17,18,23,26,27,28,29,42,43,44,45,46,47,48,49,51,52,53,54,57,58,59,60,62,63,64,65,66,67,68,69")
 req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
 webpage = urlopen(req).read()
 html = soup(webpage, "html.parser")
 
-def finviz_screener():
+def own_screener():
     try:
         stocks = pd.read_html(str(html))[-2]
-        stocks.columns = ['No.', 'Ticker', 'Company', 'Sector', 'Industry', 'Country', 'Market Cap', 'P/E', 'Price', 'Change', 'Volume']
+        stocks.columns = stocks.iloc[0]
         stocks = stocks[1:]
         stocks = stocks.set_index('Ticker')
         return stocks
     except Exception as e:
         return e
 
-print ('\nScreener Output: ')
-print(finviz_screener())
+print ('\nOwn Screener Output: ')
+print(own_screener())
+
+# Set up scraper
+url = ("https://finviz.com/screener.ashx?v=151&f=cap_midover,fa_epsyoy1_o20,fa_salesqoq_o20,geo_usa,ind_stocksonly,ipodate_prev3yrs,sh_avgvol_o500,sh_price_o15,ta_changeopen_u,ta_sma20_pa,ta_sma200_pa,ta_sma50_pa&ft=4&o=-volume&ar=180&c=0,1,2,3,4,5,6,7,14,17,18,23,26,27,28,29,42,43,44,45,46,47,48,49,51,52,53,54,57,58,59,60,62,63,64,65,66,67,68,69")
+req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+webpage = urlopen(req).read()
+html = soup(webpage, "html.parser")
+
+def alpha_screener():
+    try:
+        stocks = pd.read_html(str(html))[-2]
+        stocks.columns = stocks.iloc[0]
+        stocks = stocks[1:]
+        stocks = stocks.set_index('Ticker')
+        return stocks
+    except Exception as e:
+        return e
+
+print ('\nAlpha Screener Output: ')
+print(alpha_screener())
+
+# Set up scraper
+url = ("https://finviz.com/screener.ashx?v=151&f=cap_midover,geo_usa,ind_stocksonly,sh_avgvol_o500,sh_insidertrans_neg,sh_price_o10,ta_highlow52w_nh,ta_perf_52w100o,ta_perf2_26w50o,ta_rsi_ob60,ta_sma200_pa100&ft=4&o=-volume&c=0,1,2,3,4,5,6,7,14,17,18,23,26,27,28,29,42,43,44,45,46,47,48,49,51,52,53,54,57,58,59,60,62,63,64,65,66,67,68,69")
+req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+webpage = urlopen(req).read()
+html = soup(webpage, "html.parser")
+
+def short_screener():
+    try:
+        stocks = pd.read_html(str(html))[-2]
+        stocks.columns = stocks.iloc[0]
+        stocks = stocks[1:]
+        stocks = stocks.set_index('Ticker')
+        return stocks
+    except Exception as e:
+        return e
+
+print ('\nShort Screener Output: ')
+print(short_screener())
