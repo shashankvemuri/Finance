@@ -66,9 +66,9 @@ elif position.lower() == 'short':
     df = pdr.get_data_yahoo(stock, start, now)
     close=df["Adj Close"][-1]
     maxStop=close*((100+AvgLoss)/100)
-    Target3R=round(close*((100-AvgGain)/100),2)
-    Target2R=round(close*(((100+(2-AvgGain))/100)),2)
-    Target1R=round(close*(((100+(3-AvgGain))/100)),2)
+    Target3R=round(close*(((100-(3*AvgGain))/100)),2)
+    Target2R=round(close*(((100-(2*AvgGain))/100)),2)
+    Target1R=round(close*((100-AvgGain)/100),2)
     
     for x in smaUsed:
         sma=x
