@@ -4,7 +4,6 @@ from yahoo_fin import stock_info as si
 import pandas as pd
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
-import datetime
 
 app = Flask(__name__)
 
@@ -20,9 +19,6 @@ def sms():
         # price 
         price = si.get_live_price('{}'.format(message_body))
         price = round(price, 2)
-
-        now = datetime.datetime.now()
-        start = datetime.date.today() - datetime.timedelta(days=int(365.25*2))
 
         AvgGain= 15
         AvgLoss= 5
@@ -65,7 +61,7 @@ def sms():
         # stocks['Support 1'] = [f'{}']
         # stocks['Support 2'] = [f'{}']
         # stocks['Support 3'] = [f'{}']
-        message = ""
+        message = "\n"
         for attr, val in zip(stocks.columns, stocks.iloc[0]):
             message=message + f"{attr} : {val}\n"
 
@@ -73,7 +69,7 @@ def sms():
         return str(resp)
     
     except Exception as e:
-        resp.message(f'{e}')
+        resp.message(f'\n{e}')
         return str(resp)
 
 if __name__ == "__main__":
