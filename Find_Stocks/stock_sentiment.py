@@ -10,11 +10,11 @@ n = 3 #the # of article headlines displayed per ticker
 tickers = ['AAPL', 'TSLA', 'AMZN']
 
 # Get Data
-finwiz_url = 'https://finviz.com/quote.ashx?t='
+finviz_url = 'https://finviz.com/quote.ashx?t='
 news_tables = {}
 
 for ticker in tickers:
-    url = finwiz_url + ticker
+    url = finviz_url + ticker
     req = Request(url=url,headers={'user-agent': 'my-app/0.0.1'}) 
     resp = urlopen(req)    
     html = BeautifulSoup(resp, features="lxml")
@@ -66,7 +66,6 @@ scores = news['Headline'].apply(analyzer.polarity_scores).tolist()
 
 df_scores = pd.DataFrame(scores)
 news = news.join(df_scores, rsuffix='_right')
-
 
 # View Data 
 news['Date'] = pd.to_datetime(news.Date).dt.date
