@@ -3,17 +3,12 @@ import ta
 import pandas as pd
 from datetime import date, timedelta, datetime
 from IPython.display import clear_output
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
-ticker = 'ISF.L'
-start_date = '2019-01-01'
-end_date = '2019-12-31'
-
-date_fmt = '%Y-%m-%d'
-
-start_date_buffer = datetime.strptime(start_date, date_fmt) - timedelta(days=365)
-start_date_buffer = start_date_buffer.strftime(date_fmt)
-
-df = yf.download(ticker, start=start_date_buffer, end=end_date)
+ticker = 'FSLY'
+start_date = '2019-10-23'
+end_date = '2020-10-23'
 
 def get_stock_backtest_data(ticker, start, end):
   date_fmt = '%Y-%m-%d'
@@ -25,7 +20,8 @@ def get_stock_backtest_data(ticker, start, end):
 
   return df
 
-df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+df = get_stock_backtest_data(ticker, start_date, end_date)
+df['CLOSE_PREV'] = df.Close.shift(1)
 
 k_band = ta.volatility.KeltnerChannel(df.High, df.Low, df.Close, 10)
 
@@ -34,14 +30,11 @@ df['K_BAND_LB'] = k_band.keltner_channel_lband().round(4)
 
 df[['K_BAND_UB', 'K_BAND_LB']].dropna().head()
 
-
 df['LONG'] = (df.Close <= df.K_BAND_LB) & (df.CLOSE_PREV > df.K_BAND_LB)
 df['EXIT_LONG'] = (df.Close >= df.K_BAND_UB) & (df.CLOSE_PREV < df.K_BAND_UB)
 
 df['SHORT'] = (df.Close >= df.K_BAND_UB) & (df.CLOSE_PREV < df.K_BAND_UB)
 df['EXIT_SHORT'] = (df.Close <= df.K_BAND_LB) & (df.CLOSE_PREV > df.K_BAND_LB)
-
-df['CLOSE_PREV'] = df.Close.shift(1)
 
 df.LONG = df.LONG.shift(1)
 df.EXIT_LONG = df.EXIT_LONG.shift(1)
@@ -49,7 +42,6 @@ df.SHORT = df.SHORT.shift(1)
 df.EXIT_SHORT = df.EXIT_SHORT.shift(1)
 
 print(df[['LONG', 'EXIT_LONG', 'SHORT', 'EXIT_SHORT']].dropna().head())
-
 
 def strategy_KeltnerChannel_origin(df, **kwargs):
   n = kwargs.get('n', 10)
@@ -102,7 +94,7 @@ def strategy_BollingerBands(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_BollingerBands(df, n=10, n_rng=2)
 
 def strategy_MA(df, **kwargs):
@@ -133,7 +125,7 @@ def strategy_MA(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_SMA(df, n=10, ma_type='ema')
 
 def strategy_MACD(df, **kwargs):
@@ -160,7 +152,7 @@ def strategy_MACD(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_MACD(df, n_slow=26, n_fast=12, n_sign=9)
 
 def strategy_RSI(df, **kwargs):
@@ -185,7 +177,7 @@ def strategy_RSI(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_RSI(df, n_slow=26, n_fast=12, n_sign=9)
 
 def strategy_WR(df, **kwargs):
@@ -210,7 +202,7 @@ def strategy_WR(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_WR(df, n_slow=26, n_fast=12, n_sign=9)
 
 def strategy_Stochastic_fast(df, **kwargs):
@@ -238,7 +230,7 @@ def strategy_Stochastic_fast(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_Stochastic_fast(df, k=20, d=5)
 
 def strategy_Stochastic_slow(df, **kwargs):
@@ -271,7 +263,7 @@ def strategy_Stochastic_slow(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_Stochastic_slow(df, k=20, d=5, dd=3)
 
 def strategy_Ichmoku(df, **kwargs):
@@ -301,7 +293,7 @@ def strategy_Ichmoku(df, **kwargs):
 
   return data
 
-# df = get_stock_backtest_data('ISF.L', '2019-01-01', '2019-12-31')
+# df = get_stock_backtest_data(ticker, start_date, end_date)
 # strategy_Ichmoku(df, n_conv=9, n_base=26, n_span_b=26)
 
 bt_df = df[(df.index >= start_date) & (df.index <= end_date)]
@@ -830,9 +822,9 @@ print('Max Drawdown:', result['max_drawdown']['pct'], '%')
 
 result['trade_stats']
 
-ticker = 'ISF.L'
-start_date = '2019-01-01'
-end_date = '2019-12-31'
+ticker = ticker
+start_date = start_date
+end_date = end_date
 
 df = get_stock_backtest_data(ticker, start_date, end_date)
 
@@ -847,9 +839,9 @@ result['cum_ret_df'].plot(figsize=(15, 5))
 print('Max Drawdown:', result['max_drawdown']['pct'], '%')
 result['trade_stats']
 
-ticker = 'ISF.L'
-start_date = '2019-01-01'
-end_date = '2019-12-31'
+ticker = ticker
+start_date = start_date
+end_date = end_date
 
 df = get_stock_backtest_data(ticker, start_date, end_date)
 
@@ -1011,9 +1003,9 @@ for s in strategies:
   
   print(len(param_dict_list))
   
-ticker = 'ISF.L'
-start_date = '2019-01-01'
-end_date = '2019-12-31'
+ticker = ticker
+start_date = start_date
+end_date = end_date
 
 df = get_stock_backtest_data(ticker, start_date, end_date)
 
@@ -1028,7 +1020,7 @@ result_dict = {
     'max_drawdown': []
 }
 
-or s in strategies:
+for s in strategies:
   func = s['func']
   param = s['param']
 
@@ -1066,4 +1058,6 @@ or s in strategies:
 
 
 df = pd.DataFrame(result_dict)
-print(df.sort_values('return', ascending=False).head(20))
+df.to_csv(f'{ticker}_{start_date}_{end_date}_backtest.csv')
+print(df.sort_values('return', ascending=True).head(50))
+print(df.sort_values('return', ascending=False).head(50))
