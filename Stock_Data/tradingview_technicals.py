@@ -6,8 +6,17 @@ from selenium.webdriver.chrome.options import Options
 import yahoo_fin.stock_info as si
 
 # Parameters
-tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
-intervals = ['1M', '1M', '1M', '1M','1M', '1M', '1M']
+tickers = ['DDOG',
+'NVDA',
+'PTON',
+'RH',
+'ROKU',
+'SE',
+'SQ',
+'TAN',
+'TSLA',
+'TTD']
+interval = '1W'
 
 # Lists
 nasdaq = pd.read_csv('../nasdaq_tickers.csv')['Ticker'].tolist()
@@ -20,7 +29,7 @@ options = Options()
 options.add_argument("--headless")
 webdriver = webdriver.Chrome(executable_path='../chromedriver', options = options)
 
-for ticker, interval in zip(tickers, intervals):
+for ticker in tickers:
     analysis = []
     try:
         if ticker in nasdaq:
@@ -101,12 +110,12 @@ for ticker, interval in zip(tickers, intervals):
         ma_table.columns = ['Name', 'Value', 'Action']
         pivots_table.columns = ['Pivot', 'Classic', 'Fibonacci', 'Camarilla', 'Woodie', 'DM']
         
-        print ('\nOscillator Stats: ')
-        print (oscillator_table[1:].set_index('Name'))
-        print ('\nMoving Average Stats: ')
-        print (ma_table[1:].set_index('Name'))
-        print ('\nPivot Stats: ')
-        print (pivots_table[1:].set_index('Pivot'))
+        # print ('\nOscillator Stats: ')
+        # print (oscillator_table[1:].set_index('Name'))
+        # print ('\nMoving Average Stats: ')
+        # print (ma_table[1:].set_index('Name'))
+        # print ('\nPivot Stats: ')
+        # print (pivots_table[1:].set_index('Pivot'))
         
         print ('-'*100)
     except Exception as e:
