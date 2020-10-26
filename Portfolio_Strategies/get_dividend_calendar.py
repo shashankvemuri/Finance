@@ -2,7 +2,6 @@ import pandas as pd
 import requests
 import datetime
 import calendar
-from flask import render_template
 
 pd.set_option('display.max_columns', None)
 
