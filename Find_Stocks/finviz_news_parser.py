@@ -1,6 +1,8 @@
 import pandas as pd
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
+import pandas as pd
+from pandasgui import show
 
 pd.set_option('display.max_colwidth', 60)
 pd.set_option('display.max_columns', None)
@@ -38,5 +40,7 @@ def blog_news():
 print ('\nNews: ')
 print(news())
 
-print ('\nBlog News: ')
-print(blog_news())
+gui = show(news())
+
+# print ('\nBlog News: ')
+# print(blog_news())
