@@ -17,7 +17,7 @@ symbol = str(input('Enter a ticker: '))
 symbol = symbol.strip()
 symbol = symbol.upper()
 
-num_of_years = 1
+num_of_years = 3
 start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
 end = dt.date.today()
 
@@ -115,10 +115,15 @@ plt.show()
 
 # Extended Market
 fig, ax1 = plt.subplots() 
-
-#Asks for stock ticker
 sma = 50
 limit = 10
+
+num_of_years = 30
+start = dt.date.today() - dt.timedelta(days = int(365.25 * num_of_years))
+end = dt.date.today()
+
+# Read data 
+data = yf.download(symbol,start,end)
 
 #calculates sma and creates a column in the dataframe
 data['SMA'+str(sma)] = data.iloc[:,4].rolling(window=sma).mean() 
@@ -172,4 +177,18 @@ plt.ylabel('Percent from '+str(sma)+' EMA')
 ax2.xaxis.set_major_locator(mticker.MaxNLocator(8)) 
 plt.axhline( y=limit, xmin=0, xmax=1, color='r')
 rcParams['figure.figsize'] = 15, 10
+plt.show()
+
+# 3Dev Bands
+data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Adj Close'], timeperiod=50, nbdevup=3, nbdevdn=3)
+
+# Plot
+plt.subplots()
+rcParams['figure.figsize'] = 15,10
+plt.plot(data[['Adj Close','upper_band','middle_band','lower_band']])
+plt.legend(('Adj Close', 'Upper Band', 'Middle Band', 'Lower Band'))
+plt.xlabel('Dates')
+plt.ylabel('Adj Close Price')
+plt.title(f'3Dev Bands for {symbol.upper()}')
+plt.fill_between(data.index, y1=data['lower_band'], y2=data['upper_band'], color = 'lightcoral', alpha=0.3)
 plt.show()
