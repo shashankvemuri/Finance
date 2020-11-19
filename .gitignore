@@ -27,3 +27,4 @@ Find_Stocks/test.csv
 finviz_table
 *.xls
 Portfolio_Strategies/COT_sp500_data.csv
+*.zip
