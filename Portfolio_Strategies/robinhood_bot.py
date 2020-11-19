@@ -1,10 +1,11 @@
 import robin_stocks as r
 import pandas as pd
 from datetime import datetime
-from config import *
 import numpy as np
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', None)
 
-r.login(rh_username,rh_password)
+r.login('rh_username','rh_password')
 my_stocks = r.build_holdings()
 
 df = pd.DataFrame(my_stocks)
