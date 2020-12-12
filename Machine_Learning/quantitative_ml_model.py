@@ -8,16 +8,16 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 import matplotlib.pyplot as plt
-import sklearn.metrics.mean_absolute_error as mean_absolute_error
-import sklearn.model_selection.RandomizedSearchCV as RandomizedSearchCV
-import sklearn.neural_network.MLPRegressor as MLPRegressor
-import sklearn.ensemble.BaggingRegressor as BaggingRegressor
-import sklearn.model_selection.GridSearchCV as GridSearchCV
-import sklearn.ensemble.AdaBoostRegressor as AdaBoostRegressor
-import sklearn.neighbors.KNeighborsRegressor as KNeighborsRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import BaggingRegressor
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.neighbors import KNeighborsRegressor
 
 ticker = 'MCD'
-start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
+start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
 df = DataReader(ticker, 'yahoo', start_date, end_date)
