@@ -10,23 +10,23 @@ yf.pdr_override()
 
 num_of_years = 40
 start = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
-now = dt.datetime.now() 
+now = dt.date(2020, 10, 3)
 
 #Asks for stock ticker
-stock = input("Enter the stock symbol : ") 
+stock = input("Enter the stock symbol: ") 
 
 #Runs this loop until user enters 'quit' (can do many stocks in a row)
-while stock != "quit": 
+while stock.lower() != "quit": 
     
     #Create Plots
     fig, ax1 = plt.subplots() 
     
     #Fetches stock price data, saves as data frame
     df = pdr.get_data_yahoo(stock, start, now)
+    print (df.tail(1))
     
-    #Asks for stock ticker
-    sma = int(input("Enter the sma : ")) 
-    limit= int(input("Enter Warning Limit : "))
+    sma = 50
+    limit= 10
     
     #calculates sma and creates a column in the dataframe
     df['SMA'+str(sma)] = df.iloc[:,4].rolling(window=sma).mean() 
@@ -37,10 +37,10 @@ while stock != "quit":
     current=df["PC"][-1]
     yday=df["PC"][-2]
     
-    print(str(current))
-    
     print("Mean: "+str(mean))
     print("Standard Dev: "+str(stdev))
+    print ("Current: " + str(current))
+    print ("Yesterday: " + str(current))
     
     # fixed bin size
     bins = np.arange(-100, 100, 1) 
@@ -82,4 +82,4 @@ while stock != "quit":
     rcParams['figure.figsize'] = 15, 10
     plt.show()
     
-    stock = input("Enter the stock symbol : ") 
+    stock = input("Enter the stock symbol: ") 
