@@ -23,14 +23,9 @@ end_date = datetime.date.today()
 
 df = DataReader('^DJI', 'yahoo', start_date, end_date)
 
+print ('\nDJIA Historical Prices: ')
 print(df.head())
-print ('\n')
-print(df.shape)
-print ('\n')
-print(df.columns)
-print ('\n')
-print(df.index)
-print ('\n')
+print (f'\nDJIA Historical Prices Dataset Shape: {df.shape}')
 
 #plot closing price for DJI
 df.Close.plot(grid=True, figsize=(10,6));
@@ -100,11 +95,8 @@ y = ti.pred_price
 train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.3, shuffle=False)
 
 print(f"Observations: {len(x)}")
-print ('\n')
 print(f"Train Dataset: {train_x.shape}")
-print ('\n')
-print(f"Test Dataset: {test_x.shape}")
-print ('\n')
+print(f"Test Dataset: {test_x.shape}\n")
 
 # plot training and testing data
 ax = train_x.plot(grid=True, figsize=(10, 6))
@@ -151,19 +143,18 @@ def batch_classify(train_x_scaled, train_y, verbose=True):
   return df_results
 
 df_results = batch_classify(train_x_scaled, train_y)
-print(df_results.sort_values(by="train_score", ascending=True))
 print ('\n')
+print(df_results.sort_values(by="train_score", ascending=True))
 
 # 5 Make prediction
 classifier = LogisticRegression(solver='lbfgs', max_iter=5000)
 classifier.fit(train_x_scaled, train_y)
 
 predictions = classifier.predict(test_x_scaled)
+print ('\nLogistic Regression: ')
 print(f"accuracy score: {accuracy_score(test_y, predictions)}")
-print ('\n')
-print(f"confusion matric:")
+print(f"confusion matrix:")
 print(confusion_matrix(test_y, predictions))
-print ('\n')
 print(f"classification report:")
 print(classification_report(test_y, predictions))
 
@@ -172,5 +163,5 @@ check_df = pd.DataFrame()
 check_df["Close"] = test_x["Close"]
 check_df["pred_price"] = test_y
 
-print ('\n')
+print ('\nPredicted')
 print(check_df)
