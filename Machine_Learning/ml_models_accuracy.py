@@ -101,7 +101,6 @@ print("Accuracy of Random Forest Model: ", rfg_confidence)
 print("Accuracy of Gradient Boosting Model: ", gbr_confidence)
 
 
-'''
 f,(ax1, ax2) = plt.subplots(1,2,figsize=(30,10))
 
 # Linear Regression
@@ -125,4 +124,3 @@ ax3.legend()
 ax4.scatter(range(len(y_test)),y_test,label="data")
 ax4.plot(range(len(y_test)),y_pred_gb,color="black",label="GB model")
 ax4.legend()
-'''
