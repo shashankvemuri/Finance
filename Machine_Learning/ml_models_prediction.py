@@ -146,7 +146,7 @@ df_results = batch_classify(train_x_scaled, train_y)
 print ('\n')
 print(df_results.sort_values(by="train_score", ascending=True))
 
-# 5 Make prediction
+# 5 Make prediction using Logistic Regression
 classifier = LogisticRegression(solver='lbfgs', max_iter=5000)
 classifier.fit(train_x_scaled, train_y)
 

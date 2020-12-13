@@ -1,4 +1,4 @@
-# # Importing the libraries
+# Importing the libraries
 import math
 import datetime
 import warnings
@@ -6,9 +6,9 @@ import numpy as np
 from math import sqrt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from keras.models import Sequential
+from tensorflow.keras.models import Sequential
 from pandas.plotting import lag_plot
-from keras.layers import Dense, LSTM
+from tensorflow.keras.layers import Dense, LSTM
 from pandas_datareader import DataReader
 from statsmodels.tsa.arima_model import ARIMA
 from sklearn.preprocessing import MinMaxScaler
@@ -17,7 +17,7 @@ from sklearn.metrics import mean_squared_error
 warnings.filterwarnings('ignore')
 
 ticker = 'TSLA'
-start_date = datetime.datetime.now() - datetime.timedelta(days=3650)
+start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
 # # Fetching the historic prices 
@@ -189,8 +189,8 @@ plt.plot(test_data.index, test_data['Close'], color='red', label='Actual Price',
 plt.title(f"{ticker}'s Prices Prediction")
 plt.xlabel('Dates')
 plt.ylabel('Prices')
-
 plt.legend()
+plt.show()
 
 plt.figure(figsize=(12,7))
 plt.plot(test_data.index, predictions, color='green', marker='o', linestyle='dashed', 
@@ -199,5 +199,5 @@ plt.plot(test_data.index, test_data['Close'], color='red', label='Actual Price',
 plt.title(f'{ticker} Prices Prediction')
 plt.xlabel('Dates')
 plt.ylabel('Prices')
-
 plt.legend()
+plt.show()
