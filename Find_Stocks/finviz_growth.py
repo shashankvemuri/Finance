@@ -9,7 +9,7 @@ def growth_screener():
     try:
         frames = []
         for i in range(1, 105, 20):
-            url = (f"https://finviz.com/screener.ashx?v=111&f=fa_epsyoy_o20,fa_epsyoy1_o25,fa_roe_o10,sh_price_o5,ta_sma200_pa&ft=4&r=0{i}")
+            url = (f"https://finviz.com/screener.ashx?v=111&f=cap_midover,fa_epsyoy_o20,fa_epsyoy1_o25,fa_roe_o10,ind_stocksonly,sh_price_o10,ta_sma200_pa&ft=4&r=0{i}")
             req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(req).read()
             html = soup(webpage, "html.parser")
