@@ -31,60 +31,7 @@ def get_jsonparsed_data(url):
 
 # inputs
 base_url = "https://financialmodelingprep.com/api/v3/"
-tickers = ['AAL', 
-'ACGL', 
-'AEM', 
-'ALSN', 
-'AMX', 
-'APPS', 
-'BKNG', 
-'BLD', 
-'BX', 
-'CMG', 
-'CSL', 
-'DIOD', 
-'DOMO', 
-'DOYU', 
-'EDU', 
-'EHC', 
-'ENPH', 
-'ESGR', 
-'EXPI', 
-'FUN', 
-'FUTU', 
-'HAE', 
-'HSIC', 
-'IBN', 
-'IBP', 
-'ISRG', 
-'JD', 
-'KKR', 
-'KNSL', 
-'LAMR', 
-'LNG', 
-'LULU', 
-'MA', 
-'MGM', 
-'MRVL', 
-'NCR', 
-'NFLX', 
-'NIO', 
-'NIU', 
-'OLED', 
-'PAGS', 
-'PCRX', 
-'RCM', 
-'REGI', 
-'SBSW', 
-'SGMS', 
-'SPWR', 
-'SQ', 
-'SYF', 
-'WKHS', 
-'WYND', 
-'XP', 
-'XRX', 
-'YY']
+tickers = ['AAL']
 apiKey = financial_model_prep()
 
 cash_flows = []
@@ -291,5 +238,5 @@ for ticker in tickers:
 df = pd.DataFrame(np.column_stack([valid_tickers, cash_flows, total_debts, cash_and_ST_investments_list, betas, discount_rates, EPS_growth_5Ys, EPS_growth_6Y_to_10Ys, EPS_growth_11Y_to_20Ys, shares_outstandings, intrinsic_values, current_prices, margins_safety]), 
                                columns=['Ticker', 'Cash Flow', 'Total Debt', 'Cash and ST investment', 'Beta', 'Discount Rate', 'EPS Growth 5 Y', 'EPS Growth 6-10 Y', 'EPS Growth 11-20 Y', 'Shares Outstanding', 'Intrinsic Value', 'Current Price', 'Margin Safety']).set_index('Ticker')
 df = df.sort_values(['Margin Safety'], ascending=True)
-df.to_csv(f'/Users/shashank/Downloads/{time.time()}.csv')
+df.to_csv(f'{time.time()}.csv')
 print (df)
