@@ -45,20 +45,20 @@ rs_df = rs_df[rs_df.RS_Rating >= rs_df.RS_Rating.quantile(.70)]
 
 # Checking Minervini conditions of top 30% of stocks in given list
 rs_stocks = rs_df['Ticker']
-for stock in rs_stocks:    
+for stock in rs_stocks:
     try:
         df = pd.read_csv(f'{stock}.csv', index_col=0)
         sma = [50, 150, 200]
         for x in sma:
             df["SMA_"+str(x)] = round(df['Adj Close'].rolling(window=x).mean(), 2)
         
-        # Storing required values 
+        # Storing required values
         currentClose = df["Adj Close"][-1]
         moving_average_50 = df["SMA_50"][-1]
         moving_average_150 = df["SMA_150"][-1]
         moving_average_200 = df["SMA_200"][-1]
-        low_of_52week = round(min(df["Adj Close"][-260:]), 2)
-        high_of_52week = round(max(df["Adj Close"][-260:]), 2)
+        low_of_52week = round(min(df["Low"][-260:]), 2)
+        high_of_52week = round(max(df["High"][-260:]), 2)
         RS_Rating = round(rs_df[rs_df['Ticker']==stock].RS_Rating.tolist()[0])
         
         try:
