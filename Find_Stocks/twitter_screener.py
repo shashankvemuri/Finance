@@ -1,15 +1,21 @@
+# Import dependencies
 import requests 
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
-import matplotlib.pyplot as plt
 import yahoo_fin.stock_info as ya
 from alpha_vantage.sectorperformance import SectorPerformances
+
+# Set option to display all columns in dataframes
 pd.set_option('display.max_columns', None)
 
+# Get most active stocks for the day
 movers = ya.get_day_most_active()
+
+# Keep only stocks with positive percentage change
 movers = movers[movers['% Change'] >= 0]
 
+# Scrape sentiment data from Sentdex website
 res = requests.get('http://www.sentdex.com/financial-analysis/?tf=30d')
 soup = BeautifulSoup(res.text, features="lxml")
 table = soup.find_all('tr')
@@ -40,14 +46,19 @@ for ticker in table:
             sentiment_trend.append('down')
     except:
         sentiment_trend.append(None)
-        
+
+# Create a dataframe with stock sentiment data
 company_info = pd.DataFrame(data={'Symbol': stock, 'Sentiment': sentiment, 'Direction': sentiment_trend, 'Mentions':mentions})
+
+# Merge most active stocks data with sentiment data
 top_stocks = movers.merge(company_info, on='Symbol', how='left')
+
+# Drop unnecessary columns from the merged dataframe
 top_stocks.drop(['Market Cap','PE Ratio (TTM)'], axis=1, inplace=True)
 
+# Scrape Twitter data from Trade Followers website
 res = requests.get("https://www.tradefollowers.com/strength/twitter_strongest.jsp?tf=1m")
 soup = BeautifulSoup(res.text, features="lxml")
-
 stock_twitter = soup.find_all('tr')
 
 twit_stock = []
@@ -64,19 +75,21 @@ for stock in stock_twitter:
         twit_stock.append(np.nan)
         sector.append(np.nan)
         twit_score.append(np.nan)
-        
+
+# Create a dataframe with Twitter data
 twitter_df = pd.DataFrame({'Symbol': twit_stock, 'Sector': sector, 'Twit_Bull_score': twit_score})
 
-# Remove NA values 
+# Remove NA values and duplicates from the dataframe
 twitter_df.dropna(inplace=True)
-twitter_df.drop_duplicates(subset ="Symbol", 
-                     keep = 'first', inplace = True)
+twitter_df.drop_duplicates(subset ="Symbol", keep='first', inplace=True)
 twitter_df.reset_index(drop=True,inplace=True)
-Final_list =  top_stocks.merge(twitter_df, on='Symbol', how='left')
 
+# Merge the previous dataframe with the Twitter momentum data
+Final_list = top_stocks.merge(twitter_df, on='Symbol', how='left')
+
+# Scrape more Twitter data from Trade Followers website
 res2 = requests.get("https://www.tradefollowers.com/active/twitter_active.jsp?tf=1m")
 soup2 = BeautifulSoup(res2.text, features="lxml")
-
 stock_twitter2 = soup2.find_all('tr')
 
 twit_stock2 = []
@@ -102,7 +115,8 @@ twitter_df2.drop_duplicates(subset ="Symbol",
                      keep = 'first', inplace = True)
 twitter_df2.reset_index(drop=True,inplace=True)
 
-Recommender_list = Final_list.merge(twitter_df2, on='Symbol', how='left')
-Recommender_list.drop(['Volume','Avg Vol (3 month)'],axis=1, inplace=True)
+# Create and print list
+recommender_list = Final_list.merge(twitter_df2, on='Symbol', how='left')
+recommender_list.drop(['Volume','Avg Vol (3 month)'],axis=1, inplace=True)
 print('\nFinal Recommended List: ')
-print(Recommender_list.set_index('Symbol'))
+print(recommender_list.set_index('Symbol'))
