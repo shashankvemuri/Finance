@@ -95,6 +95,7 @@ for stock in rs_stocks:
         print (e)
         print(f"Could not gather data on {stock}")
 
+# Create excel sheet and export
 exportList = exportList.sort_values(by='RS_Rating', ascending=False)
 print('\n', exportList)
 writer = ExcelWriter("ScreenOutput.xlsx")
