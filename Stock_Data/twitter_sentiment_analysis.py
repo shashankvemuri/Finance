@@ -1,34 +1,48 @@
+# Import dependencies
 import re
-import sys
 import csv
 import time
-import nltk
 import tweepy
 import requests
 import warnings 
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+# Importing twitter_api() function from config.py which contains the API keys
 from config import twitter_api
+
+# Importing libraries required for text analysis and visualization
 import matplotlib.pyplot as plt
 from googletrans import Translator
 from wordcloud import WordCloud, STOPWORDS
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+# Retrieve the API keys and access tokens from config.py
 consumer_key, consumer_secret, access_token, access_token_secret = twitter_api()
+
+# Filter DeprecationWarning from the console
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+# Create an instance of SentimentIntensityAnalyzer and Translator
 analyser = SentimentIntensityAnalyzer()
 translator = Translator()
 
+# Prompt user to input a stock symbol
 stock = input("Enter a stock: ")
+
+# Define a function to get the name of a stock from its symbol using Yahoo Finance API
 def get_symbol(symbol):
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(symbol)
     result = requests.get(url).json()
     for x in result['ResultSet']['Result']:
         if x['symbol'] == symbol:
             return x['name']
+            
+# Get the name of the company corresponding to the stock symbol
 company_name = get_symbol(stock.upper())
 
+# Define a function to generate word cloud from a list of words
 def word_cloud(wd_list):
     stopwords = set(STOPWORDS)
     all_words = ' '.join([text for text in wd_list])
@@ -46,6 +60,7 @@ def word_cloud(wd_list):
     plt.axis('off')
     plt.imshow(wordcloud, interpolation="bilinear");
 
+# Define a function to calculate sentiment score using VADER sentiment analyzer
 def sentiment_analyzer_scores(text, engl=True):
     if engl:
         trans = text
@@ -61,10 +76,12 @@ def sentiment_analyzer_scores(text, engl=True):
     else:
         return -1
 
+# Authenticate with Twitter API using the API keys and access tokens
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
+# Define a Twitter user_id to fetch tweets from and display the latest 3 tweets
 user_id = 'Benzinga'
 print ('-' * 50)
 print (f'{user_id}')
@@ -73,9 +90,9 @@ for t in tweets:
     print(t.full_text)
     print()
 
-def list_tweets(user_id, count, prt=False):
-    tweets = api.user_timeline(
-        "@" + user_id, count=count, tweet_mode='extended')
+# Define a function to retrieve the latest tweets from a Twitter user
+def list_tweets(username, count, prt=False):
+    tweets = api.user_timeline("@" + username, count=count, tweet_mode='extended')
     tw = []
     for t in tweets:
         tw.append(t.full_text)
@@ -84,73 +101,52 @@ def list_tweets(user_id, count, prt=False):
             print()
     return tw
 
-user_id = 'Stocktwits' 
-count=20
-
-print ('-' * 50)
-print (f'{user_id}')
-tw = list_tweets(user_id, count)
-print('Latest Tweet: ' + tw[0])
-
 def remove_pattern(input_txt, pattern):
+    """Remove a pattern from a string."""
     r = re.findall(pattern, input_txt)
     for i in r:
         input_txt = re.sub(i, '', input_txt)        
     return input_txt 
 
 def clean_tweets(lst):
-    # remove twitter Return handles (RT @xxx:)
+    """Clean a list of tweets by removing special characters, URLs, and Twitter handles."""
+    # Remove Twitter Return handles (RT @xxx:)
     lst = np.vectorize(remove_pattern)(lst, "RT @[\w]*:")
-    # remove twitter handles (@xxx)
+    # Remove Twitter handles (@xxx)
     lst = np.vectorize(remove_pattern)(lst, "@[\w]*")
-    # remove URL links (httpxxx)
+    # Remove URL links (httpxxx)
     lst = np.vectorize(remove_pattern)(lst, "https?://[A-Za-z0-9./]*")
-    # remove special characters, numbers, punctuations (except for #)
+    # Remove special characters, numbers, punctuations (except for #)
     lst = np.core.defchararray.replace(lst, "[^a-zA-Z#]", " ")
     return lst
 
-tw = clean_tweets(tw)
-print('Latest Tweet (cleaned): ' + tw[0])
-print('Latest Tweet (sentiment): ' + str(sentiment_analyzer_scores(tw[0])))
+def sentiment_analyzer_scores(sentence, engl=True):
+    """Analyze the sentiment of a sentence using VADER."""
+    from nltk.sentiment.vader import SentimentIntensityAnalyzer
+    sid = SentimentIntensityAnalyzer()
+    if engl:
+        trans = str.maketrans("", "", string.punctuation)
+        sentence = sentence.translate(trans)
+    return sid.polarity_scores(sentence)
 
 def anl_tweets(lst, title='Tweets Sentiment', engl=True ):
+    """Analyze the sentiment of a list of tweets and plot a histogram."""
     sents = []
     for tw in lst:
         try:
             st = sentiment_analyzer_scores(tw, engl)
-            sents.append(st)
+            sents.append(st['compound'])
         except:
             sents.append(0)
     plt.rcParams['figure.figsize'] = (15, 10)
-    ax = sns.distplot(
-        sents,
-        kde=False,
-        bins=3)
+    ax = sns.distplot(sents, kde=False, bins=3)
     ax.set(xlabel='Negative                Neutral                 Positive',
             ylabel='#Tweets',
-          title="Tweets of @"+title)
+            title="Tweets of @" + title)
     return sents
 
-tw_sent = anl_tweets(tw, user_id)
-# word_cloud(tw)
-
-user_id = 'CNBC' 
-print ('-' * 50)
-print (f'{user_id}')
-tw2 = list_tweets(user_id, count)
-tw2 = clean_tweets(tw2)
-tw2_sent = anl_tweets(tw2, user_id)
-print('Latest Tweet (cleaned): ' + tw2[0])
-print('Latest Tweet (sentiment): ' + str(sentiment_analyzer_scores(tw2[0])))
-# word_cloud(tw2)
-
-print ('-' * 50)
-def twitter_stream_listener(file_name,
-                            filter_track,
-                            follow=['@CNBC', '@Benzinga', '@Stocktwits', '@BreakoutStocks', '@bespokeinvest', '@WSJmarkets', '@Stephanie_Link', '@nytimesbusiness', '@IBDinvestors', '@WSJDealJournal'],
-                            locations=None,
-                            languages=None,
-                            time_limit=20):
+def twitter_stream_listener(file_name, filter_track, follow=None, locations=None, languages=None, time_limit=20):
+    """Stream tweets containing a specified keyword"""
     class CustomStreamListener(tweepy.StreamListener):
         def __init__(self, time_limit):
             self.start_time = time.time()
@@ -203,23 +199,24 @@ def twitter_stream_listener(file_name,
     )
     f.close()
 
-filter_track = [stock, company_name, company_name.split()[0]]#, 'breakout', 'drawback', 'indicator', 'ratio']
-file_name = f'/Users/shashank/Documents/Code/Python/Outputs/stock_tweets/{stock}_twitter.csv'
-twitter_stream_listener (file_name, filter_track, time_limit=60)
+# Call twitter stream listener
+filter_track = [stock, company_name, company_name.split()[0]]
+file_name = f'{stock}_twitter.csv'
+twitter_stream_listener(file_name, filter_track, time_limit=60)
 
+# Get shape of dataframe
 df_tws = pd.read_csv(file_name)
 print(df_tws.shape)
 
+# Print first few rows of dataframe
 df_tws['text'] =  clean_tweets(df_tws['text'])
 df_tws['sent'] = anl_tweets(df_tws.text)
 print(df_tws.head())
 
-# word_cloud(df_tws.text)
-
 # Words in positive tweets
 tws_pos = df_tws['text'][df_tws['sent'] == 1]
-# word_cloud(tws_pos)
+print (tws_pos)
 
 # Words in negative tweets
-tws_pos = df_tws['text'][df_tws['sent'] == -1]
-# word_cloud(tws_pos)
+tws_neg = df_tws['text'][df_tws['sent'] == -1]
+print (tws_neg)
