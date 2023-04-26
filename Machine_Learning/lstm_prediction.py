@@ -1,6 +1,5 @@
 #import the libraries
 import math
-import warnings
 import datetime 
 import numpy as np
 import pandas as pd
@@ -10,8 +9,6 @@ from pandas_datareader import DataReader
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.layers import Dense, LSTM
-
-warnings.filterwarnings("ignore")
 
 #get the stock quote for the past 10 years
 stock = input("Enter a stock ticker: ")

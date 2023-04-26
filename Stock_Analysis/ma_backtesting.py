@@ -1,11 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
-yf.pdr_override()
 import datetime as dt
+yf.pdr_override()
 
 symbol = 'MSFT'
 short_window = 40

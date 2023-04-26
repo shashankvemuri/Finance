@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import math
-import warnings
-
-warnings.filterwarnings("ignore")
 
 prices = pd.read_csv("adjclose.csv", index_col="Date", parse_dates=True)
 volumechanges = pd.read_csv("volume.csv", index_col="Date", parse_dates=True).pct_change()*100

@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import warnings
-warnings.filterwarnings("ignore") 
 import yfinance as yf
 yf.pdr_override()
 import datetime as dt

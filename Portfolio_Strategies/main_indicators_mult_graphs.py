@@ -2,14 +2,11 @@ import matplotlib.pyplot as plt
 from pylab import rcParams
 import yfinance as yf
 import datetime as dt
-import warnings
 import talib 
 import ta
 import numpy as np
 import matplotlib.ticker as mticker
 from pandas_datareader import data as pdr
-
-warnings.filterwarnings("ignore")
 yf.pdr_override()
 
 # input
