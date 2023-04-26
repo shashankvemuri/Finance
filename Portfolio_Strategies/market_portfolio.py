@@ -6,8 +6,6 @@ import seaborn as sns
 from tabulate import tabulate
 from scipy.stats import norm
 import math
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 import datetime as dt

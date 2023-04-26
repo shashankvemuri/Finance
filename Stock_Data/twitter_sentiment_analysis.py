@@ -4,7 +4,6 @@ import csv
 import time
 import tweepy
 import requests
-import warnings 
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -20,9 +19,6 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Retrieve the API keys and access tokens from config.py
 consumer_key, consumer_secret, access_token, access_token_secret = twitter_api()
-
-# Filter DeprecationWarning from the console
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Create an instance of SentimentIntensityAnalyzer and Translator
 analyser = SentimentIntensityAnalyzer()

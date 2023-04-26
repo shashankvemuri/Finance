@@ -1,6 +1,5 @@
 import yfinance as yf
 import datetime as dt
-import warnings
 import talib 
 import pandas as pd
 import time
@@ -8,8 +7,6 @@ from yahoo_fin import stock_info as si
 from scipy.stats import zscore
 import numpy as np
 
-
-warnings.filterwarnings("ignore")
 yf.pdr_override()
 pd.set_option('display.max_columns', None)
 

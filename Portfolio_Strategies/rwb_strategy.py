@@ -2,11 +2,8 @@ import yfinance as yf
 import datetime as dt
 from pandas_datareader import data as pdr
 import matplotlib.pyplot as plt
-import warnings
 
 yf.pdr_override()
-warnings.filterwarnings('ignore')
-
 stock = input('Enter a ticker: ')
 num_of_years = input('Enter number of years: ')
 num_of_years = float(num_of_years)

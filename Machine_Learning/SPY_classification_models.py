@@ -23,9 +23,6 @@ from sklearn.linear_model import RidgeClassifier, SGDClassifier, LogisticRegress
 from sklearn.svm import LinearSVC, NuSVC, SVC
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
-import warnings
-warnings.filterwarnings('ignore')
-
 quandl.ApiConfig.api_key = quandl_api()
 start = '2000-01-01'
 end = '2020-04-30'

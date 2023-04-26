@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.optimize import fmin
 import math
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 import datetime as dt
