@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 from matplotlib import dates as mdates

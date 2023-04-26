@@ -5,8 +5,6 @@ import math
 import scipy.stats as scs
 from scipy import stats
 import statsmodels.api as sm
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 from datetime import datetime
 import datetime as dt

@@ -8,10 +8,6 @@ import datetime as dt
 
 from pandas_datareader import data as pdr
 import statsmodels.api as sm
-import warnings
-
-# Ignore warnings
-warnings.filterwarnings("ignore")
 
 # Set stock symbol
 stock = 'AAPL'

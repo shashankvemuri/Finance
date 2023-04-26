@@ -2,11 +2,8 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import datetime as dt
-import warnings
 from yahoo_fin import stock_info as si
 import talib
-
-warnings.filterwarnings('ignore')
 pd.set_option('display.max_columns', None)
 
 stock = input('Enter a stock ticker: ')

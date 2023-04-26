@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D  
 import matplotlib.lines as mlines
 import matplotlib.transforms as mtransforms
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 yf.pdr_override()
 import datetime as dt 

@@ -1,8 +1,6 @@
 # Libraries
 import pandas as pd
 import numpy as np
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
 from pandas_datareader import data as pdr
 yf.pdr_override()

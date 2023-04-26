@@ -1,7 +1,6 @@
 # Importing the libraries
 import math
 import datetime
-import warnings
 import numpy as np
 from math import sqrt
 import matplotlib as mpl
@@ -13,8 +12,6 @@ from pandas_datareader import DataReader
 from statsmodels.tsa.arima_model import ARIMA
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-
-warnings.filterwarnings('ignore')
 
 ticker = 'TSLA'
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
