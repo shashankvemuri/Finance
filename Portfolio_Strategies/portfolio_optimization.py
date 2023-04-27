@@ -1,3 +1,4 @@
+# Import dependencies
 import datetime
 import numpy as np
 import pandas as pd
@@ -10,31 +11,39 @@ from pandas.plotting import register_matplotlib_converters
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
 
+# Registering converters for using matplotlib's plot_date() function.
 register_matplotlib_converters()
 
+# Setting display options for pandas
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 
+# Defining stocks to include in the portfolio
 stocks = ["SCHB", "AAPL", "AMZN", "TSLA", "AMD", "MSFT", "NFLX"]
 
-n = len(stocks)  # number of stocks
+# Getting historical data from Yahoo Finance
 start = datetime.date(2020, 8, 13)
 end = datetime.datetime.now()
-
 df = pdr.get_data_yahoo(stocks, start=start, end=end)["Close"]
+
+# Printing the last few rows of the data
 print(df.tail())
 
+# Calculating daily returns of each stock
 returns = df.pct_change()
 
+# Plotting the daily returns of each stock
 returns.plot(grid=True).axhline(y=0, color="black", lw=2)
 plt.legend(loc="upper right", fontsize=12)
 plt.ylabel("Daily Returns")
 
+# Defining a function to calculate the annualized performance of a portfolio
 def portfolio_annualised_performance(weights, mean_returns, cov_matrix):
     returns = np.sum(mean_returns * weights) * 252
     std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights))) * np.sqrt(252)
     return std, returns
 
+# Defining a function to generate random portfolios
 def random_portfolios(num_portfolios, mean_returns, cov_matrix, risk_free_rate):
     results = np.zeros((3, num_portfolios))
     weights_record = []
@@ -50,16 +59,20 @@ def random_portfolios(num_portfolios, mean_returns, cov_matrix, risk_free_rate):
         results[2, i] = (portfolio_return - risk_free_rate) / portfolio_std_dev
     return results, weights_record
 
-returns = df.pct_change()
+# Calculating mean returns and covariance matrix of returns
 mean_returns = returns.mean()
 cov_matrix = returns.cov()
+
+# Setting the number of random portfolios to generate and the risk-free rate
 num_portfolios = 50000
 risk_free_rate = 0.021
 
+# Defining a function to calculate the negative Sharpe ratio
 def neg_sharpe_ratio(weights, mean_returns, cov_matrix, risk_free_rate):
     p_var, p_ret = portfolio_annualised_performance(weights, mean_returns, cov_matrix)
     return -(p_ret - risk_free_rate) / p_var
 
+# Defining a function to find the portfolio with maximum Sharpe ratio
 def max_sharpe_ratio(mean_returns, cov_matrix, risk_free_rate):
     num_assets = len(mean_returns)
     args = (mean_returns, cov_matrix, risk_free_rate)
@@ -165,20 +178,7 @@ def display_calculated_ef_with_random(
         round(i * 100, 2) for i in min_vol_allocation.allocation
     ]
     min_vol_allocation = min_vol_allocation.T
-    """
-    print ("-"*80)
-    print ("Maximum Sharpe Ratio Portfolio Allocation\n")
-    print ("Annualised Return:", round(rp,2))
-    print ("Annualised Volatility:", round(sdp,2))
-    print ("\n")
-    print (max_sharpe_allocation)
-    print ("-"*80)
-    print ("Minimum Volatility Portfolio Allocation\n")
-    print ("Annualised Return:", round(rp_min,2))
-    print ("Annualised Volatility:", round(sdp_min,2))
-    print ("\n")
-    print (min_vol_allocation)
-    """
+
     plt.figure(figsize=(10, 7))
     plt.scatter(
         results[0, :],
