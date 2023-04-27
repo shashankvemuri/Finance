@@ -1,71 +1,82 @@
-from pandas_datareader import DataReader
-import pandas as pd
+# Import dependencies
+import datetime
+from functools import reduce
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import seaborn as sns
 import numpy as np
-from functools import reduce
+import pandas as pd
+import seaborn as sns
 import yfinance as yf
-import datetime
+from pandas_datareader import DataReader
 
-sns.set(style = 'darkgrid', context = 'talk', palette = 'Dark2')
+sns.set(style='darkgrid', context='talk', palette='Dark2')
 
+# Define the number of years to analyze
 num_of_years = 3
+
+# Calculate the start and end dates for the analysis
 start = datetime.datetime.now() - datetime.timedelta(int(365.25 * num_of_years))
-end = datetime.datetime.now() 
+end = datetime.datetime.now()
+
+# Define a date formatter
 date_format = mdates.DateFormatter('%m/%y')
 
+# Define the tickers to analyze
 tickers = ['TSLA', 'AAPL', 'AMZN', 'NFLX']
 
+# Retrieve the stock prices for the selected tickers
 df = DataReader(tickers, 'yahoo', start, end)['Close']
 
-# Take the rolling (moving) average for short term and long term windows (window length is user decision)
-short_rolling = df.rolling(window = 20).mean()
-long_rolling = df.rolling(window = 100).mean()
+# Calculate the rolling average for the short term and long term windows
+short_rolling_mean = df.rolling(window=20).mean()
+long_rolling_mean = df.rolling(window=100).mean()
 
-# # Exponential Moving Average (No Pos. Size Provision)
-ema_short = df.ewm(span = 20, adjust = False).mean()
+# Calculate the Exponential Moving Average (EMA) for a 20-day window
+ema_short = df.ewm(span=20, adjust=False).mean()
 
-# Price differences between asset closing price and exponential MA series
+# Calculate the trading position for each asset based on the difference between the closing price and the EMA series
 trade_pos_raw = df - ema_short
-trade_pos_raw.tail()
 
-# Take the sign of the trade position difference (1 if x > 0; -1 if x < 0 ) and multiply by the fixed weight of assets (1/3 due to three assets)
-trade_positions = trade_pos_raw.apply(np.sign) * 1/3
-trade_positions.tail()
+# Calculate the fixed weight of each asset (1/3 due to three assets)
+fixed_weight = 1 / 3
 
-# Lag trading signals by a day (we are assuming that we traded at close of day t0 so we will have a long position on day t0+1)
+# Calculate the trade position difference sign (1 if x > 0; -1 if x < 0) and multiply by the fixed weight of assets
+trade_positions = trade_pos_raw.apply(np.sign) * fixed_weight
+
+# Lag trading signals by a day (assuming that we traded at close of day t0 so we will have a long position on day t0+1)
 trading_pos_final = trade_positions.shift(1)
 
-# # Strategy Performance
+# Calculate the logarithmic returns for each asset
 asset_log_returns = np.log(df).diff()
-asset_log_returns = trading_pos_final * asset_log_returns
 
-cumul_asset_log_returns = asset_log_returns.cumsum()
+# Calculate the logarithmic returns for each asset weighted by the trading positions
+weighted_asset_log_returns = trading_pos_final * asset_log_returns
+
+# Calculate the cumulative logarithmic returns for the portfolio
+cumul_asset_log_returns = weighted_asset_log_returns.cumsum()
+
+# Calculate the cumulative relative returns for the portfolio
 cumul_asset_relative_returns = np.exp(cumul_asset_log_returns) - 1
 
-# Plot the cumulative log returns of asset portfolio in addition to plotting the total relative return
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize = (20, 10))
+# Plot the cumulative logarithmic returns for the asset portfolio and the total relative returns
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(20, 10))
 for c in asset_log_returns:
-    ax1.plot(cumul_asset_relative_returns.index, cumul_asset_relative_returns[c], label = str(c))
-    
+    ax1.plot(cumul_asset_relative_returns.index, cumul_asset_relative_returns[c], label=str(c))
 ax1.set_ylabel('Cumulative Log Returns')
-ax1.legend(loc = 'best')
+ax1.legend(loc='best')
 ax1.xaxis.set_major_formatter(date_format)
-ax1.set_title('Cumulative', fontweight = 'bold')
-
+ax1.set_title('Cumulative', fontweight='bold')
 for c in asset_log_returns:
-    ax2.plot(cumul_asset_relative_returns.index, 100*cumul_asset_relative_returns[c], label = str(c))
-    
+    ax2.plot(cumul_asset_relative_returns.index, 100 * cumul_asset_relative_returns[c], label=str(c))
 ax2.set_ylabel('Total Relative Returns (%)')
-ax2.legend(loc = 'best')
+ax2.legend(loc='best')
 ax2.xaxis.set_major_formatter(date_format)
-ax2.set_title('Total Relative', fontweight = 'bold')
+ax2.set_title('Total Relative', fontweight='bold')
 plt.tight_layout()
 
-# # Total Strategy Return
-cumul_relative_return_exact = cumul_asset_relative_returns.sum(axis = 1)
-cumul_log_return = cumul_asset_log_returns.sum(axis = 1)
+# Calculate the exact and approximate cumulative relative returns for the portfolio
+cumul_relative_return_exact = cumul_asset_relative_returns.sum(axis=1)
+cumul_log_return = cumul_asset_log_returns.sum(axis=1)
 cumul_relative_return_appx = np.exp(cumul_log_return) - 1
 
 # Plot Exact and Approximate equity curves
