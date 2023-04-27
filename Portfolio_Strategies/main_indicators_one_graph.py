@@ -1,109 +1,93 @@
-# import relevant libraries
+# Import relevant libraries
 import yfinance as yf
-import datetime as dt
 import pandas as pd
 from pandas_datareader import data as pdr
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import matplotlib.ticker as mticker
-import datetime as datetime
-import numpy as np
 from mplfinance.original_flavor import candlestick_ohlc
+import matplotlib.ticker as mticker
+import datetime as dt
 from pylab import rcParams
 
+# Set yfinance to use pandas datareader
 yf.pdr_override()
 
 # Choose smas
-smasUsed = [10, 30, 50]
+smas_used = [10, 30, 50]
 
-start = dt.datetime(2020, 1, 1) - dt.timedelta(days=max(smasUsed))
-now = dt.datetime.now()
-stock = input("Enter the stock symbol : ")
+start = pd.Timestamp("2020-01-01") - pd.Timedelta(days=max(smas_used))
+now = pd.Timestamp.now()
+
+# Get stock symbol from user
+stock = input("Enter the stock symbol: ")
 
 while stock != "quit":
 
+    # Get stock data
     prices = pdr.get_data_yahoo(stock, start, now)
 
+    # Create figure and axis objects
     fig, ax1 = plt.subplots()
 
     # Calculate moving averages
-    for x in smasUsed:
-        sma = x
-        prices["SMA_" + str(sma)] = prices.iloc[:, 4].rolling(window=sma).mean()
+    for sma in smas_used:
+        prices[f"SMA_{sma}"] = prices["Close"].rolling(window=sma).mean()
 
     # Calculate Bollinger Bands
-    BBperiod = 15
+    bb_period = 15
     stdev = 2
-    prices["SMA" + str(BBperiod)] = prices.iloc[:, 4].rolling(window=BBperiod).mean()
-    prices["STDEV"] = prices.iloc[:, 4].rolling(window=BBperiod).std()
-    prices["LowerBand"] = prices["SMA" + str(BBperiod)] - (stdev * prices["STDEV"])
-    prices["UpperBand"] = prices["SMA" + str(BBperiod)] + (stdev * prices["STDEV"])
+    prices[f"SMA{bb_period}"] = prices["Close"].rolling(window=bb_period).mean()
+    prices["STDEV"] = prices["Close"].rolling(window=bb_period).std()
+    prices["LowerBand"] = prices[f"SMA{bb_period}"] - (stdev * prices["STDEV"])
+    prices["UpperBand"] = prices[f"SMA{bb_period}"] + (stdev * prices["STDEV"])
     prices["Date"] = mdates.date2num(prices.index)
 
     # Calculate 10.4.4 stochastic
-    Period = 10
-    K = 4
-    D = 4
+    period = 10
+    k = 4
+    d = 4
 
-    prices["RolHigh"] = prices["High"].rolling(window=Period).max()
-    prices["RolLow"] = prices["Low"].rolling(window=Period).min()
-    prices["stok"] = (
-        (prices["Adj Close"] - prices["RolLow"])
-        / (prices["RolHigh"] - prices["RolLow"])
-    ) * 100
-    prices["K"] = prices["stok"].rolling(window=K).mean()
-    prices["D"] = prices["K"].rolling(window=D).mean()
+    prices["RolHigh"] = prices["High"].rolling(window=period).max()
+    prices["RolLow"] = prices["Low"].rolling(window=period).min()
+    prices["stok"] = ((prices["Close"] - prices["RolLow"]) / (prices["RolHigh"] - prices["RolLow"])) * 100
+    prices["K"] = prices["stok"].rolling(window=k).mean()
+    prices["D"] = prices["K"].rolling(window=d).mean()
+
+    # Prepare for plotting GD (green dots)
     prices["GD"] = prices["High"]
-
     ohlc = []
+    prices = prices.iloc[max(smas_used):]
 
-    prices = prices.iloc[max(smasUsed) :]
+    # Prepare for plotting BBLB (blue dots)
+    green_dot_date = []
+    green_dot = []
+    last_k = 0
+    last_d = 0
+    last_low = 0
+    last_close = 0
+    last_low_bb = 0
 
-    greenDotDate = []
-    greenDot = []
-    lastK = 0
-    lastD = 0
-    lastLow = 0
-    lastClose = 0
-    lastLowBB = 0
+    # Iterate over prices to create candlesticks and GD+Blue dots
+    for i, (date, row) in enumerate(prices.iterrows()):
 
-    # Go through price history to create candlestics and GD+Blue dots
-    for i in prices.index:
-        append_me = (
-            prices["Date"][i],
-            prices["Open"][i],
-            prices["High"][i],
-            prices["Low"][i],
-            prices["Adj Close"][i],
-            prices["Volume"][i],
-        )
+        append_me = (prices["Date"][i], prices["Open"][i], prices["High"][i], prices["Low"][i],
+                     prices["Close"][i], prices["Volume"][i])
         ohlc.append(append_me)
 
         # Check for Green Dot
-        if prices["K"][i] > prices["D"][i] and lastK < lastD and lastK < 60:
-
-            # plt.Circle((prices["Date"][i],prices["High"][i]),1)
-            # plt.bar(prices["Date"][i],1,1.1,bottom=prices["High"][i]*1.01,color='g')
-            plt.plot(
-                prices["Date"][i],
-                prices["High"][i] + 1,
-                marker="o",
-                ms=4,
-                ls="",
-                color="g",
-            )
-
-            greenDotDate.append(i)  # store green dot date
-            greenDot.append(prices["High"][i])  # store green dot value
+        if prices["K"][i] > prices["D"][i] and last_k < last_d and last_k < 60:
+            plt.plot(prices["Date"][i], prices["High"][i] + 1, marker="o", ms=4, ls="", color="g")
+            green_dot_date.append(date)  # Store green dot date
+            green_dot.append(prices["High"][i])  # Store green dot value
 
         # Check for Lower Bollinger Band Bounce
         if (
-            ((lastLow < lastLowBB) or (prices["Low"][i] < prices["LowerBand"][i]))
+            ((last_low < last_low_bb) or (prices["Low"][i] < prices["LowerBand"][i]))
             and (
-                prices["Adj Close"][i] > lastClose
+                prices["Adj Close"][i] > last_close
                 and prices["Adj Close"][i] > prices["LowerBand"][i]
             )
-            and lastK < 60
+            and last_k < 60
         ):
             plt.plot(
                 prices["Date"][i],
@@ -114,21 +98,21 @@ while stock != "quit":
                 color="b",
             )
 
-        # store values
-        lastK = prices["K"][i]
-        lastD = prices["D"][i]
-        lastLow = prices["Low"][i]
-        lastClose = prices["Adj Close"][i]
-        lastLowBB = prices["LowerBand"][i]
+        # Store values
+        last_k = prices["K"][i]
+        last_d = prices["D"][i]
+        last_low = prices["Low"][i]
+        last_close = prices["Adj Close"][i]
+        last_low_bb = prices["LowerBand"][i]
 
     # Plot moving averages and BBands
-    for x in smasUsed:
+    for x in smas_used:
         sma = x
         prices["SMA_" + str(sma)].plot(label="close")
     prices["UpperBand"].plot(label="close", color="lightgray")
     prices["LowerBand"].plot(label="close", color="lightgray")
 
-    # plot candlesticks
+    # Plot candlesticks
     candlestick_ohlc(ax1, ohlc, width=0.5, colorup="k", colordown="r", alpha=0.75)
 
     ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
@@ -167,8 +151,6 @@ while stock != "quit":
     timeD = dt.timedelta(days=30)
 
     for index in range(len(pivots)):
-
-        # print(str(pivots[index])+": "+str(dates[index])) #Prints Pivot, Date couple
         plt.plot_date(
             [dates[index] - (timeD * 0.075), dates[index] + timeD],
             [6 + pivots[index], pivots[index]],
