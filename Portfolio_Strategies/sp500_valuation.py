@@ -4,13 +4,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pylab import rcParams
 
+# Set the plot size
 rcParams["figure.figsize"] = [15, 10]
 
-# Valuing the market
+# Load the S&P 500 data
 sp_df = pd.read_excel(
     "http://www.stern.nyu.edu/~adamodar/pc/datasets/spearn.xls", sheet_name="Sheet1"
 )
 
+# Clean the data
 clean_df = sp_df.drop([i for i in range(6)], axis=0)
 rename_dict = {}
 for i in sp_df.columns:
@@ -19,15 +21,19 @@ clean_df = clean_df.rename(rename_dict, axis=1)
 clean_df = clean_df.drop(6, axis=0)
 clean_df = clean_df.drop(clean_df.index[-1], axis=0)
 clean_df = clean_df.set_index("Year")
+
+# Calculate earnings and dividend growth rates
 clean_df["earnings_growth"] = clean_df["Earnings"] / clean_df["Earnings"].shift(1) - 1
 clean_df["dividend_growth"] = clean_df["Dividends"] / clean_df["Dividends"].shift(1) - 1
-clean_df["earnings_10yr_mean_growth"] = clean_df["earnings_growth"].expanding(10).mean()
-clean_df["dividends_10yr_mean_growth"] = (
-    clean_df["dividend_growth"].expanding(10).mean()
-)
 
+# Calculate 10-year mean growth rates for earnings and dividends
+clean_df["earnings_10yr_mean_growth"] = clean_df["earnings_growth"].expanding(10).mean()
+clean_df["dividends_10yr_mean_growth"] = clean_df["dividend_growth"].expanding(10).mean()
+
+# Display the last 20 years' mean data of the cleaned data
 clean_df.tail(20).mean()
 
+# Plot earnings growth rates and 10-year mean growth rates
 plt.subplots(figsize=(15, 10))
 plt.plot(clean_df["earnings_growth"], label="Year over Year Earnings Growth")
 plt.plot(clean_df["earnings_10yr_mean_growth"], label="Rolling 10 Year Mean")
@@ -37,10 +43,11 @@ plt.show()
 
 # Base case valuation of S&P 500
 valuations = []
-terminal_growth = 0.04
-discount_rate = 0.08
-payout_ratio = 0.50
+terminal_growth = 0.04  # Terminal growth rate
+discount_rate = 0.08  # Discount rate
+payout_ratio = 0.50  # Payout ratio
 
+# Calculate the expected EPS growth rates for the next 10 years
 eps_growth_2020 = (11.88 + 17.76 + 28.27 + 31.78) / (34.95 + 35.08 + 33.99 + 35.72) - 1
 eps_2020 = clean_df.iloc[-1]["Earnings"] * (1 + eps_growth_2020)
 eps_next = 28.27 + 31.78 + 32.85 + 36.77
@@ -57,6 +64,7 @@ eps_growth = [
     0.08,
 ]
 
+# Create a dataframe to hold the future earnings and dividends
 value_df = pd.DataFrame()
 value_df["earnings"] = (np.array(eps_growth) + 1).cumprod() * eps_next
 value_df["dividends"] = payout_ratio * value_df["earnings"]
