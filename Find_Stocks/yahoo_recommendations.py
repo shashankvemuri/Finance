@@ -1,3 +1,4 @@
+# Import dependencies
 import requests
 import pandas as pd 
 from yahoo_fin import stock_info as si 
@@ -8,27 +9,30 @@ import time
 import bs4 as bs
 import pickle
 
-mylist = []
+# Define today's date
 today = datetime.date.today()
-mylist.append(today)
-today = mylist[0]
 
 def save_spx_tickers():
+    """
+    Scrape S&P 500 tickers from Wikipedia and save them in a pickle file
+    Returns:
+        tickers (list): a list of S&P 500 tickers
+    """
     resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
     soup = bs.BeautifulSoup(resp.text, 'lxml')
     table = soup.find('table', {'class':'wikitable sortable'})
     tickers = []
     for row in table.findAll('tr')[1:]:
-        ticker = row.find_all('td') [0].text.strip()
+        ticker = row.find_all('td')[0].text.strip()
         tickers.append(ticker)
         
     with open('spxTickers.pickle', 'wb') as f:
-            pickle.dump(tickers, f)       
+        pickle.dump(tickers, f)       
     return tickers
         
 tickers = save_spx_tickers()
 
-# Make the ticker symbols readable by Yahoo Finance
+# Replace dots with hyphens in ticker symbols to make them readable by Yahoo Finance
 tickers = [item.replace(".", "-") for item in tickers]
 
 recommendations = []
@@ -40,27 +44,24 @@ for ticker in tickers:
               'financialData,earningsHistory,earningsTrend,industryTrend&' \
               'corsDomain=finance.yahoo.com'
               
-    url =  lhs_url + ticker + rhs_url
+    url = lhs_url + ticker + rhs_url
     r = requests.get(url)
     if not r.ok:
-        recommendation = 6
+        recommendation = 6 # Default recommendation if request fails
     try:
         result = r.json()['quoteSummary']['result'][0]
-        recommendation =result['financialData']['recommendationMean']['fmt']
+        recommendation = result['financialData']['recommendationMean']['fmt']
     except:
-        recommendation = 6
+        recommendation = 6 # Default recommendation if parsing fails
     
     recommendations.append(recommendation)
-    time.sleep(1.5)
+    time.sleep(1.5) # Sleep for 1.5 seconds before sending another request
     
-    #print("--------------------------------------------")
-    print ("{} has an average recommendation of: ".format(ticker), recommendation)
+    # Print the recommendation for each ticker
+    print("{} has an average recommendation of: {}".format(ticker, recommendation))
     
-
-df = pd.read_csv('/Users/shashank/Documents/GitHub/Code/recommendation-values/recommendation-values.csv')
-df['{}'.format(today)] = recommendations
-df = df.set_index('Company')
-df.to_csv('/Users/shashank/Documents/GitHub/Code/recommendation-values/recommendation-values.csv')
-
-#dataframe = pd.read_csv('recommendations.csv')
-#print (dataframe)
+# Load the existing recommendation file and update it with today's recommendations
+df = pd.read_csv('recommendation-values.csv', index_col='Company')
+df[today] = recommendations
+df.to_csv('recommendation-values.csv')
+print(df)

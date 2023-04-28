@@ -1,49 +1,60 @@
+# Import required libraries
 import pandas as pd
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
 
+# Set display options for pandas
 pd.set_option('display.max_colwidth', 60)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-# Set up scraper
-url = ("https://finviz.com/")
-req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+# Define URL and request headers
+url = "https://finviz.com/"
+headers = {'User-Agent': 'Mozilla/5.0'}
+
+# Send request to the website and parse the HTML
+req = Request(url, headers=headers)
 webpage = urlopen(req).read()
 html = soup(webpage, "html.parser")
 
+# Define functions to scrape data from different sections of the page
 def get_top_stocks():
     try:
-        ups = pd.read_html(str(html), attrs = {'class': 't-home-table'})[0]
+        # Scrape the top up stocks section of the page
+        ups = pd.read_html(str(html), attrs={'class': 't-home-table'})[0]
         ups.columns = ['Ticker', 'Last', 'Change', 'Volume', '4', 'Signal']
-        ups = ups.drop(columns = ['4'])
+        ups = ups.drop(columns=['4'])
         ups = ups.iloc[1:]
         ups = ups.set_index('Ticker')
         return ups
     except Exception as e:
+        # Return the exception if there is an error
         return e
 
 def get_bottom_stocks():
     try:
-        downs = pd.read_html(str(html), attrs = {'class': 't-home-table'})[1]
+        # Scrape the top down stocks section of the page
+        downs = pd.read_html(str(html), attrs={'class': 't-home-table'})[1]
         downs.columns = ['Ticker', 'Last', 'Change', 'Volume', '4', 'Signal']
-        downs = downs.drop(columns = ['4'])
+        downs = downs.drop(columns=['4'])
         downs = downs.iloc[1:]
         downs = downs.set_index('Ticker')
         return downs
     except Exception as e:
+        # Return the exception if there is an error
         return e
 
 def get_signals():
     try:
-        sig1 = pd.read_html(str(html), attrs = {'class': 't-home-table'})[2]
+        # Scrape the top signals section of the page
+        sig1 = pd.read_html(str(html), attrs={'class': 't-home-table'})[2]
         sig1.columns = ['Ticker', 'Ticker', 'Ticker', 'Ticker', '4', 'Signal']
-        sig1 = sig1.drop(columns = ['4'])
+        sig1 = sig1.drop(columns=['4'])
         sig1 = sig1[1:]
         
-        sig2 = pd.read_html(str(html), attrs = {'class': 't-home-table'})[3]
+        sig2 = pd.read_html(str(html), attrs={'class': 't-home-table'})[3]
         sig2.columns = ['Ticker', 'Ticker', 'Ticker', 'Ticker', '4', 'Signal']
-        sig2 = sig2.drop(columns = ['4'])
+        sig2 = sig2.drop(columns=['4'])
         sig2 = sig2[1:]
         
         frames = [sig1, sig2]
@@ -51,22 +62,26 @@ def get_signals():
         signals = signals.set_index('Ticker')
         return signals
     except Exception as e:
+        # Return the exception if there is an error
         return e
 
 def get_headlines():
     try:
-        headlines = pd.read_html(str(html), attrs = {'class': 't-home-table'})[4]
+        # Scrape the headlines section of the page
+        headlines = pd.read_html(str(html), attrs={'class': 't-home-table'})[4]
         headlines.columns = ['0', 'Time', 'Headlines']
-        headlines = headlines.drop(columns = ['0'])
+        headlines = headlines.drop(columns=['0'])
         headlines = headlines[1:]
         headlines = headlines.set_index('Time')
         return headlines
     except Exception as e:
+        # Return the exception if there is an error
         return e
 
 def get_major_news():
     try:
-        major = pd.read_html(str(html), attrs = {'class': 't-home-table'})[6]
+        # Scrape the major news section of the page
+        major = pd.read_html(str(html), attrs={'class': 't-home-table'})[6]
         major.columns = ['Ticker', 'Change']
         major = major[1:]
         major = major.set_index('Ticker')
@@ -76,6 +91,7 @@ def get_major_news():
 
 def get_earnings():
     try:
+        # Scrape the earnings section of the page
         earnings = pd.read_html(str(html), attrs = {'class': 't-home-table'})[7]
         earnings.columns = ['Date', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker']
         earnings = earnings.iloc[1:]
@@ -86,6 +102,7 @@ def get_earnings():
 
 def get_futures():
     try:
+        # Scrape the futures section of the page
         futures1 = pd.read_html(str(html), attrs = {'class': 't-home-table'})[8]
         futures1.columns = ['Index', 'Last', 'Change', 'Change (%)', '4']
         futures1 = futures1.drop(columns = ['4'])
@@ -103,7 +120,8 @@ def get_futures():
         return futures
     except Exception as e:
         return e
-
+    
+# Print out the resulting dataframes for each category
 print ('\nTop Up Stocks: ')
 print(get_top_stocks())
 

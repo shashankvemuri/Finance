@@ -1,141 +1,75 @@
+# Import dependencies
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import math
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
-yf.pdr_override()
+from dateutil import relativedelta
 import datetime as dt
 
-# Symbols
-symbols = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
+# Override yfinance API to enable Pandas Datareader
+yf.pdr_override()
 
-# Define weights for the portfolio
-weights = np.array([0.4935, 0.1638, 0.12050000000000001, 0.0683, 0.056600000000000004, 0.0518, 0.0513])
+# Function to get historical stock price data
+def get_historical_prices(symbols, start_date, end_date):
+    df = yf.download(symbols, start=start_date, end=end_date)['Adj Close']
+    return df
 
-# Dates
-start = dt.date(2020, 8, 13)
-end = dt.date.today()
+# Example list of symbols to fetch historical data for
+symbols = ['FB', 'JNJ', 'LMT']
+start_date = dt.datetime.now() - dt.timedelta(days=365*7)
+end_date = dt.datetime.now()
 
+# Fetch historical closing prices for the given symbols and dates
+closes = get_historical_prices(symbols, start_date, end_date)
 
-# Read data 
-dataset = yf.download(symbols,start,end)['Adj Close']
+# Function to calculate daily returns from price data
+def calc_daily_returns(closes):
+    return np.log(closes/closes.shift(1))
 
-# Calculate Daily Returns
-returns = dataset.pct_change()
-returns = returns.dropna()
+# Calculate daily returns from historical closing prices
+daily_returns = calc_daily_returns(closes)
 
-# Calculate mean returns
-meanDailyReturns = returns.mean()
-print(meanDailyReturns)
+# Drop rows with NaN values
+daily_returns = daily_returns.dropna()
 
-# Calculate std returns
-stdDailyReturns = returns.std()
-print(stdDailyReturns)
+# Function to calculate monthly returns from daily returns
+def calc_monthly_returns(daily_returns):
+    monthly = np.exp(daily_returns.groupby(lambda date: date.month).sum())-1
+    return monthly
 
-# Calculate the covariance matrix on daily returns
-cov_matrix = (returns.cov())*250
-print (cov_matrix)
+# Calculate monthly returns from daily returns
+month_returns = calc_monthly_returns(daily_returns)
 
-# Calculate expected portfolio performance
-portReturn = np.sum(meanDailyReturns*weights)
+# Function to calculate annual returns from daily returns
+def calc_annual_returns(daily_returns):
+    grouped = np.exp(daily_returns.groupby(lambda date: date.year).sum())-1
+    return grouped
 
-# Print the portfolio return
-print('\nPortfolio Return' + str(portReturn))
+# Calculate annual returns from daily returns
+annual_returns = calc_annual_returns(daily_returns)
 
-# Create portfolio returns column
-returns['Portfolio'] = returns.dot(weights)
+# Function to calculate portfolio variance
+def calc_portfolio_var(returns, weights=None):
+    if weights is None:
+        weights = np.ones(returns.columns.size) / returns.columns.size
+    sigma = np.cov(returns.T, ddof=0)
+    var = (weights * sigma * weights.T).sum()
+    return var
 
-# Calculate cumulative returns
-daily_cum_ret=(1+returns).cumprod()
-print(daily_cum_ret.tail())
+# Calculate portfolio variance from annual returns
+portfolio_var = calc_portfolio_var(annual_returns)
 
-returns['Portfolio'].hist()
-plt.show()
+# Function to calculate Sharpe ratio
+def calc_sharpe_ratio(returns, weights=None, risk_free_rate=0.001):
+    n = returns.columns.size
+    if weights is None: 
+        weights = np.ones(n)/n
+    var = calc_portfolio_var(returns, weights)
+    means = returns.mean()
+    sharpe_ratio = (means.dot(weights) - risk_free_rate) / np.sqrt(var)
+    return sharpe_ratio
 
-import matplotlib.dates
-
-# Plot the portfolio cumulative returns only
-fig, ax = plt.subplots()
-ax.plot(daily_cum_ret.index, daily_cum_ret.Portfolio, color='purple', label="portfolio")
-ax.xaxis.set_major_locator(matplotlib.dates.YearLocator())
-plt.legend()
-plt.show()
-
-# Print the mean
-print ('\n')
-print("mean : ", returns['Portfolio'].mean()*100)
-
-# Print the standard deviation
-print("Std. dev: ", returns['Portfolio'].std()*100)
-
-# Print the skewness
-print("skew: ", returns['Portfolio'].skew())
-
-# Print the kurtosis
-print("kurt: ", returns['Portfolio'].kurtosis())
-
-
-# Calculate the standard deviation by taking the square root
-port_standard_dev = np.sqrt(np.dot(weights.T, np.dot(weights, cov_matrix)))
-
-# Print the results 
-print(str(np.round(port_standard_dev, 4) * 100) + '%')
-
-# Calculate the portfolio variance
-port_variance = np.dot(weights.T, np.dot(cov_matrix, weights))
-
-# Print the result
-print(str(np.round(port_variance, 4) * 100) + '%')
-
-# Calculate total return and annualized return from price data 
-total_return = (returns['Portfolio'][-1] - returns['Portfolio'][0]) / returns['Portfolio'][0]
-
-# Annualize the total return over 6 year 
-annualized_return = ((total_return + 1)**(1/6))-1
-
-# Calculate annualized volatility from the standard deviation
-vol_port = returns['Portfolio'].std() * np.sqrt(250)
-
-# Calculate the Sharpe ratio 
-rf = 0.01
-sharpe_ratio = ((annualized_return - rf) / vol_port)
-print (sharpe_ratio)
-
-# Create a downside return column with the negative returns only
-target = 0
-downside_returns = returns.loc[returns['Portfolio'] < target]
-
-# Calculate expected return and std dev of downside
-expected_return = returns['Portfolio'].mean()
-down_stdev = downside_returns.std()
-
-# Calculate the sortino ratio
-rf = 0.01
-sortino_ratio = (expected_return - rf)/down_stdev
-
-# Print the results
-print("Expected return: ", expected_return*100)
-print('-' * 50)
-print("Downside risk:")
-print(down_stdev*100)
-print('-' * 50)
-print("Sortino ratio:")
-print(sortino_ratio)
-
-# Calculate the max value 
-roll_max = returns['Portfolio'].rolling(center=False,min_periods=1,window=252).max()
-
-# Calculate the daily draw-down relative to the max
-daily_draw_down = returns['Portfolio']/roll_max - 1.0
-
-# Calculate the minimum (negative) daily draw-down
-max_daily_draw_down = daily_draw_down.rolling(center=False,min_periods=1,window=252).min()
-
-# Plot the results
-plt.figure(figsize=(15,15))
-plt.plot(returns.index, daily_draw_down, label='Daily drawdown')
-plt.plot(returns.index, max_daily_draw_down, label='Maximum daily drawdown in time-window')
-plt.legend()
-plt.show()
+# Calculate Sharpe ratio from daily returns
+sharpe_ratio = calc_sharpe_ratio(daily_returns)
