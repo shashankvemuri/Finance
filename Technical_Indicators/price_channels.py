@@ -1,127 +1,84 @@
+# Import dependencies
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings("ignore")
 import yfinance as yf
-yf.pdr_override()
 import datetime as dt
+yf.pdr_override()
 
 # input
-symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 365*4)
+symbol = "AAPL"
+start = dt.date.today() - dt.timedelta(days=365 * 2)
 end = dt.date.today()
 
-# Read data 
-df = yf.download(symbol,start,end)
-df['Upper_Channel_Line'] = df['High'].rolling(20).max()
-df['Lower_Channel_Line'] = df['Low'].rolling(20).min()
-df['Centerline'] = (df['Upper_Channel_Line'] + df['Lower_Channel_Line']) / 2
+# Read data
+df = yf.download(symbol, start, end)
+
+df["ROC"] = (
+    (df["Adj Close"] - df["Adj Close"].shift(1)) / df["Adj Close"].shift(1)
+) * 100
+df["35_Custom_EMA_ROC"] = (
+    df["ROC"].ewm(ignore_na=False, span=35, min_periods=0, adjust=True).mean()
+)
+df["35_Custom_EMA_ROC_10"] = df["35_Custom_EMA_ROC"] * 10
+df["PMO_Line"] = (
+    df["35_Custom_EMA_ROC_10"]
+    .ewm(ignore_na=False, span=20, min_periods=0, adjust=True)
+    .mean()
+)
+df["PMO_Signal_Line"] = (
+    df["PMO_Line"].ewm(ignore_na=False, span=10, min_periods=0, adjust=True).mean()
+)
 df = df.dropna()
 
-df[['Adj Close','Upper_Channel_Line','Lower_Channel_Line','Centerline']].plot(figsize=(16,10))
-plt.title('Price Channels for Stock')
-plt.legend(loc='best')
-plt.xlabel('Price')
-plt.ylabel('Date')
+fig = plt.figure(figsize=(14, 7))
+ax1 = plt.subplot(2, 1, 1)
+ax1.plot(df["Adj Close"])
+ax1.set_title("Stock " + symbol + " Closing Price")
+ax1.set_ylabel("Price")
+ax1.legend(loc="best")
+
+ax2 = plt.subplot(2, 1, 2)
+ax2.plot(df["PMO_Line"], label="PMO Line")
+ax2.plot(df["PMO_Signal_Line"], label="PMO Signal Line")
+ax2.axhline(y=0, color="red")
+ax2.grid()
+ax2.legend(loc="best")
+ax2.set_ylabel("PMO")
+ax2.set_xlabel("Date")
 plt.show()
 
-ax = df[['Adj Close','Upper_Channel_Line','Lower_Channel_Line','Centerline']].plot(figsize=(16,10))
-xtick = pd.date_range( start=df.index.min(), end=df.index.max(), freq='W')
-ax.set_xticks(xtick, minor=True )
-ax.grid('on', which='minor', axis='x')
-ax.grid('off', which='major', axis='x')
-plt.show()
-
-import matplotlib.dates as mdates
-months = mdates.MonthLocator()  # every month
-fig, ax = plt.subplots(figsize=(16,8))
-datemin = np.datetime64(df.index[0], 'M')
-datemax = np.datetime64(df.index[-1], 'M') + np.timedelta64(1, 'M')
-ax.set_xlim(datemin, datemax)
-
-ax.plot(df.index, df['Adj Close'], color='blue')
-ax.plot(df.index, df['Upper_Channel_Line'], color='red')
-ax.plot(df.index, df['Lower_Channel_Line'], color='red')
-ax.plot(df.index, df['Centerline'], color='red', linestyle='--')
-ax.xaxis.set_minor_locator(months)
-ax.grid(True)
-
-ax.set_title('Price Channels for Stock')
-ax.set_ylabel('Price')
-ax.set_xlabel('Date')
-ax.legend(loc='best')
-
-plt.figure(figsize=(16,10))
-plt.plot(df['Adj Close'])
-plt.plot(df['Upper_Channel_Line'], color='r')
-plt.plot(df['Lower_Channel_Line'], color='r')
-plt.plot(df['Centerline'], color='r', linestyle='--')
-plt.title('Price Channels for Stock')
-plt.legend(loc='best')
-plt.ylabel('Price')
-plt.xlabel('Date')
-plt.show()
-
-# ## Candlestick with Price Channels
+# ## Candlestick with PMO
 from matplotlib import dates as mdates
-df['VolumePositive'] = df['Open'] < df['Adj Close']
-df = df.dropna()
-df = df.reset_index()
-df['Date'] = mdates.date2num(df['Date'].tolist())
 
+dfc = df.copy()
+dfc["VolumePositive"] = dfc["Open"] < dfc["Adj Close"]
+# dfc = dfc.dropna()
+dfc = dfc.reset_index()
+dfc["Date"] = mdates.date2num(dfc["Date"].tolist())
 from mplfinance.original_flavor import candlestick_ohlc
-from matplotlib.dates import MonthLocator, YearLocator
-fig, ax1 = plt.subplots(figsize=(16,8))
-candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-ax1.plot(df.Date, df['Upper_Channel_Line'], color='red')
-ax1.plot(df.Date, df['Lower_Channel_Line'], color='red')
-ax1.plot(df.Date, df['Centerline'], color='red', linestyle='--')
+
+fig = plt.figure(figsize=(14, 7))
+ax1 = plt.subplot(2, 1, 1)
+candlestick_ohlc(ax1, dfc.values, width=0.5, colorup="g", colordown="r", alpha=1.0)
 ax1.xaxis_date()
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
-#ax1.axhline(y=dfc['Adj Close'].mean(),color='r')
-
-#yloc = YearLocator()
-#ax1.xaxis.set_major_locator(yloc)
-mloc = MonthLocator()
-ax1.xaxis.set_minor_locator(mloc)
-ax1.grid(True)
-#ax1.grid(True, which='major', linestyle='-', linewidth='0.5', color='black')
-#ax1.grid(True, which='minor', linestyle=':', linewidth='0.5', color='black')
-
+ax1.xaxis.set_major_formatter(mdates.DateFormatter("%d-%m-%Y"))
+ax1.grid(True, which="both")
+ax1.minorticks_on()
 ax1v = ax1.twinx()
-colors = df.VolumePositive.map({True: 'g', False: 'r'})
-ax1v.bar(df.Date, df['Volume'], color=colors, alpha=0.4)
+colors = dfc.VolumePositive.map({True: "g", False: "r"})
+ax1v.bar(dfc.Date, dfc["Volume"], color=colors, alpha=0.4)
 ax1v.axes.yaxis.set_ticklabels([])
-ax1v.set_ylim(0, 3*df.Volume.max())
-ax1.set_title('Price Channels for Stock')
-ax1.set_ylabel('Price')
-ax1.set_xlabel('Date')
-ax1.legend(loc='best')
-plt.show()
+ax1v.set_ylim(0, 3 * df.Volume.max())
+ax1.set_title("Stock " + symbol + " Closing Price")
+ax1.set_ylabel("Price")
 
-from mplfinance.original_flavor import candlestick_ohlc
-from matplotlib.dates import MonthLocator, YearLocator
-fig, ax1 = plt.subplots(figsize=(16,8))
-candlestick_ohlc(ax1,df.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-ax1.plot(df.Date, df['Upper_Channel_Line'], color='red')
-ax1.plot(df.Date, df['Lower_Channel_Line'], color='red')
-ax1.plot(df.Date, df['Centerline'], color='red', linestyle='--')
-ax1.xaxis_date()
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
-xtick = pd.date_range(start=df.Date.min(), end=df.Date.max(), freq='W')
-ax1.grid(True)
-ax1.set_xticks(xtick, minor=True)
-ax1.grid('on', which='minor', axis='x')
-ax1.grid('off', which='major', axis='x')
-
-ax1v = ax1.twinx()
-colors = df.VolumePositive.map({True: 'g', False: 'r'})
-ax1v.bar(df.Date, df['Volume'], color=colors, alpha=0.4)
-ax1v.axes.yaxis.set_ticklabels([])
-ax1v.set_ylim(0, 3*df.Volume.max())
-ax1.set_title('Price Channels for Stock')
-ax1.set_ylabel('Price')
-ax1.set_xlabel('Date')
-ax1.legend(loc='best')
+ax2 = plt.subplot(2, 1, 2)
+ax2.plot(df["PMO_Line"], label="PMO_Line")
+ax2.plot(df["PMO_Signal_Line"], label="PMO_Signal_Line")
+ax2.axhline(y=0, color="red")
+ax2.grid()
+ax2.set_ylabel("PMO")
+ax2.set_xlabel("Date")
+ax2.legend(loc="best")
 plt.show()
