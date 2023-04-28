@@ -1,7 +1,7 @@
 
 # Finance
 
-150+ quantitative finance python programs to help you gather, manipulate, and analyze stock market data
+150+ quantitative finance Python programs to help you gather, manipulate, and analyze stock market data
 
 ## Organization
 
