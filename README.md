@@ -1,25 +1,44 @@
+
 # Finance
-A work in progress -- always being updated!
 
-## Find_Stocks
-This folder contains several algorithms that return stocks that show promising data and therefore can be classified as a buy in the stock market. Some of the algorithms include extended market calculators, stock screeners, analyst recommendation parsers, and finding fast movers!
+150+ quantitative finance python programs to help you gather, manipulate, and analyze stock market data
 
-## Machine_Learning
-This folder contains several Machine Learning algorithms that utilize the Scikit-Learn and TensorFlow libraries to predict stock prices, classify stocks into sections for diversification purposes, and algorithmic trading bots. These "predictions" are strictly for educational purposes!
+## Organization
 
-## Portfolio_Strategies 
-This folder contains data on specific portfolios in certain sectors of the market, porfolio optimization algorithms, and backtested trading strategies such as for indicators (moving averages) and oscillators (RSI, CCI). Many of the algorithms contained use of Pandas, Matplotlib, and NumPy. 
+- ### find_stocks
+A compilation of programs that screen stocks based on technical indicators and fundamental data.
+- ### machine_learning
+A compilation of programs that serve as an introduction into using machine learning for classifying and predicting stock market data. Purely for educational purposes.
+- ### portfolio_strategies
+A compilation of programs that simulate a popular trading strategy (moving average crossovers, etc.) or perform analysis on a given portfolio (optimization, etc.)
+- ### stock_analysis
+A compilation of programs that perform analysis on a particular stock (intrinsic value, seasonality)
+- ### stock_data
+A compilation of programs that collect stock technical price action and fundamental company data with the use of APIs and web scraping
+- ### technical_indicators
+A compilation of programs that recreate a visual representation of the most popular technical indicators (bollinger bands, RSI, MACD, etc.)
 
-## Stock_Analysis 
-This folder contains several programs that analyze the data of stocks to find hidden patterns and values of statistical significance. Many of the algorithms contained use of Pandas, Matplotlib, and NumPy. 
+## Installation
 
-## Stock_Data
-This folder contains several programs that collect a wide variety of data on stocks either using formulas or parsing financial websites. Examples of this data include finding dividend history, intraday data, value-at-risk (VAR), and a program that collects the historical data from all the S&P 500 companies and saves them to individual csv files. 
+Install required dependencies with the requirements.txt file in the base directory
 
-## Technical_Indicators 
-This folder contains a graphical representation of about 140 technical indicators (RSI, Bollinger Bands, moving averages, etc.) in the stock market. Many of the algorithms contained use of Pandas, Matplotlib, TA-Lib and NumPy. The basis of these algorithms were obtained from <a href="https://github.com/LastAncientOne">TheLastAncientOne</a>!
+```bash
+pip install -r requirements.txt
+```
+    
+## Authors
 
-### Disclaimer
+- [@shashankvemuri](https://www.github.com/shashankvemuri)
+
+## License
+
+[MIT](LICENSE)
+
+## Acknowledgements
+
+ - [Stock_Analysis_For_Quant](https://github.com/LastAncientOne/Stock_Analysis_For_Quant/tree/master/Python_Stock/Technical_Indicators) by [LastAncientOne](https://github.com/LastAncientOne)
+
+## Disclaimer
 <i>
-The material in this repository is purely for educational purposes and should not be taken as professional investment advice. Invest at your own discretion.
+The material in this repository is purely for educational purposes and should not be taken as professional investment advice.
 </i>
