@@ -13,7 +13,7 @@ FundamentalAnalysis==0.2.14
 googletrans==3.0.0
 ipython==8.13.0
 keras==2.12.0
-lxml==4.8.0
+lxml==4.9.1
 matplotlib==3.5.1
 mplfinance==0.12.9b1
 networkx==2.7.1
