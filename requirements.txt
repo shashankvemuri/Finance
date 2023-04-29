@@ -18,7 +18,7 @@ matplotlib==3.5.1
 mplfinance==0.12.9b1
 networkx==2.7.1
 nltk==3.7
-numpy==1.21.5
+numpy==1.22.0
 numpy_financial==1.0.0
 pandas==1.4.2
 pandas_datareader==0.10.0
