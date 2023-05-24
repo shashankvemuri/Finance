@@ -20,35 +20,40 @@ sp500_index = '^GSPC'
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
-# Create empty list to store returns multiples for each stock
-returns_multiples = []
+# Create empty list to store relative returns for each stock
+relative_returns = []
 
 # Retrieve historical price data for the S&P 500 index
 sp500_df = pdr.get_data_yahoo(sp500_index, start_date, end_date)
 sp500_df['Percent Change'] = sp500_df['Adj Close'].pct_change()
-sp500_return = (sp500_df['Percent Change'] + 1).cumprod()[-1]
+sp500_returns = sp500_df['Percent Change'].cumprod()
+sp500_return = sp500_returns.iloc[-1]
 
-# Iterate over all S&P 500 stocks to calculate their returns multiple relative to the S&P 500
+# Iterate over all S&P 500 stocks to calculate their relative returns relative to the S&P 500
 for ticker in sp500_tickers:
     # Download historical data as CSV for each stock to speed up the process
     stock_df = pdr.get_data_yahoo(ticker, start_date, end_date)
     stock_df.to_csv(f'{ticker}.csv')
 
-    # Calculate returns multiple
+    # Calculate percent change column
     stock_df['Percent Change'] = stock_df['Adj Close'].pct_change()
-    stock_return = (stock_df['Percent Change'] + 1).cumprod()[-1]
-    returns_multiple = round((stock_return / sp500_return), 2)
-    returns_multiples.extend([returns_multiple])
 
-    # Print returns multiple for each stock
-    print(f'Ticker: {ticker}; Returns Multiple against S&P 500: {returns_multiple}\n')
+    # Calculate the relative return with double weight for the most recent quarter
+    stock_returns = stock_df['Percent Change'].cumprod()
+    stock_return = (stock_returns.iloc[-1] * 2 + stock_returns.iloc[-63]) / 3  # Double weight for the most recent quarter
+
+    relative_return = round(stock_return / sp500_return, 2)
+    relative_returns.append(relative_return)
+
+    # Print relative return for each stock
+    print(f'Ticker: {ticker}; Relative Return against S&P 500: {relative_return}\n')
 
     # Pause for 1 second to avoid overloading the server with requests
     time.sleep(1)
 
-# Create dataframe with returns multiples and corresponding Relative Strength (RS) rating
-rs_df = pd.DataFrame(list(zip(sp500_tickers, returns_multiples)), columns=['Ticker', 'Returns_Multiple'])
-rs_df['RS_Rating'] = rs_df.Returns_Multiple.rank(pct=True) * 100
+# Create dataframe with relative returns and corresponding Relative Strength (RS) rating
+rs_df = pd.DataFrame(list(zip(sp500_tickers, relative_returns)), columns=['Ticker', 'Relative Return'])
+rs_df['RS_Rating'] = rs_df.relative_return.rank(pct=True) * 100
 
 # Print RS ratings for all stocks
 print(rs_df)
