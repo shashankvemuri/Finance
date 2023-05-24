@@ -5,17 +5,17 @@
 
 ## Organization
 
-### find_stocks
+### [find_stocks](/find_stocks)
 - A compilation of programs that screen stocks based on technical indicators and fundamental data.
-### machine_learning
+### [machine_learning](/machine_learning)
 - A compilation of programs that serve as an introduction into using machine learning for classifying and predicting stock market data. Purely for educational purposes.
-### portfolio_strategies
+### [portfolio_strategies](/portfolio_strategies)
 - A compilation of programs that simulate a popular trading strategy (moving average crossovers, etc.) or perform analysis on a given portfolio (optimization, etc.)
-### stock_analysis
+### [stock_analysis](/stock_analysis)
 - A compilation of programs that perform analysis on a particular stock (intrinsic value, seasonality)
-### stock_data
+### [stock_data](/stock_data)
 - A compilation of programs that collect stock technical price action and fundamental company data with the use of APIs and web scraping
-### technical_indicators
+### [technical_indicators](/technical_indicators)
 - A compilation of programs that recreate a visual representation of the most popular technical indicators (bollinger bands, RSI, MACD, etc.)
 
 ## Installation
