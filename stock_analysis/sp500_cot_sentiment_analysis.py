@@ -1,34 +1,29 @@
 # Import dependencies
 import pandas as pd
 import matplotlib.pyplot as plt
+import datetime
 import zipfile
 import urllib.request
 import shutil
 import os
-from pylab import rcParams
-
-# Set pandas display options
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-
-# Set matplotlib figure size
-rcParams['figure.figsize'] = (15, 10)
 
 def download_and_extract_cot_file(url, file_name):
     """
     Download and extract COT files from the given URL and save them with the given file name.
     """
-    with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
+    request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(request) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
     with zipfile.ZipFile(file_name) as zf:
         zf.extractall()
 
-
 # Create an empty list to store data frames
 frames = []
 
-# Loop through years from 2010 to 2020 and extract data
-for year in range(2010, 2021):
+this_year = datetime.datetime.now().year
+
+# Loop through last 5 years of data
+for year in range(this_year-5, this_year+1):
     # Download and extract COT files for the year
     download_and_extract_cot_file(
         f'https://www.cftc.gov/files/dea/history/fut_fin_xls_{year}.zip', f'{year}.zip'
@@ -36,7 +31,7 @@ for year in range(2010, 2021):
     # Rename the extracted file
     os.rename('FinFutYY.xls', f'{year}.xls')
 
-    # Read the data from the renamed file
+    # Read the data from the renamed  vfile
     data = pd.read_excel(f'{year}.xls')
 
     # Select relevant columns
@@ -72,6 +67,7 @@ df.to_csv('COT_sp500_data.csv')
 
 # Read the CSV file into a new data frame with the index as the first column
 df = pd.read_csv('COT_sp500_data.csv', index_col=0)
+df.index = pd.to_datetime(df.index)
 
 # Assign columns to new variable names for easier referencing
 dealer_long_percent = df['Pct_of_OI_Dealer_Long_All']
@@ -79,39 +75,33 @@ dealer_short_percent = df['Pct_of_OI_Dealer_Short_All']
 lev_long_percent = df['Pct_of_OI_Lev_Money_Long_All']
 lev_short_percent = df['Pct_of_OI_Lev_Money_Short_All']
 
-# Calculate the total percentage of shorts and longs
-total_short_percent = df['Pct_of_OI_Dealer_Short_All'] + df['Pct_of_OI_Lev_Money_Short_All']
-total_long_percent = df['Pct_of_OI_Dealer_Long_All'] + df['Pct_of_OI_Lev_Money_Long_All']
-
-# Plot Dealer and Leverage Long/Short Percentages
-ax = df['Pct_of_OI_Dealer_Long_All'].plot()
-df['Pct_of_OI_Dealer_Short_All'].plot(ax=ax)
-df['Pct_of_OI_Lev_Money_Long_All'].plot(ax=ax)
-df['Pct_of_OI_Lev_Money_Short_All'].plot(ax=ax)
+# Line Chart
+plt.plot(df.index, dealer_long_percent, label='Dealer Long')
+plt.plot(df.index, lev_long_percent, label='Leveraged Long')
+plt.plot(df.index, dealer_short_percent, label='Dealer Short')
+plt.plot(df.index, lev_short_percent, label='Leveraged Short')
+plt.xlabel('Date')
+plt.ylabel('Percentage')
+plt.title('Net Positions - Line Chart')
 plt.legend()
-plt.title('Dealer and Leverage Long/Short Percentage')
-plt.grid()
+plt.tight_layout()
 plt.show()
 
-# Longs vs Shorts
-plt.subplots()
-ax = total_long_percent.plot()
-total_short_percent.plot(ax=ax)
-plt.legend(['Longs', 'Shorts'])
-plt.title('Longs vs. Shorts')
-plt.grid()
-plt.show()
+# Box Plot
+plt.figure(figsize=(10, 6))
+boxplot = plt.boxplot([df['Pct_of_OI_Dealer_Long_All'], df['Pct_of_OI_Dealer_Short_All'], df['Pct_of_OI_Lev_Money_Long_All'], df['Pct_of_OI_Lev_Money_Short_All']],
+                      labels=['Dealer Long', 'Dealer Short', 'Leveraged Money Long', 'Leveraged Money Short'],
+                      patch_artist=True)
 
-# Total Long Percent
-plt.subplots()
-plt.plot(total_long_percent)
-plt.legend(['Longs'])
-plt.title('Longs')
-plt.show()
+current_values = [df['Pct_of_OI_Dealer_Long_All'].iloc[-1], df['Pct_of_OI_Dealer_Short_All'].iloc[-1],
+                  df['Pct_of_OI_Lev_Money_Long_All'].iloc[-1], df['Pct_of_OI_Lev_Money_Short_All'].iloc[-1]]
 
-# Total Short Percent
-plt.subplots()
-plt.plot(total_short_percent)
-plt.legend(['Shorts'])
-plt.title('Shorts')
+# Add markers for current values
+for i, box in enumerate(boxplot['boxes']):
+    box.set_facecolor('lightblue')
+    plt.text(i + 1, current_values[i], f"{current_values[i]:.2f}", ha='center', va='bottom')
+
+plt.title('Distribution of Open Interest by Category')
+plt.ylabel('Percentage')
+plt.grid(True)
 plt.show()
