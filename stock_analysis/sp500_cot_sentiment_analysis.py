@@ -53,8 +53,8 @@ for year in range(this_year-5, this_year+1):
     # Reverse the data frame
     data = data.iloc[::-1]
 
-    # Select only the data for the S&P 500 STOCK INDEX - CHICAGO MERCANTILE EXCHANGE
-    data = data.loc[data['Market_and_Exchange_Names'] == 'S&P 500 STOCK INDEX - CHICAGO MERCANTILE EXCHANGE']
+    # Select only the data for the E-MINI S&P 500 - CHICAGO MERCANTILE EXCHANGE
+    data = data.loc[data['Market_and_Exchange_Names'] == 'E-MINI S&P 500 - CHICAGO MERCANTILE EXCHANGE']
 
     # Append the data frame to the frames list
     frames.append(data)
@@ -88,7 +88,6 @@ plt.tight_layout()
 plt.show()
 
 # Box Plot
-plt.figure(figsize=(10, 6))
 boxplot = plt.boxplot([df['Pct_of_OI_Dealer_Long_All'], df['Pct_of_OI_Dealer_Short_All'], df['Pct_of_OI_Lev_Money_Long_All'], df['Pct_of_OI_Lev_Money_Short_All']],
                       labels=['Dealer Long', 'Dealer Short', 'Leveraged Money Long', 'Leveraged Money Short'],
                       patch_artist=True)
