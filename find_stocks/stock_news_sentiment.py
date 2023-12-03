@@ -3,6 +3,10 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
+from datetime import datetime 
+
+nltk.download('vader_lexicon')
 
 # Define parameters
 num_headlines = 3  # the number of article headlines displayed per ticker
@@ -14,7 +18,7 @@ news_tables = {}
 
 for ticker in tickers:
     url = finviz_url + ticker
-    req = Request(url=url, headers={'user-agent': 'my-app/0.0.1'})
+    req = Request(url=url, headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'})
     resp = urlopen(req)
     html = BeautifulSoup(resp, features="lxml")
     news_table = html.find(id='news-table')
@@ -26,8 +30,8 @@ try:
         df = news_tables[ticker]
         df_tr = df.findAll('tr')
 
-        print ('\n')
-        print ('Recent News Headlines for {}: '.format(ticker))
+        print('\n')
+        print('Recent News Headlines for {}: '.format(ticker))
 
         for i, table_row in enumerate(df_tr):
             a_text = table_row.a.text
@@ -47,6 +51,7 @@ for ticker, news_table in news_tables.items():
 
         if len(date_scrape) == 1:
             time = date_scrape[0]
+            date = 'Today' 
         else:
             date = date_scrape[0]
             time = date_scrape[1]
@@ -64,19 +69,18 @@ scores = news['Headline'].apply(analyzer.polarity_scores).tolist()
 scores_df = pd.DataFrame(scores)
 
 # Join sentiment scores to news dataframe
-news = news.join(scores_df, rsuffix='_right')
+news = news.join(scores_df)
 
-# Convert date to datetime object and remove Headline column
-news['Date'] = pd.to_datetime(news.Date).dt.date
+# Convert date to datetime object
+news['Date'] = news['Date'].apply(lambda x: datetime.now().date() if x == 'Today' else x)  # Substitute "Today" with current date
+news['Date'] = pd.to_datetime(news['Date'])
 news = news.drop(columns=['Headline'])
 
 # Group news by ticker and calculate mean sentiment for each
 unique_tickers = news['Ticker'].unique().tolist()
-news_dict = {name: news.loc[news['Ticker'] == name] for name in unique_tickers}
 mean_sentiments = []
 for ticker in tickers:
-    dataframe = news_dict[ticker]
-    dataframe = dataframe.set_index('Ticker')
+    dataframe = news[news['Ticker'] == ticker]
     mean = round(dataframe['compound'].mean(), 2)
     mean_sentiments.append(mean)
 
@@ -84,5 +88,5 @@ for ticker in tickers:
 sentiments_df = pd.DataFrame(list(zip(tickers, mean_sentiments)), columns=['Ticker', 'Mean Sentiment'])
 sentiments_df = sentiments_df.set_index('Ticker')
 sentiments_df = sentiments_df.sort_values('Mean Sentiment', ascending=False)
-print ('\n')
-print (sentiments_df)
+print('\n')
+print(sentiments_df)
