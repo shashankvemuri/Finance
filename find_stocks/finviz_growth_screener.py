@@ -24,8 +24,6 @@ def growth_screener():
 
             # Get the second last table from the HTML page which contains the stock data.
             stocks = pd.read_html(str(html))[-2]
-            stocks.columns = stocks.iloc[0]
-            stocks = stocks[1:]
             stocks = stocks.set_index('Ticker')
             frames.append(stocks)
 
