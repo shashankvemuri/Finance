@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
 from yahoo_fin import stock_info as si
+import datetime
 from sklearn.decomposition import PCA
 from pandas_datareader import data as pdr
 from pylab import rcParams
