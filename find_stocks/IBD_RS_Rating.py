@@ -2,15 +2,19 @@
 import yfinance as yf
 import pandas as pd
 from pandas_datareader import data as pdr
-from yahoo_fin import stock_info as si
 import datetime
 import time
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Override yfinance API
 yf.pdr_override()
 
 # Get tickers for all S&P 500 stocks and replace "." with "-" for compatibility with Yahoo Finance
-sp500_tickers = si.tickers_sp500()
+sp500_tickers = ti.tickers_sp500()
 sp500_tickers = [ticker.replace(".", "-") for ticker in sp500_tickers]
 
 # Define S&P 500 index

@@ -1,15 +1,19 @@
 # Imports
 from pandas_datareader import data as pdr
-from yahoo_fin import stock_info as si
 from pandas import ExcelWriter
 import yfinance as yf
 import pandas as pd
 import datetime
 import time
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Variables
-tickers = si.tickers_sp500()
+tickers = ti.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers] # Yahoo Finance uses dashes instead of dots
 index_name = '^GSPC' # S&P 500
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)

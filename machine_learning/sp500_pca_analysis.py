@@ -3,12 +3,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
-from yahoo_fin import stock_info as si
 import datetime
 from sklearn.decomposition import PCA
 from pandas_datareader import data as pdr
 from pylab import rcParams
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Set parameters
 num_of_years = 1
@@ -16,7 +20,7 @@ start_date = datetime.date.today() - datetime.timedelta(days=int(365.25*num_of_y
 end_date = datetime.date.today()
 
 # Get Tickers
-tickers = si.tickers_sp500()
+tickers = ti.tickers_sp500()
 tickers = [item.replace('.', '-') for item in tickers]
 
 # Get Market Data

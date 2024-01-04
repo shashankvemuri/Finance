@@ -3,13 +3,17 @@ import pandas_datareader.data as pdr
 import yfinance as yf
 import datetime as dt
 import pandas as pd
-import yahoo_fin.stock_info as si
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Set up Yahoo Finance API
 yf.pdr_override()
 
 # Get S&P500 tickers from Yahoo Finance
-tickers = si.tickers_sp500()
+tickers = ti.tickers_sp500()
 
 # Replace any periods in ticker names with hyphens
 tickers = [item.replace('.', '-') for item in tickers]
