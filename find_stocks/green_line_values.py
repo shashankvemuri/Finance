@@ -2,14 +2,18 @@
 import datetime as dt
 import pandas as pd
 from pandas_datareader import DataReader
-import yahoo_fin.stock_info as si
 import time
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Get today's date
 now = dt.date.today()
 
 # Get a list of S&P 500 tickers
-tickers = si.tickers_sp500()
+tickers = ti.tickers_sp500()
 
 # Replace periods with dashes in ticker names
 tickers = [item.replace(".", "-") for item in tickers]
