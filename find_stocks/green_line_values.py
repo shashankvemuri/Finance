@@ -1,109 +1,71 @@
 # Import Dependencies
 import datetime as dt
 import pandas as pd
-from pandas_datareader import DataReader
-import time
+import pandas_datareader.data as pdr
 import sys
 import os
 parent_dir = os.path.dirname(os.getcwd())
 sys.path.append(parent_dir)
 import tickers as ti
 
-# Get today's date
+# Set the date range for analysis
 now = dt.date.today()
+start_date = now - dt.timedelta(days=365)
+end_date = now
 
-# Get a list of S&P 500 tickers
+# Retrieve S&P 500 tickers
 tickers = ti.tickers_sp500()
-
-# Replace periods with dashes in ticker names
 tickers = [item.replace(".", "-") for item in tickers]
 
-# Initialize list and add today's date to it
-mylist = []
-today = dt.date.today()
-mylist.append(today)
-
-# Get today's date from the list
-today = mylist[0]
-
-# Initialize empty lists
+# Initialize lists for tracking tickers and their green line values
 diff_5 = []
 diff_5_tickers = []
 
-# Loop through each ticker
+# Analyze each ticker
 for ticker in tickers:
     try:
-        # Print ticker symbol
-        print (ticker+':')
-        
-        # Get the current price of the stock
-        price = si.get_live_price(ticker)
-        
-        # Read in historical stock data for the current ticker
-        df = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/S&P500/{ticker}.csv', index_col=0)
+        print(f'Analyzing {ticker}:')
+
+        # Load historical data
+        df = pdr.get_data_yahoo(ticker)
         df.index = pd.to_datetime(df.index)
-        
-        # Remove rows with volume less than 1000
-        df.drop(df[df["Volume"]<1000].index, inplace=True)
-        
-        # Get the maximum high price for each month
-        dfmonth=df.groupby(pd.Grouper(freq="M"))["High"].max()
-        
-        # Initialize variables
-        glDate=0
-        lastGLV=0
-        currentDate=""
-        curentGLV=0
-        counter=0
-        
-        # Loop through each month's high price
-        for index, value in dfmonth.items():
-            if value > curentGLV:
-                curentGLV=value
-                currentDate=index
-                counter=0
-            if value < curentGLV:
-                counter=counter+1
-                if counter==3 and ((index.month != now.month) or (index.year != now.year)):
-                    if curentGLV != lastGLV:
-                        pass
-                    glDate=currentDate
-                    lastGLV=curentGLV
-                    counter=0
-        
-        # Check if the last green line value was found
-        if lastGLV==0:
-            message=ticker+" has not formed a green line yet"
-        
+        price = df['Adj Close'][-1]
+
+        # Filter out low volume data
+        df = df[df["Volume"] >= 1000]
+
+        # Calculate monthly high
+        monthly_high = df.resample('M')['High'].max()
+
+        # Initialize variables for tracking Green Line values
+        last_green_line_value = 0
+        last_green_line_date = None
+
+        # Identify Green Line values
+        for date, high in monthly_high.items():
+            if high > last_green_line_value:
+                last_green_line_value = high
+                last_green_line_date = date
+
+        # Check if a green line value has been established
+        if last_green_line_value == 0:
+            message = f"{ticker} has not formed a green line yet"
         else:
-            # Calculate the difference between the last green line value and the current price
-            if lastGLV < 1.05 * price and lastGLV > .95*price:
-                diff = lastGLV/price
-                diff = round(diff - 1, 3)
-                diff = diff*100
-                
-                # Print the difference and the last green line date
-                print (f"\n{ticker.upper()}'s last green line value ({round(lastGLV, 2)}) is {round(diff,1)}% greater than it's current price ({round(price, 2)})")
-                message=("Last Green Line: "+str(round(lastGLV, 2))+" on "+str(glDate.strftime('%Y-%m-%d')))
-    
-                # Append the ticker symbol and the difference to the lists
+            # Calculate the difference from the current price
+            diff = (last_green_line_value - price) / price * 100
+            message = f"{ticker}'s last green line value ({round(last_green_line_value, 2)}) is {round(diff, 1)}% different from its current price ({round(price, 2)})"
+            if abs(diff) <= 5:
                 diff_5_tickers.append(ticker)
                 diff_5.append(diff)
-            
-            else: 
-                diff = lastGLV/price
-                diff = round(diff - 1, 3)
-                diff = diff*100
-                message=(f"Last Green Line for {ticker}: "+str(round(lastGLV, 2))+" on "+str(glDate.strftime('%Y-%m-%d')))
-    
-        print(message)
-        print('-'*100)
-    except Exception as e: 
-        print (e)
-        pass
 
-# Create Dataframe and Print
-df = pd.DataFrame(list(zip(diff_5_tickers, diff_5)), columns =['Company', 'GLV % Difference'])
-df = df.reindex(df['GLV % Difference'].abs().sort_values().index)
-print ('Watchlist: ')
-print (df)
+        print(message)
+        print('-' * 100)
+
+    except Exception as e:
+        print(f'Error processing {ticker}: {e}')
+
+# Create and display a DataFrame with tickers close to their green line value
+df = pd.DataFrame({'Company': diff_5_tickers, 'GLV % Difference': diff_5})
+df.sort_values(by='GLV % Difference', inplace=True, key=abs)
+print('Watchlist:')
+print(df)
