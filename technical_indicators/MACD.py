@@ -5,16 +5,19 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import datetime as dt
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
-symbol = "FB"
+symbol = "META"
 start = dt.date.today() - dt.timedelta(days=365 * 3)
 end = dt.date.today()
 
 # Read data
 df = yf.download(symbol, start, end)
-
-import talib as ta
 
 df["macd"], df["macdsignal"], df["macdhist"] = ta.MACD(
     df["Adj Close"], fastperiod=12, slowperiod=26, signalperiod=9

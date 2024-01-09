@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import datetime as dt
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
 symbol = "AAPL"
@@ -13,8 +18,6 @@ end = dt.date.today()
 
 # Read data
 df = yf.download(symbol, start, end)
-
-import talib as ta
 
 df["EMA"] = ta.EMA(df["Adj Close"], timeperiod=5)
 df["EMA_S"] = ta.EMA(df["EMA"], timeperiod=5)

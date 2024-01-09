@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import datetime as dt
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
 symbol = "AAPL"
@@ -22,8 +27,6 @@ plt.title("Stock " + symbol + " Closing Price")
 plt.xlabel("Date")
 plt.ylabel("Price")
 plt.show()
-
-import talib as ta
 
 adx = ta.ADX(df["High"], df["Low"], df["Adj Close"], timeperiod=14)
 adx = adx.dropna()
