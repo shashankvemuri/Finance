@@ -12,33 +12,32 @@ import tickers as ti
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
-# Load list of S&P 500 tickers from file
+# Load list of S&P 500 tickers from tickers module
 tickers = ti.tickers_sp500()
 
-# Lists to hold overbought and oversold tickers
+# Initialize lists for overbought and oversold tickers
 oversold_tickers = []
 overbought_tickers = []
 
-# Download data for the tickers
+# Retrieve adjusted close prices for the tickers
 sp500_data = pdr.get_data_yahoo(tickers, start_date, end_date)['Adj Close']
 
-# Loop through each ticker
+# Analyze each ticker for RSI
 for ticker in tickers:
     try:
-        # New dataframe for the ticker
+        # Create a new DataFrame for the ticker
         data = sp500_data[[ticker]].copy()
 
-        # Calculate the RSI
+        # Calculate the RSI for the ticker
         data["rsi"] = ta.RSI(data[ticker], timeperiod=14)
 
-        # Get the last 14 RSI values and calculate the mean
-        values = data["rsi"].tail(14)
-        mean_rsi = values.mean()
+        # Calculate the mean of the last 14 RSI values
+        mean_rsi = data["rsi"].tail(14).mean()
 
-        # Print the RSI value for the ticker
+        # Print the RSI value
         print(f'{ticker} has an RSI value of {round(mean_rsi, 2)}')
 
-        # Add the ticker to the appropriate list based on its RSI value
+        # Classify the ticker based on its RSI value
         if mean_rsi <= 30:
             oversold_tickers.append(ticker)
         elif mean_rsi >= 70:
@@ -47,6 +46,6 @@ for ticker in tickers:
     except Exception as e:
         print(f'Error processing {ticker}: {e}')
 
-# Print the list of oversold and overbought tickers
+# Output the lists of oversold and overbought tickers
 print(f'Oversold tickers: {oversold_tickers}')
 print(f'Overbought tickers: {overbought_tickers}')
