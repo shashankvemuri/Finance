@@ -1,113 +1,85 @@
-# Import dependencies
+# Import necessary libraries
 import math
 import datetime 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from tensorflow.keras import Sequential
-from pandas_datareader import DataReader
+from tensorflow.keras.layers import Dense, LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-from tensorflow.keras.layers import Dense, LSTM
+from pandas_datareader import data as pdr
+import yfinance as yf
 
-# Get the stock quote for the past 10 years
+# Prompt user to enter a stock ticker
 stock = input("Enter a stock ticker: ")
+
+# Setup for fetching stock data
 num_of_years = 10
-start_date = datetime.datetime.now() - datetime.timedelta(days=int(365.25*num_of_years))
+start_date = datetime.datetime.now() - datetime.timedelta(days=365.25 * num_of_years)
 end_date = datetime.date.today()
 
-df = DataReader(stock, "yahoo", start_date, end_date)
+# Fetch stock data
+yf.pdr_override()
+df = pdr.get_data_yahoo(stock, start=start_date, end=end_date)
 data = df.filter(['Close'])
 dataset = data.values
-train_data_len = math.ceil(len(dataset)*.8)
+train_data_len = math.ceil(len(dataset) * .8)
 
-# Scale the data
+# Scale data
 scaler = MinMaxScaler(feature_range=(0,1))
 scaled_data = scaler.fit_transform(dataset)
 
-# Create the training dataset
-train_data = scaled_data[0:train_data_len, :]
-
-# Split the data into x_train and y_train datasets
-x_train=[]
-y_train=[]
-
-for i in range(60,len(train_data)):
-    x_train.append(train_data[i-60:i, 0])
-    y_train.append(train_data[i, 0])
-
-# Convert x_train and y_train to numpy arrays
+# Create training data
+x_train, y_train = [], []
+for i in range(60, len(train_data)):
+    x_train.append(scaled_data[i-60:i, 0])
+    y_train.append(scaled_data[i, 0])
 x_train, y_train = np.array(x_train), np.array(y_train)
-
-# Reshape the data to 3 dimensions
 x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
 
-# Build the LSTM model
-model = Sequential()
-model.add(LSTM(50, return_sequences=True, input_shape=(x_train.shape[1],1)))
-model.add(LSTM(50,return_sequences=False))
-model.add(Dense(25))
-model.add(Dense(1))
-
-# Compile the model
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+# LSTM network
+model = Sequential([
+    LSTM(50, return_sequences=True, input_shape=(x_train.shape[1], 1)),
+    LSTM(50, return_sequences=False),
+    Dense(25),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train the model
 model.fit(x_train, y_train, batch_size=1, epochs=5)
 
-# Create test dataset
-test_data = scaled_data[train_data_len-60:, :]
-
-# Create x_test, y_test datasets
-x_test = []
-y_test = dataset[train_data_len:, :]
-
-for i in range(60,len(test_data)):
-    x_test.append(test_data[i-60:i, 0])
-
-# Convert data to numpy array
+# Create testing dataset
+test_data = scaled_data[train_data_len - 60:, :]
+x_test = [test_data[i-60:i, 0] for i in range(60, len(test_data))]
 x_test = np.array(x_test)
-
-# Reshape the data
 x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-# Get the model's predicted price values
+# Predictions
 predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)
-
-# Get the root mean squared error (RMSE)
-rmse = np.sqrt(np.mean((predictions-y_test)**2))
+rmse = np.sqrt(mean_squared_error(data[train_data_len:].values, predictions))
 
 # Plot the data
 train = data[:train_data_len]
-valid = data[train_data_len:]
-valid['Predictions'] = predictions
-
+valid = data[train_data_len:].assign(Predictions=predictions)
 plt.figure(figsize=(16,8))
 plt.title(f"{stock.upper()} Close Price")
 plt.xlabel('Date', fontsize=16)
 plt.ylabel('Close Price (USD)', fontsize=16)
 plt.plot(train['Close'])
-plt.plot(valid[['Close','Predictions']])
-plt.legend(['Train','Valid','Prediction'],loc='lower right')
+plt.plot(valid[['Close', 'Predictions']])
+plt.legend(['Train', 'Valid', 'Prediction'], loc='lower right')
 plt.show()
 
-# Get predicted price for next day
-last_60day = data[-60:].values
-last_60day_scaled = scaler.transform(last_60day)
-xx_test = []
-xx_test.append(last_60day_scaled)
-xx_test = np.array(xx_test)
-xx_test = np.reshape(xx_test, (xx_test.shape[0], xx_test.shape[1],1))
-pred = model.predict(xx_test)
-pred = scaler.inverse_transform(pred)
-pred = pred[0]
-pred = pred[0]
-print("The predicted price for the next trading day is: {}".format(round(pred, 2)))
+# Predict next day price
+last_60_days = data[-60:].values
+last_60_days_scaled = scaler.transform(last_60_days)
+X_test_next = np.array([last_60_days_scaled])
+X_test_next = np.reshape(X_test_next, (X_test_next.shape[0], X_test_next.shape[1], 1))
+predicted_price_next_day = scaler.inverse_transform(model.predict(X_test_next))[0][0]
+print(f"The predicted price for the next trading day is: {predicted_price_next_day:.2f}")
 
-# Root mean squared error
-print (f'The root mean squared error is {round(rmse, 2)}')
-
-# Mean squared error
-error = mean_squared_error(valid['Close'].tolist(), valid['Predictions'].tolist())
-print('Testing Mean Squared Error: %.3f' % error)
+# Display RMSE
+print(f"The root mean squared error is {rmse:.2f}")
