@@ -6,7 +6,6 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 from finta import TA
-from yahoo_fin import stock_info as si
 
 # Define time range 
 num_of_years = 10
@@ -14,10 +13,10 @@ start = dt.date.today() - dt.timedelta(days=365*num_of_years)
 end = dt.datetime.now()
 
 stock = 'NFLX'
-current_price = round(si.get_live_price(stock), 2)
 
 # Download historical stock data
 df = yf.download(stock, start, end, interval='1d')
+current_price = round(df['Adj Close'][-1], 2)
 
 # Calculate Simple Moving Average(SMA)
 short_sma = 20

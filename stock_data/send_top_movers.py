@@ -4,13 +4,25 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-import yahoo_fin.stock_info as si
 import time
 import datetime
 import os
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# Get top winner stocks for the day
+def scrape_top_winners():
+    url = 'https://finance.yahoo.com/gainers/'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    df = pd.read_html(str(soup), attrs={'class': 'W(100%)'})[0]
+    df = df.drop(columns=['52 Week High'])
+    return df
 
 # get top gainers data
-df = si.get_day_gainers()
+df = scrape_top_winners()
 df_filtered = df[df['% Change']>=5]
 
 # get today's date and use it to create a file name

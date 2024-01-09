@@ -4,7 +4,6 @@ import pandas as pd
 from pandas_datareader import DataReader
 import matplotlib.pyplot as plt
 from pylab import rcParams 
-import yahoo_fin.stock_info as si
 
 # Set the start date for historical data
 start = dt.datetime(1980,12,1)
@@ -16,12 +15,9 @@ stock = input('Enter a ticker: ')
 
 # Continue asking user for a stock ticker until they enter 'quit'
 while stock != 'quit':
-    
-    # Get the current stock price
-    price = si.get_live_price(stock)
-    
     # Get the historical stock data
     df = DataReader(stock, 'yahoo', start, now)
+    price = df['Adj Close'][-1]
     
     # Remove rows where volume is less than 1000
     df.drop(df[df["Volume"]<1000].index, inplace=True)
