@@ -1,92 +1,59 @@
 # Import necessary libraries
-import os
 import datetime
 import requests
 import yfinance as yf
+import numpy as np
+import pandas as pd
 from numpy import array, hstack
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential, model_from_json
 from keras.layers import LSTM, Dense, Flatten, TimeDistributed, Conv1D, MaxPooling1D
 from keras import callbacks
 
-# Setup data for LSTM model
+# Function to setup data for LSTM model
 def setup_data(symbol, data_len, seq_len):
-    # Get start and end dates for data
+    # Get dates for data
     end = datetime.datetime.today().strftime('%Y-%m-%d')
-    start = datetime.datetime.strptime(end, '%Y-%m-%d') - datetime.timedelta(days=(data_len / 0.463))
+    start = (datetime.datetime.strptime(end, '%Y-%m-%d') - 
+             datetime.timedelta(days=(data_len / 0.463))).strftime('%Y-%m-%d')
 
-    # Download and normalize data using Yahoo Finance API
-    orig_dataset = yf.download(symbol, start, end)
-    close = orig_dataset['Close'].values
-    open_ = orig_dataset['Open'].values
-    high = orig_dataset['High'].values
-    low = orig_dataset['Low'].values
-    dataset, minmax = normalize_data(orig_dataset)
+    # Download and normalize data
+    data = yf.download(symbol, start, end)
+    dataset, minmax = normalize_data(data)
 
-    # Convert dataset into sequences of length seq_len
-    cols = dataset.columns.tolist()
-    data_seq = list()
-    for i in range(len(cols)):
-        if cols[i] < 4:
-            data_seq.append(dataset[cols[i]].values)
-            data_seq[i] = data_seq[i].reshape((len(data_seq[i]), 1))
+    # Convert dataset into sequences
+    data_seq = [dataset[col].values.reshape((len(dataset[col]), 1)) for col in dataset.columns]
     data = hstack(data_seq)
     X, y = split_sequences(data, seq_len)
 
-    # Reshape input data to fit the LSTM model
-    n_seq, n_steps, n_features = X.shape
-    X = X.reshape((n_seq, 1, n_steps, n_features))
+    # Reshape input data for LSTM model
+    X = X.reshape((X.shape[0], 1, X.shape[1], X.shape[2]))
     true_y = [[y[i][0], y[i][1]] for i in range(len(y))]
 
-    return X, array(true_y), n_features, minmax, seq_len, close, open_, high, low
+    return X, array(true_y), X.shape[2], minmax, seq_len, data
 
-# Normalize dataset between 0 and 1
+# Normalize dataset function
 def normalize_data(dataset):
-    cols = dataset.columns.tolist()
-    col_name = [0] * len(cols)
-    for i in range(len(cols)):
-        col_name[i] = i
-    dataset.columns = col_name
-
-    for column in dataset:
-        dataset = dataset.astype({column: 'float32'})
-
     minmax = []
-    for i in range(len(cols)):
-        col_values = dataset[col_name[i]]
-        value_min = min(col_values)
-        value_max = max(col_values)
-        minmax.append([value_min, value_max])
-
-    for column in dataset:
-        values = dataset[column].values
-        for i in range(len(values)):
-            values[i] = (values[i] - minmax[column][0]) / (minmax[column][1] - minmax[column][0])
-        dataset[column] = values
-
+    for col in dataset.columns:
+        min_val, max_val = dataset[col].min(), dataset[col].max()
+        minmax.append([min_val, max_val])
+        dataset[col] = (dataset[col] - min_val) / (max_val - min_val)
     return dataset, minmax
 
-# Split dataset into input sequences and their corresponding output
+# Split dataset into sequences
 def split_sequences(sequences, seq_len):
     X, y = [], []
-    for i in range(len(sequences)):
-        end_ix = i + seq_len
-        if end_ix > len(sequences) - 1:
-            break
-        seq_x, seq_y = sequences[i:end_ix, :], sequences[end_ix, :]
-        X.append(seq_x)
-        y.append(seq_y)
+    for i in range(len(sequences) - seq_len):
+        X.append(sequences[i:i+seq_len, :])
+        y.append(sequences[i + seq_len, :])
     return array(X), array(y)
 
-# Set up training and testing datasets
-def setup_datasets(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
-    return X_train, X_test, y_train, y_test
-
-# Initialize model
-def initialize_network(n_steps,n_features,optimizer):
+# Initialize and compile LSTM model
+def initialize_network(n_steps, n_features, optimizer='adam'):
     model = Sequential()
-    model.add(TimeDistributed(Conv1D(filters=64, kernel_size=1, activation='relu'), input_shape=(None, n_steps, n_features)))
+    model.add(TimeDistributed(Conv1D(filters=64, kernel_size=1, activation='relu'), 
+                              input_shape=(None, n_steps, n_features)))
     model.add(TimeDistributed(MaxPooling1D(pool_size=2)))
     model.add(TimeDistributed(Flatten()))
     model.add(LSTM(50, activation='relu'))
@@ -94,94 +61,69 @@ def initialize_network(n_steps,n_features,optimizer):
     model.compile(optimizer=optimizer, loss='mse')
     return model
 
-# Train model
-def train_model(X_train,y_train,model,epochs):
-    dirx = ''
-    os.chdir(dirx)
-    h5='stocks'+'_best_model'+'.h5'
-    checkpoint = callbacks.ModelCheckpoint(h5, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
-    earlystop = callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=epochs * 1/4, verbose=0, mode='auto', baseline=None, restore_best_weights=True)
-    callback = [earlystop,checkpoint] 
-    json = 'stocks'+'_best_model'+'.json'
-    model_json = model.to_json()
-    with open(json, "w") as json_file:
-        json_file.write(model_json)
-    history = model.fit(X_train, y_train, epochs=epochs, batch_size=len(X_train)//4, verbose=2,validation_split = 0.3, callbacks = callback)
+# Train LSTM model
+def train_model(X_train, y_train, model, epochs=10):
+    # Define callback for early stopping and saving the best model
+    checkpoint = callbacks.ModelCheckpoint('best_model.h5', monitor='val_loss', 
+                                           save_best_only=True, mode='auto', period=1)
+    earlystop = callbacks.EarlyStopping(monitor='val_loss', patience=epochs//4, 
+                                        restore_best_weights=True)
+    # Train model
+    history = model.fit(X_train, y_train, epochs=epochs, batch_size=len(X_train)//4, 
+                        verbose=2, validation_split=0.3, callbacks=[earlystop, checkpoint])
     return history
 
-# Load keras model
-def load_keras_model(dataset,model,loss,optimizer):
-    dirx = ''
-    os.chdir(dirx)
-    json_file = open(dataset+'_best_model'+'.json', 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
+# Load trained LSTM model
+def load_keras_model(model_file='best_model'):
+    with open(f'{model_file}.json', 'r') as json_file:
+        loaded_model_json = json_file.read()
     model = model_from_json(loaded_model_json)
-    model.compile(optimizer=optimizer, loss=loss, metrics = None)
-    model.load_weights(dataset+'_best_model'+'.h5')
+    model.load_weights(f'{model_file}.h5')
+    model.compile(optimizer='adam', loss='mse')
     return model
 
-# Evaluate keras model
-def evaluation(exe_time,X_test, y_test,X_train, y_train,history,model,optimizer,loss):
-    model = load_keras_model('stocks',model,loss,optimizer)
+# Evaluate model performance
+def evaluate_model(model, X_test, y_test, X_train, y_train):
     test_loss = model.evaluate(X_test, y_test, verbose=0)
     train_loss = model.evaluate(X_train, y_train, verbose=0)
-    eval_test_loss = round(100-(test_loss*100),1)
-    eval_train_loss = round(100-(train_loss*100),1)
-    eval_average_loss = round((eval_test_loss + eval_train_loss)/2,1)
-    print("--- Training Report ---")
-    print('Execution time: ',round(exe_time,2),'s')
-    print('Testing Accuracy:',eval_test_loss,'%')
-    print('Training Accuracy:',eval_train_loss,'%')
-    print('Average Network Accuracy:',eval_average_loss,'%')
-    return model,eval_test_loss
+    return {'test_loss': test_loss, 'train_loss': train_loss}
 
-# Use model to predict
-def market_predict(model,minmax,seq_len,n_features,n_steps,data,test_loss):
-    pred_data = data[-1].reshape((len(data[-1]),1, n_steps, n_features))
-    pred = model.predict(pred_data)[0]
-    appro_loss = list()
-    for i in range(len(pred)):
-        pred[i] = pred[i] * (minmax[i][1] - minmax[i][0]) + minmax[i][0]
-        appro_loss.append(((100-test_loss)/100) * (minmax[i][1] - minmax[i][0]))
-    return pred,appro_loss
+# Main execution
+X, y, n_features, minmax, seq_len, data = setup_data('AAPL', 365, 10)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
+model = initialize_network(seq_len, n_features)
+history = train_model(X_train, y_train, model, epochs=100)
+model = load_keras_model()
+performance = evaluate_model(model, X_test, y_test, X_train, y_train)
+print(performance)
+
+################################################################
 
 # Alpaca API setup
 BASE_URL = 'https://paper-api.alpaca.markets'
-API_KEY = "*****************"
-SECRET_KEY = "************************************"
-ORDERS_URL = '{}/v2/orders'.format(BASE_URL)
-HEADERS = {'APCA-API-KEY-ID':API_KEY,'APCA-API-SECRET-KEY':SECRET_KEY}
+API_KEY = "YOUR_API_KEY"
+SECRET_KEY = "YOUR_SECRET_KEY"
+HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
 
-# Send an order to the Alpaca account
-def create_order(pred_price,company,test_loss,appro_loss):
-    open_price,close_price = pred_price[0],pred_price[1]
-    if open_price > close_price:
-        side = 'sell'
-    elif open_price < close_price:
-        side = 'buy'
-    if side == 'buy':
-        order = {
-            'symbol':company,
-            'qty':round(20*(test_loss/100)),
-            'type':'stop_limit',
-            'time_in_force':'day',
-            'side': 'buy',
-            'take_profit': close_price + appro_loss,
-            'stop_loss': close_price - appro_loss
-                }
-    elif side == 'sell':
-        order = {
-            'symbol':company,
-            'qty':round(20*(test_loss/100)),
-            'type':'stop_limit',
-            'time_in_force':'day',
-            'side': 'sell',
-            'take_profit':close_price - appro_loss,
-            'stop_loss':close_price + appro_loss
-                }
-    r = requests.post(ORDERS_URL, json = order,headers = HEADERS)
-    print(r.content)
+# Function to create an order using the Alpaca API
+def create_order(symbol, qty, side, type_, time_in_force, limit_price=None, stop_price=None):
+    data = {
+        "symbol": symbol,
+        "qty": qty,
+        "side": side,
+        "type": type_,
+        "time_in_force": time_in_force
+    }
+    if limit_price:
+        data["limit_price"] = limit_price
+    if stop_price:
+        data["stop_price"] = stop_price
 
-# Call setup data function
-setup_data('AAPL', 365, 10)
+    url = f"{BASE_URL}/v2/orders"
+    r = requests.post(url, json=data, headers=HEADERS)
+    return r.json()
+
+# Example usage of create_order
+# Modify the parameters based on your trading strategy
+response = create_order('AAPL', 1, 'buy', 'market', 'gtc')
+print(response)
