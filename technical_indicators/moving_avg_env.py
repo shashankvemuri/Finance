@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 yf.pdr_override()
 
@@ -13,8 +18,6 @@ end = dt.date.today()
 
 # Read data
 df = yf.download(symbol, start, end)
-
-import talib as ta
 
 df["20SMA"] = ta.SMA(df["Adj Close"], timeperiod=20)
 df["Upper_Envelope"] = df["20SMA"] + (df["20SMA"] * 0.025)

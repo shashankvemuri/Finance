@@ -14,8 +14,6 @@ end = dt.date.today()
 # Read data
 df = yf.download(symbol, start, end)
 
-import talib as ta
-
 df["MA_High"] = df["High"].rolling(10).mean()
 df["MA_Low"] = df["Low"].rolling(10).mean()
 df = df.dropna()
