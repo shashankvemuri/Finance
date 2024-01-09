@@ -1,7 +1,7 @@
 # Import dependencies
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
-from yahoo_fin import stock_info as si
+import pandas_datareader.data as pdr
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import pandas as pd
@@ -22,7 +22,8 @@ def sms():
         stock_symbol = message_body.upper()
         
         # Get live price of the stock
-        price = si.get_live_price(stock_symbol)
+        df = pdr.get_data_yahoo(stock_symbol)
+        price = df['Adj Close'][-1]
         price = round(price, 2)
         
         # Calculate buy and short targets
@@ -48,8 +49,6 @@ def sms():
         html = BeautifulSoup(webpage, "html.parser")
 
         stocks = pd.read_html(str(html))[-2]
-        stocks.columns = stocks.iloc[0]
-        stocks = stocks[1:]
         stocks['Price'] = [f'{price}']
         stocks['Change'] = [f'{change}']
         stocks['Risk 1 Buy'] = [f'{target_1r_buy}']
