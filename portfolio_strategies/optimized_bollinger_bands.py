@@ -4,7 +4,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas_datareader.data as pdr
 import yfinance as yf
-import talib as ta
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 yf.pdr_override() # Override pandas_datareader's default Yahoo API with yfinance
 pd.set_option('display.max_columns', None) # Display all columns in pandas DataFrame

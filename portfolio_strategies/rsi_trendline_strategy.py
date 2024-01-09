@@ -2,10 +2,14 @@
 import datetime
 import time
 import pandas as pd
-import talib
 from pandas_datareader import data as pdr
 from pandas import ExcelWriter
 import yfinance as yf
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # Override yfinance module to fix issues with pandas_datareader
 yf.pdr_override()
@@ -45,7 +49,7 @@ for stock in stocklist[:5]:
         df["SMA_200"] = round(df.iloc[:,4].rolling(window=200).mean(), 2)
         currentClose = df["Adj Close"][-1]
         moving_average_200 = df["SMA_200"][-1]
-        df["rsi"] = talib.RSI(df["Close"])
+        df["rsi"] = ta.RSI(df["Close"])
         RSI = df["rsi"].tail(14).mean()
         two_day = (df.rsi[-1] + df.rsi[-2])/2
 

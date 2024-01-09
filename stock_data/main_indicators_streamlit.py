@@ -1,13 +1,18 @@
 # Import dependencies
 import yfinance as yf
+import pandas_datareader.data as pdr
 import streamlit as st
 import datetime
 import matplotlib.pyplot as plt
-import talib
 import ta
 import numpy as np
 import pandas as pd
 import requests
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # Override pandas datareader's get_data_yahoo() function
 yf.pdr_override()
@@ -35,95 +40,82 @@ def user_input_features():
 
 symbol, start, end = user_input_features()
 
-def get_symbol(symbol):
-    """Returns the company name given the stock symbol using the Yahoo Finance API"""
-    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(
-        symbol
-    )
-    result = requests.get(url).json()
-    for x in result["ResultSet"]["Result"]:
-        if x["symbol"] == symbol:
-            return x["name"]
-
-# Get company name from symbol
-company_name = get_symbol(symbol.upper())
-
 # Convert start and end dates to datetime objects
 start = pd.to_datetime(start)
 end = pd.to_datetime(end)
 
 # Download stock data from Yahoo Finance API
-data = yf.download(symbol, start, end)
+data = pdr.get_data_yahoo(symbol, start, end)
 
 # Adjusted Close Price chart
 st.header(
     f"""
-          Adjusted Close Price\n {company_name}
+          Adjusted Close Price\n {symbol}
           """
 )
 st.line_chart(data["Adj Close"])
 
 # Simple Moving Average and Exponential Moving Average charts
-data["SMA"] = talib.SMA(data["Adj Close"], timeperiod=20)
-data["EMA"] = talib.EMA(data["Adj Close"], timeperiod=20)
+data["SMA"] = ta.SMA(data["Adj Close"], timeperiod=20)
+data["EMA"] = ta.EMA(data["Adj Close"], timeperiod=20)
 
 st.header(
     f"""
-          Simple Moving Average vs. Exponential Moving Average\n {company_name}
+          Simple Moving Average vs. Exponential Moving Average\n {symbol}
           """
 )
 st.line_chart(data[["Adj Close", "SMA", "EMA"]])
 
 # Bollinger Bands chart
-data["upper_band"], data["middle_band"], data["lower_band"] = talib.BBANDS(
+data["upper_band"], data["middle_band"], data["lower_band"] = ta.BBANDS(
     data["Adj Close"], timeperiod=20
 )
 
 st.header(
     f"""
-          Bollinger Bands\n {company_name}
+          Bollinger Bands\n {symbol}
           """
 )
 st.line_chart(data[["Adj Close", "upper_band", "middle_band", "lower_band"]])
 
 # Moving Average Convergence Divergence (MACD) chart
-data["macd"], data["macdsignal"], data["macdhist"] = talib.MACD(
+data["macd"], data["macdsignal"], data["macdhist"] = ta.MACD(
     data["Adj Close"], fastperiod=12, slowperiod=26, signalperiod=9
 )
 
 st.header(
     f"""
-          Moving Average Convergence Divergence\n {company_name}
+          Moving Average Convergence Divergence\n {symbol}
           """
 )
 st.line_chart(data[["macd", "macdsignal"]])
 
 # Commodity Channel Index (CCI) chart
-cci = ta.trend.cci(data["High"], data["Low"], data["Close"], n=31, c=0.015)
+data["CCI"] = ta.CCI(data["High"], data["Low"], data["Close"], timeperiod=14)
 
 st.header(
     f"""
-          Commodity Channel Index\n {company_name}
+          Commodity Channel Index\n {symbol}
           """
 )
-st.line_chart(cci)
+st.line_chart(data["CCI"])
 
 # Relative Strength Index (RSI) Chart
-data["RSI"] = talib.RSI(data["Adj Close"], timeperiod=14)
+data["RSI"] = ta.RSI(data["Adj Close"], timeperiod=14)
 
 st.header(
     f"""
-          Relative Strength Index\n {company_name}
+          Relative Strength Index\n {symbol}
           """
 )
 st.line_chart(data["RSI"])
 
 # On Balance Volume (OBV) Chart
-data["OBV"] = talib.OBV(data["Adj Close"], data["Volume"]) / 10**6
+data["OBV"] = ta.OBV(data["Adj Close"], data["Volume"]) / 10**6
 
 st.header(
     f"""
-          On Balance Volume\n {company_name}
+          On Balance Volume\n {symbol}
           """
 )
 st.line_chart(data["OBV"])
