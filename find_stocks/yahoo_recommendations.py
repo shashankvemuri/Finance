@@ -1,66 +1,47 @@
 # Import dependencies
 import requests
-import pandas as pd 
-from pandas_datareader import DataReader
-import numpy as np
+import pandas as pd
 import datetime
 import time
-import bs4 as bs
-import pickle
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
+import tickers as ti
 
 # Define today's date
 today = datetime.date.today()
 
-def save_spx_tickers():
-    """
-    Scrape S&P 500 tickers from Wikipedia and save them in a pickle file
-    Returns:
-        tickers (list): a list of S&P 500 tickers
-    """
-    resp = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-    soup = bs.BeautifulSoup(resp.text, 'lxml')
-    table = soup.find('table', {'class':'wikitable sortable'})
-    tickers = []
-    for row in table.findAll('tr')[1:]:
-        ticker = row.find_all('td')[0].text.strip()
-        tickers.append(ticker)
-        
-    with open('spxTickers.pickle', 'wb') as f:
-        pickle.dump(tickers, f)       
-    return tickers
-        
-tickers = save_spx_tickers()
+# Prepare ticker symbols
+tickers = ti.tickers_sp500()
+tickers = [ticker.replace(".", "-") for ticker in tickers]
 
-# Replace dots with hyphens in ticker symbols to make them readable by Yahoo Finance
-tickers = [item.replace(".", "-") for item in tickers]
-
+# Initialize list for recommendations
 recommendations = []
 
+# Process each ticker
 for ticker in tickers:
-    lhs_url = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary/'
-    rhs_url = '?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&' \
-              'modules=upgradeDowngradeHistory,recommendationTrend,' \
-              'financialData,earningsHistory,earningsTrend,industryTrend&' \
-              'corsDomain=finance.yahoo.com'
-              
-    url = lhs_url + ticker + rhs_url
-    r = requests.get(url)
-    if not r.ok:
-        recommendation = 6 # Default recommendation if request fails
     try:
-        result = r.json()['quoteSummary']['result'][0]
-        recommendation = result['financialData']['recommendationMean']['fmt']
+        url = f'https://query2.finance.yahoo.com/v10/finance/quoteSummary/{ticker}?modules=financialData'
+        response = requests.get(url)
+        if response.ok:
+            result = response.json()['quoteSummary']['result'][0]
+            recommendation = result['financialData']['recommendationMean']['fmt']
+        else:
+            recommendation = None  # None for failed requests
     except:
-        recommendation = 6 # Default recommendation if parsing fails
-    
+        recommendation = None  # None for parsing failures
+
     recommendations.append(recommendation)
-    time.sleep(1.5) # Sleep for 1.5 seconds before sending another request
-    
-    # Print the recommendation for each ticker
-    print("{} has an average recommendation of: {}".format(ticker, recommendation))
-    
-# Load the existing recommendation file and update it with today's recommendations
-df = pd.read_csv('recommendation-values.csv', index_col='Company')
+    time.sleep(1.5)  # Delay to avoid overloading server
+
+    print(f"{ticker} has an average recommendation of: {recommendation}")
+
+# Load existing data and update with new recommendations
+try:
+    df = pd.read_csv('recommendation-values.csv', index_col='Company')
+except FileNotFoundError:
+    df = pd.DataFrame(index=tickers)
+
 df[today] = recommendations
 df.to_csv('recommendation-values.csv')
 print(df)
