@@ -6,6 +6,11 @@ import yfinance as yf
 import datetime as dt
 yf.pdr_override()
 from pylab import rcParams
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
 symbol = "NIO"
@@ -25,8 +30,6 @@ plt.ylabel("Price")
 plt.show()
 
 # ## RSI
-import talib as ta
-
 rsi = ta.RSI(df["Adj Close"], timeperiod=14)
 rsi = rsi.dropna()
 

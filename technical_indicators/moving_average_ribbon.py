@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import datetime as dt
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
 symbol = "AAPL"
@@ -20,8 +25,6 @@ df["MA30"] = df["Adj Close"].rolling(30).mean()
 df["MA40"] = df["Adj Close"].rolling(40).mean()
 df["MA50"] = df["Adj Close"].rolling(50).mean()
 df["MA60"] = df["Adj Close"].rolling(60).mean()
-
-import talib as ta
 
 df["SMA5"] = ta.SMA(df["Adj Close"], timeperiod=5)
 df["SMA15"] = ta.SMA(df["Adj Close"], timeperiod=15)

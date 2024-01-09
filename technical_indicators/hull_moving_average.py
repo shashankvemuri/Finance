@@ -6,6 +6,11 @@ import math
 import yfinance as yf
 import datetime as dt
 yf.pdr_override()
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import ta_functions as ta
 
 # input
 symbol = "AAPL"
@@ -14,8 +19,6 @@ end = dt.date.today()
 
 # Read data
 df = yf.download(symbol, start, end)
-
-import talib as ta
 
 n = 30
 df["WMA_1"] = ta.WMA(df["Adj Close"], timeperiod=n / 2) * 2
