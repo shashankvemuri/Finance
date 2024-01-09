@@ -5,7 +5,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs
 import numpy as np
 import pandas as pd
-from yahoo_fin import stock_info as si
+import pandas_datareader.data as pdr
 
 # Setting pandas options
 pd.set_option('float_format', '{:f}'.format)
@@ -16,7 +16,8 @@ apiKey = "demo" # demo api only works for AAPL stock
 
 # Parameters
 ticker = 'AAPL'  # The stock ticker to get its intrinsic value
-current_price = si.get_live_price(ticker)
+df = pdr.get_data_yahoo(ticker)
+current_price = df['Adj Close'][-1]
 
 # Retrieving JSON data
 def json_data(url):

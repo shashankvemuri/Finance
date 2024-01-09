@@ -8,11 +8,15 @@ import yfinance as yf
 import datetime as dt
 import requests
 from pandas_datareader import data as pdr
-from yahoo_fin import stock_info as si 
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Loading the data
 yf.pdr_override()
-stocks = si.tickers_dow()[10:30]  # Shorten the code for readability
+stocks = ti.tickers_dow()  # Shorten the code for readability
 start = dt.datetime(2010, 1, 1)
 now = dt.datetime.now()
 
