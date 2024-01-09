@@ -4,14 +4,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas_datareader import data as pdr
-from yahoo_fin import stock_info as si
 import yfinance as yf
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Set up date range and get stock tickers
 num_of_years = 1
 start = dt.date.today() - dt.timedelta(days=int(365.25 * num_of_years))
 end = dt.date.today()
-tickers = si.tickers_dow()
+
+tickers = ti.tickers_sp500()
 tickers = [item.replace(".", "-") for item in tickers]
 
 # Get daily adjusted close prices for all tickers

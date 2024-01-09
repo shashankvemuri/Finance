@@ -2,9 +2,11 @@
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import datetime
-from yahoo_fin import stock_info as si
+import pandas_datareader.data as pdr
 
 # Set pandas option to display all rows
 pd.set_option('display.max_rows', None)
@@ -14,9 +16,8 @@ interval = '1m'
 
 # Set chrome options
 options = Options()
-options.add_argument("--headless")  # To run the script in background
-options.add_argument('window-size=1200x600')
-webdriver = webdriver.Chrome(executable_path='chromedriver', options=options)
+options.add_argument("--headless")
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # List of tickers to get trading signals for
 tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
@@ -39,19 +40,19 @@ for ticker in tickers:
         analysis = []
 
         # Open tradingview's site
-        webdriver.get(f"https://s.tradingview.com/embed-widget/technical-analysis/?locale=en#%7B%22interval%22%3A%22{interval}%22%2C%22width%22%3A%22100%25%22%2C%22isTransparent%22%3Afalse%2C%22height%22%3A%22100%25%22%2C%22symbol%22%3A%22{ticker}%22%2C%22showIntervalTabs%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22technical-analysis%22%7D")
-        webdriver.refresh()
+        driver.get(f"https://s.tradingview.com/embed-widget/technical-analysis/?locale=en#%7B%22interval%22%3A%22{interval}%22%2C%22width%22%3A%22100%25%22%2C%22isTransparent%22%3Afalse%2C%22height%22%3A%22100%25%22%2C%22symbol%22%3A%22{ticker}%22%2C%22showIntervalTabs%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22technical-analysis%22%7D")
+        driver.refresh()
 
         # Wait for site to load elements
-        while len(webdriver.find_elements_by_class_name("speedometerSignal-pyzN--tL")) == 0:
+        while len(driver.find_elements_by_class_name("speedometerSignal-pyzN--tL")) == 0:
             sleep(0.1)
 
         # Get recommendation
-        recommendation_element = webdriver.find_element_by_class_name("speedometerSignal-pyzN--tL")
+        recommendation_element = driver.find_element_by_class_name("speedometerSignal-pyzN--tL")
         analysis.append(recommendation_element.get_attribute('innerHTML'))
 
         # Get Sell, Neutral and Buy counter values
-        counter_elements = webdriver.find_elements_by_class_name("counterNumber-3l14ys0C")
+        counter_elements = driver.find_elements_by_class_name("counterNumber-3l14ys0C")
         analysis.append(int(counter_elements[0].get_attribute('innerHTML')))
         analysis.append(int(counter_elements[1].get_attribute('innerHTML')))
         analysis.append(int(counter_elements[2].get_attribute('innerHTML')))
@@ -62,7 +63,7 @@ for ticker in tickers:
         num_sell = float(last_analysis[1])
         num_neutral = float(last_analysis[2])
         num_buy = float(last_analysis[3])
-        price = round(si.get_live_price(ticker), 2)
+        price = pdr.get_data_yahoo(ticker)['Adj Close'][-1]
 
         signals.append(signal)
         neutrals.append(num_neutral)
@@ -75,6 +76,9 @@ for ticker in tickers:
         
     except:
         continue
+
+# Close the webdriver connection
+driver.close()
     
 # Create dataframe, export, and print
 dataframe = pd.DataFrame(list(zip(valid_tickers, prices, signals, buys, sells, neutrals)), columns =['Tickers', 'Current Price', 'Signals', 'Buys', 'Sells', 'Neutrals'])
