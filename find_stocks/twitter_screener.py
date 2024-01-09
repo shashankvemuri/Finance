@@ -3,14 +3,23 @@ import requests
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
-import yahoo_fin.stock_info as ya
 from alpha_vantage.sectorperformance import SectorPerformances
 
 # Set option to display all columns in dataframes
 pd.set_option('display.max_columns', None)
 
 # Get most active stocks for the day
-movers = ya.get_day_most_active()
+def scrape_most_active_stocks():
+    url = 'https://finance.yahoo.com/most-active/'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    df = pd.read_html(str(soup), attrs={'class': 'W(100%)'})[0]
+    df = df.drop(columns=['52 Week High'])
+    return df
+
+# Usage
+movers = scrape_most_active_stocks()
 
 # Keep only stocks with positive percentage change
 movers = movers[movers['% Change'] >= 0]
