@@ -4,35 +4,22 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import yfinance as yf
-from pandas_datareader import data as pdr
-import xlsxwriter
 import requests
-from yahoo_fin import stock_info as si
 import pickle
 import bs4 as bs
+import requests
 
 # You need to change this to a convenient spot on your own hard drive.
 my_path = ""
 threshold = 0.80
 
-# Download a list of the S&P 500 components
-def save_spx_tickers():
-    resp = requests.get("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
-    soup = bs.BeautifulSoup(resp.text, "lxml")
-    table = soup.find("table", {"class": "wikitable sortable"})
-    tickers = []
-    for row in table.findAll("tr")[1:]:
-        ticker = row.find_all("td")[0].text.strip()
-        tickers.append(ticker)
-    with open("spxTickers.pickle", "wb") as f:
-        pickle.dump(tickers, f)
-    return tickers
-sp500_tickers = save_spx_tickers()
+# Scrape a list of the S&P 500 components
+url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+html = requests.get(url).text
+sp_df = pd.read_html(html, header=0)[0]
+sp500_tickers = sp_df['Symbol'].tolist()
 
-# Make the ticker symbols readable by Yahoo Finance
-sp500_tickers = [item.replace(".", "-") for item in sp500_tickers]
-
-# Upload a list of the S&P 500 components downloaded from Yahoo.
+# Upload a list of the S&P 500 components downloaded from Wikipedia.
 mylist = []
 mylist2 = []
 df_sp500_tickers = pd.DataFrame(list(zip(sp500_tickers)), columns=["Symbol"])

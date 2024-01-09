@@ -5,7 +5,11 @@ import pandas as pd
 import datetime
 from socket import gaierror
 from pandas_datareader._utils import RemoteDataError
-from yahoo_fin import stock_info as si
+import sys
+import os
+parent_dir = os.path.dirname(os.getcwd())
+sys.path.append(parent_dir)
+import tickers as ti
 
 # Define risk-free return rate
 risk_free_return = 0.02
@@ -15,7 +19,7 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
 # Get all tickers in NASDAQ stock exchange
-nasdaq_tickers = si.tickers_nasdaq()
+nasdaq_tickers = ti.tickers_nasdaq()
 
 # Define the ticker for index
 index_ticker = '^GSPC'

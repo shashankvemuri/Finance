@@ -2,8 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import yahoo_fin.stock_info as si
-from pandas_datareader import DataReader
+import pandas_datareader.data as pdr
 import pandas as pd
 import datetime
 from pylab import rcParams
@@ -20,8 +19,8 @@ stock = 'NIO'
 index = '^GSPC'
 
 # Fetch stock and index data from Yahoo Finance
-df = DataReader(stock, 'yahoo', start_date, end_date)
-dfb = DataReader(index, 'yahoo', start_date, end_date)
+df = pdr.get_data_yahoo(stock, start_date, end_date)
+dfb = pdr.get_data_yahoo(index, start_date, end_date)
 
 # Resample the data to monthly frequency
 rts = df.resample('M').last()
@@ -64,7 +63,7 @@ class GBM:
 
 # Set the parameters for the Geometric Brownian Motion simulation
 n = 20 # Number of simulations
-initial_price = si.get_live_price(stock) # Use the live stock price as the initial price
+initial_price = df['Adj Close'][-1] # Use the live stock price as the initial price
 drift = .24 # Use a constant drift value
 volatility = np.sqrt(covmat[0,0]) # Use the volatility of the stock
 time_period = 1 / 365 # Daily
@@ -80,7 +79,7 @@ for sim in simulations:
 
 # Add the title, legend, and axis labels
 plt.title(f'Geometric Brownian Motion for {stock.upper()}')
-plt.axhline(y=si.get_live_price(stock), color='r')
+plt.axhline(y=initial_price, color='r')
 plt.xlabel('Time')
 plt.ylabel('Price')
 plt.show()
