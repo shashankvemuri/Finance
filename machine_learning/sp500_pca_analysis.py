@@ -7,88 +7,59 @@ import datetime
 from sklearn.decomposition import PCA
 from pandas_datareader import data as pdr
 from pylab import rcParams
-yf.pdr_override()
-import sys
-import os
-parent_dir = os.path.dirname(os.getcwd())
-sys.path.append(parent_dir)
-import tickers as ti
 
-# Set parameters
-num_of_years = 1
-start_date = datetime.date.today() - datetime.timedelta(days=int(365.25*num_of_years))
+# Set parameters and retrieve stock tickers
+num_years = 1
+start_date = datetime.date.today() - datetime.timedelta(days=365.25 * num_years)
 end_date = datetime.date.today()
+tickers = yf.Tickers(' '.join(ti.tickers_sp500())).history(start=start_date, end=end_date)
 
-# Get Tickers
-tickers = ti.tickers_sp500()
-tickers = [item.replace('.', '-') for item in tickers]
-
-# Get Market Data
-index = '^GSPC'
-market_prices = pdr.get_data_yahoo(index, start_date, end_date)['Adj Close']
-# Calculate the log differences of prices
-market_rs = market_prices.apply(np.log).diff(1)
-
-# Read in stock data and collect returns
+# Calculate log differences of prices for market index and stocks
+market_prices = pdr.get_data_yahoo('^GSPC', start_date, end_date)['Adj Close']
+market_log_returns = np.log(market_prices).diff()
 stock_prices = pdr.get_data_yahoo(tickers, start_date, end_date)['Adj Close']
-# Calculate the log differences of prices
-rs = stock_prices.apply(np.log).diff(1)
+stock_log_returns = np.log(stock_prices).diff()
 
-# Set the size of the plot
-rcParams['figure.figsize'] = 15, 10
-# Plot the daily returns of the stocks in the S&P500
-plt.plot(rs)
-plt.title('Daily Returns of the Stocks in the S&P500')
+# Plot daily returns of S&P 500 stocks
+plt.figure(figsize=(15, 10))
+plt.plot(stock_log_returns)
+plt.title('Daily Returns of S&P 500 Stocks')
 plt.show()
 
-# Calculate the cumulative returns of the stocks in the S&P500
-crs = rs.cumsum().apply(np.exp)
-# Set the size of the plot
-rcParams['figure.figsize'] = 15, 10
-plt.subplots()
-# Plot the cumulative returns of the stocks in the S&P500
-plt.plot(crs)
-plt.title('Cumulative Returns of the Stocks in the S&P500')
+# Plot cumulative returns of S&P 500 stocks
+cumulative_returns = stock_log_returns.cumsum().apply(np.exp)
+plt.figure(figsize=(15, 10))
+plt.plot(cumulative_returns)
+plt.title('Cumulative Returns of S&P 500 Stocks')
 plt.show()
 
-# Perform PCA on the stock returns data
-pca = PCA(1).fit(rs.fillna(0))
-pc1 = pd.Series(index=rs.columns, data=pca.components_[0])
-# Set the size of the plot
-rcParams['figure.figsize'] = 15, 10
-plt.subplots()
-# Plot the first principal component of the S&P500
+# Perform PCA on stock returns
+pca = PCA(n_components=1)
+pca.fit(stock_log_returns.fillna(0))
+pc1 = pd.Series(index=stock_log_returns.columns, data=pca.components_[0])
+
+# Plot the first principal component
+plt.figure(figsize=(15, 10))
 plt.plot(pc1)
-plt.title('First Principal Component of the S&P500')
+plt.title('First Principal Component of S&P 500 Stocks')
 plt.show()
 
-# Find the weights of each stock that comprise the PCA portfolio
-weights = abs(pc1)/sum(abs(pc1)) # l1 norm = 1
-myrs = (weights*rs).sum(1)
-rs_df = pd.concat([myrs, market_rs], 1)
-rs_df.columns = ["PCA Portfolio", "S&P500"]
-crs_df = rs_df.cumsum().apply(np.exp)
-# Set the size of the plot
-rcParams['figure.figsize'] = 15, 10
-plt.subplots()
-# Plot the PCA portfolio vs. the S&P500
-plt.plot(crs_df)
-plt.title('PCA Portfolio vs. S&P 500')
+# Calculate weights for PCA portfolio and compare with market index
+weights = abs(pc1) / sum(abs(pc1))
+pca_portfolio_returns = (weights * stock_log_returns).sum(axis=1)
+combined_returns = pd.concat([pca_portfolio_returns, market_log_returns], axis=1)
+combined_returns.columns = ['PCA Portfolio', 'S&P 500']
+cumulative_combined_returns = combined_returns.cumsum().apply(np.exp)
+
+# Plot PCA portfolio vs S&P 500
+plt.figure(figsize=(15, 10))
+plt.plot(cumulative_combined_returns)
+plt.title('PCA Portfolio vs S&P 500')
+plt.legend(['PCA Portfolio', 'S&P 500'])
 plt.show()
 
-# Plot the stocks with the most and least negative PCA weights
-fig, ax = plt.subplots(2, 1)
-rcParams['figure.figsize'] = 15, 10
-pc1.nsmallest(10).plot.bar(ax=ax[0], color='red', grid=True, title='Stocks with Most and Least Negative PCA Weights')
-pc1.nlargest(10).plot.bar(ax=ax[1], color='green', grid=True)
-
-# Plot best PCA Porfolio vs. S&P 500
-myrs = rs[pc1.nlargest(10).index].mean(1)
-mycrs = myrs.cumsum().apply(np.exp)
-market_crs = market_rs.cumsum().apply(np.exp)
-rcParams['figure.figsize'] = 15, 10
-plt.subplots()
-plt.plot(mycrs)
-plt.plot(market_crs)
-plt.title('PCA Selection vs. S&P500')
-plt.legend(['PCA Selection', 'S&P500'])
+# Plot stocks with most and least significant PCA weights
+fig, ax = plt.subplots(2, 1, figsize=(15, 10))
+pc1.nsmallest(10).plot.bar(ax=ax[0], color='red', title='Stocks with Most Negative PCA Weights')
+pc1.nlargest(10).plot.bar(ax=ax[1], color='green', title='Stocks with Most Positive PCA Weights')
+plt.show()
