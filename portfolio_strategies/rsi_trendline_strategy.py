@@ -1,74 +1,59 @@
-# Import required libraries
 import datetime
 import time
 import pandas as pd
+import yfinance as yf
 from pandas_datareader import data as pdr
 from pandas import ExcelWriter
-import yfinance as yf
 import sys
 import os
+
+# Adding path for ta_functions and ticker modules
 parent_dir = os.path.dirname(os.getcwd())
 sys.path.append(parent_dir)
 import ta_functions as ta
+import tickers as ti
 
-# Override yfinance module to fix issues with pandas_datareader
+# Override the yfinance module
 yf.pdr_override()
 
-# Define the number of years to get data for and the start and end dates
+# Define the date range for data retrieval
 num_of_years = 10
-start = datetime.datetime.now() - datetime.timedelta(int(365.25 * num_of_years))
+start = datetime.datetime.now() - datetime.timedelta(days=365.25 * num_of_years)
 end = datetime.datetime.now()
 
-# Load stock symbols from a pickle file
-stocklist = pd.read_pickle('../spxTickers.pickle')
+# Load stock symbols
+stocklist = ti.tickers_sp500()
+stocklist = [stock.replace(".", "-") for stock in stocklist]  # Adjusting ticker format for Yahoo Finance
 
-# Replace periods with hyphens in the stock symbols for Yahoo Finance compatibility
-stocklist = [item.replace(".", "-") for item in stocklist]
-
-# Initialize empty lists and variables
+# Initialize the DataFrame for exporting results
 exportList = pd.DataFrame(columns=['Stock', "RSI", "200 Day MA"])
-mylist = []
-today = datetime.date.today()
-mylist.append(today)
-today = mylist[0]
 
-# Loop through all stocks in the list
+# Process a limited number of stocks for demonstration
 for stock in stocklist[:5]:
-    # Sleep for 1.5 seconds to avoid hitting Yahoo Finance API rate limits
-    time.sleep(1.5)
+    time.sleep(1.5)  # To avoid hitting API rate limits
+    print(f"\npulling {stock}")
 
-    print ("\npulling {}".format(stock))
-
-    # Get data from Yahoo Finance API
-    start_date = datetime.datetime.now() - datetime.timedelta(days=365)
-    end_date = datetime.date.today()
-    df = pdr.get_data_yahoo(stock, start=start_date, end=end_date)
+    # Fetch stock data
+    df = pdr.get_data_yahoo(stock, start=start, end=end)
 
     try:
-        # Calculate the 200-day moving average, current close price, and RSI values
-        df["SMA_200"] = round(df.iloc[:,4].rolling(window=200).mean(), 2)
-        currentClose = df["Adj Close"][-1]
-        moving_average_200 = df["SMA_200"][-1]
+        # Calculate indicators: 200-day MA, RSI
+        df["SMA_200"] = df.iloc[:, 4].rolling(window=200).mean()
         df["rsi"] = ta.RSI(df["Close"])
-        RSI = df["rsi"].tail(14).mean()
-        two_day = (df.rsi[-1] + df.rsi[-2])/2
+        currentClose, moving_average_200, RSI = df["Adj Close"][-1], df["SMA_200"][-1], df["rsi"].tail(14).mean()
+        two_day_rsi_avg = (df.rsi[-1] + df.rsi[-2]) / 2
 
-        # Check if conditions for entering a long position are met
-        condition_1 = currentClose >  moving_average_200
-        condition_2 = two_day < 33
-
-        if condition_1 and condition_2:
-            # If conditions are met, add the stock to the export list
+        # Define entry criteria
+        if currentClose > moving_average_200 and two_day_rsi_avg < 33:
             exportList = exportList.append({'Stock': stock, "RSI": RSI, "200 Day MA": moving_average_200}, ignore_index=True)
-            print (stock + " made the requirements")
+            print(f"{stock} made the requirements")
 
     except Exception as e:
-        # If there is an error getting data for the stock, skip it
-        print (e)
-        pass
+        print(e)  # Handling exceptions
 
-# Save the export and other lists to separate Excel files
+# Exporting the list to an Excel file
+today = datetime.date.today()
 print(exportList)
-writer = ExcelWriter('Export-Output_{}.xlsx'.format(today))
+writer = ExcelWriter(f'Export-Output_{today}.xlsx')
 exportList.to_excel(writer, "Sheet1")
 writer.save()
