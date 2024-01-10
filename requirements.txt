@@ -34,7 +34,7 @@ requests==2.27.1
 robin_stocks==2.1.0
 schedule==1.2.0
 scikit_learn==1.2.2
-scipy==1.7.3
+scipy==1.10.0
 seaborn==0.11.2
 selenium==4.9.0
 statsmodels==0.13.2
