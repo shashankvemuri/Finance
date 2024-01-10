@@ -1,65 +1,52 @@
-import numpy as np
-import pandas as pd
 import pandas_datareader.data as pdr
+import yfinance as yf
+import pandas as pd
 import datetime as dt
-import sys
-import os
-parent_dir = os.path.dirname(os.getcwd())
-sys.path.append(parent_dir)
-import ta_functions as ta
+import numpy as np
 
-# Set display options for pandas DataFrame
-pd.set_option("display.max_columns", None)
-
-# Function to get stock data
+# Function to fetch stock data
 def get_stock_data(stock, start, end):
+    """
+    Fetches stock data from Yahoo Finance.
+    """
     return pdr.get_data_yahoo(stock, start, end)
 
-# Function to calculate trading statistics
-def calculate_trading_statistics(df, start, buy_sell_logic, additional_logic=None):
+# Trading statistics calculation
+def calculate_trading_statistics(df, buy_sell_logic, additional_logic=None):
+    """
+    Calculates trading statistics based on buy/sell logic.
+    """
     position = 0
     percentChange = []
     for i in df.index:
-        close = df["Adj Close"][i]
+        close = df.loc[i, "Adj Close"]
         if buy_sell_logic(df, i, position):
+            position = 0 if position == 1 else 1
+            buyP = close if position == 1 else buyP
+            sellP = close if position == 0 else sellP
             if position == 0:
-                buyP = close
-                position = 1
-            elif position == 1:
-                position = 0
-                sellP = close
                 perc = (sellP / buyP - 1) * 100
                 percentChange.append(perc)
-        if additional_logic:
-            additional_logic(df, i)
-    return calculate_statistics_from_percent_change(percentChange, start)
+        if additional_logic: additional_logic(df, i)
+    return calculate_statistics_from_percent_change(percentChange)
 
-# Function to compute statistics from percent change
-def calculate_statistics_from_percent_change(percentChange, start):
-    gains, losses, numGains, numLosses, totReturn = 0, 0, 0, 0, 1
-    for i in percentChange:
-        if i > 0:
-            gains += i
-            numGains += 1
-        else:
-            losses += i
-            numLosses += 1
-        totReturn *= ((i / 100) + 1)
-    totReturn = round((totReturn - 1) * 100, 2)
-    return extract_trade_statistics(gains, losses, numGains, numLosses, percentChange, totReturn, start)
-
-# Function to extract trade statistics
-def extract_trade_statistics(gains, losses, numGains, numLosses, percentChange, totReturn, start):
-    avgGain, avgLoss, maxReturn, maxLoss, ratioRR = 0, 0, "nan", "nan", "inf"
-    if numGains > 0:
-        avgGain = gains / numGains
-        maxReturn = max(percentChange)
-    if numLosses > 0:
-        avgLoss = losses / numLosses
-        maxLoss = min(percentChange)
-        ratioRR = -avgGain / avgLoss if avgLoss != 0 else "inf"
+# Compute statistics from percent change
+def calculate_statistics_from_percent_change(percentChange):
+    """
+    Computes statistics from percentage change in stock prices.
+    """
+    gains = sum(p for p in percentChange if p > 0)
+    losses = sum(p for p in percentChange if p < 0)
+    numGains = sum(1 for p in percentChange if p > 0)
+    numLosses = sum(1 for p in percentChange if p < 0)
+    totReturn = round(np.prod([((p / 100) + 1) for p in percentChange]) * 100 - 100, 2)
+    avgGain = gains / numGains if numGains > 0 else 0
+    avgLoss = losses / numLosses if numLosses > 0 else 0
+    maxReturn = max(percentChange) if numGains > 0 else 0
+    maxLoss = min(percentChange) if numLosses > 0 else 0
+    ratioRR = -avgGain / avgLoss if numLosses > 0 else "inf"
+    batting_avg = numGains / (numGains + numLosses) if numGains + numLosses > 0 else 0
     return {
-        "start": start,
         "total_return": totReturn,
         "avg_gain": avgGain,
         "avg_loss": avgLoss,
@@ -67,33 +54,33 @@ def extract_trade_statistics(gains, losses, numGains, numLosses, percentChange, 
         "max_loss": maxLoss,
         "gain_loss_ratio": ratioRR,
         "num_trades": numGains + numLosses,
-        "batting_avg": numGains / (numGains + numLosses) if numGains + numLosses > 0 else 0
+        "batting_avg": batting_avg
     }
 
-# Logic for SMA strategy
+# SMA strategy logic
 def sma_strategy_logic(df, i, position):
+    """
+    Logic for Simple Moving Average (SMA) trading strategy.
+    """
     SMA_short, SMA_long = df["SMA_20"], df["SMA_50"]
     return (SMA_short[i] > SMA_long[i] and position == 0) or (SMA_short[i] < SMA_long[i] and position == 1)
 
-# Initialize main program
+# Main program
 def main():
+    """
+    Main program to test trading strategies.
+    """
     stock = input("Enter a stock ticker: ")
     num_of_years = float(input("Enter number of years: "))
-
-    start = dt.date.today() - dt.timedelta(days=int(365.25 * num_of_years))
+    start = dt.datetime.now() - dt.timedelta(days=365.25 * num_of_years)
     end = dt.datetime.now()
-
     df = get_stock_data(stock, start, end)
 
-    # SMA strategy implementation
-    short_sma, long_sma = 20, 50
-    df["SMA_20"] = df.iloc[:, 4].rolling(window=short_sma).mean()
-    df["SMA_50"] = df.iloc[:, 4].rolling(window=long_sma).mean()
-    sma_stats = calculate_trading_statistics(df, start, sma_strategy_logic)
+    # Implementing SMA strategy
+    df["SMA_20"] = df["Adj Close"].rolling(window=20).mean()
+    df["SMA_50"] = df["Adj Close"].rolling(window=50).mean()
+    sma_stats = calculate_trading_statistics(df, sma_strategy_logic)
     print("Simple Moving Average Strategy Stats:", sma_stats)
 
-    # Add other strategies similarly using their respective logic functions
-
-# Run the program
 if __name__ == "__main__":
     main()
