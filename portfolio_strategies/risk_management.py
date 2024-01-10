@@ -3,137 +3,60 @@ import numpy as np
 import yfinance as yf
 import datetime as dt
 from pandas_datareader import data as pdr
-import statistics
-import time
 
+# Override default data reader method with yfinance
 yf.pdr_override()
-now = dt.datetime.now()
-start = dt.datetime(2019, 1, 1)
 
+# Define the start and end dates for data retrieval
+start = dt.datetime(2019, 1, 1)
+now = dt.datetime.now()
+
+# Define the moving averages and exponential moving averages to be used
 smaUsed = [50, 200]
 emaUsed = [21]
 
+# User inputs for stock ticker and position
 stock = input("Enter a ticker: ")
-position = input("Buy or Short? ")
-AvgGain = int(input("Enter Your Average Gain: "))
-AvgLoss = int(input("Enter Your Average Loss: "))
+position = input("Buy or Short? ").lower()
+AvgGain = float(input("Enter Your Average Gain (%): "))
+AvgLoss = float(input("Enter Your Average Loss (%): "))
 
-if position.lower() == "buy":
-    df = pdr.get_data_yahoo(stock, start, now)
+# Fetch historical data from Yahoo Finance
+df = pdr.get_data_yahoo(stock, start, now)
+
+# Calculate the maximum stop value and target returns based on user's position
+if position == "buy":
     close = df["Adj Close"][-1]
-    maxStop = close * ((100 - AvgLoss) / 100)
-    Target1R = round(close * ((100 + AvgGain) / 100), 2)
-    Target2R = round(close * (((100 + (2 * AvgGain)) / 100)), 2)
-    Target3R = round(close * (((100 + (3 * AvgGain)) / 100)), 2)
-
-    for x in smaUsed:
-        sma = x
-        df["SMA_" + str(sma)] = round(df.iloc[:, 4].rolling(window=sma).mean(), 2)
-    for x in emaUsed:
-        ema = x
-        df["EMA_" + str(ema)] = round(
-            df.iloc[:, 4].ewm(span=ema, adjust=False).mean(), 2
-        )
-
-    sma50 = round(df["SMA_50"][-1], 2)
-    sma200 = round(df["SMA_200"][-1], 2)
-    ema21 = round(df["EMA_21"][-1], 2)
-    low5 = round(min(df["Low"].tail(5)), 2)
-
-    pf50 = round(((close / sma50) - 1) * 100, 2)
-    check50 = df["SMA_50"][-1] > maxStop
-    pf200 = round(((close / sma200) - 1) * 100, 2)
-    check200 = ((close / df["SMA_200"][-1]) - 1) * 100 > 100
-    pf21 = round(((close / ema21) - 1) * 100, 2)
-    check21 = df["EMA_21"][-1] > maxStop
-    pfl = round(((close / low5) - 1) * 100, 2)
-    checkl = pfl > maxStop
-
-    print()
-    print("Current Stock: " + stock + " Price: " + str(round(close, 2)))
-    print(
-        "21 EMA: "
-        + str(ema21)
-        + " | 50 SMA: "
-        + str(sma50)
-        + " | 200 SMA: "
-        + str(sma200)
-        + " | 5 day Low: "
-        + str(low5)
-    )
-    print("-------------------------------------------------")
-    print("Max Stop: " + str(round(maxStop, 2)))
-    print("Price Targets:")
-    print("1R: " + str(Target1R))
-    print("2R: " + str(Target2R))
-    print("3R: " + str(Target3R))
-    print("From 5 Day Low " + str(pfl) + "% -Within Max Stop: " + str(checkl))
-    print("From 21 day EMA " + str(pf21) + "% -Within Max Stop: " + str(check21))
-    print("From 50 day SMA " + str(pf50) + "% -Within Max Stop: " + str(check50))
-    print(
-        "From 200 Day SMA "
-        + str(pf200)
-        + "% -In Danger Zone (Over 100% from 200 SMA): "
-        + str(check200)
-    )
-    print()
-
-elif position.lower() == "short":
-    df = pdr.get_data_yahoo(stock, start, now)
+    maxStop = close * (1 - AvgLoss / 100)
+    targets = [round(close * (1 + (i * AvgGain / 100)), 2) for i in range(1, 4)]
+elif position == "short":
     close = df["Adj Close"][-1]
-    maxStop = close * ((100 + AvgLoss) / 100)
-    Target3R = round(close * (((100 - (3 * AvgGain)) / 100)), 2)
-    Target2R = round(close * (((100 - (2 * AvgGain)) / 100)), 2)
-    Target1R = round(close * ((100 - AvgGain) / 100), 2)
+    maxStop = close * (1 + AvgLoss / 100)
+    targets = [round(close * (1 - (i * AvgGain / 100)), 2) for i in range(1, 4)]
 
-    for x in smaUsed:
-        sma = x
-        df["SMA_" + str(sma)] = round(df.iloc[:, 4].rolling(window=sma).mean(), 2)
-    for x in emaUsed:
-        ema = x
-        df["EMA_" + str(ema)] = round(
-            df.iloc[:, 4].ewm(span=ema, adjust=False).mean(), 2
-        )
+# Calculate SMA and EMA for the stock
+for x in smaUsed:
+    df[f"SMA_{x}"] = df["Adj Close"].rolling(window=x).mean()
+for x in emaUsed:
+    df[f"EMA_{x}"] = df["Adj Close"].ewm(span=x, adjust=False).mean()
 
-    sma50 = round(df["SMA_50"][-1], 2)
-    sma200 = round(df["SMA_200"][-1], 2)
-    ema21 = round(df["EMA_21"][-1], 2)
-    low5 = round(min(df["Low"].tail(5)), 2)
+# Fetching the latest values of SMA, EMA, and 5 day low
+sma_values = {f"SMA_{x}": round(df[f"SMA_{x}"][-1], 2) for x in smaUsed}
+ema_values = {f"EMA_{x}": round(df[f"EMA_{x}"][-1], 2) for x in emaUsed}
+low5 = round(min(df["Low"].tail(5)), 2)
 
-    pf50 = round(((close / sma50) - 1) * 100, 2)
-    check50 = df["SMA_50"][-1] > maxStop
-    pf200 = round(((close / sma200) - 1) * 100, 2)
-    check200 = ((close / df["SMA_200"][-1]) - 1) * 100 > 100
-    pf21 = round(((close / ema21) - 1) * 100, 2)
-    check21 = df["EMA_21"][-1] > maxStop
-    pfl = round(((close / low5) - 1) * 100, 2)
-    checkl = pfl > maxStop
+# Calculate the performance metrics and checks
+performance_checks = {}
+for key, value in {**sma_values, **ema_values, "Low_5": low5}.items():
+    pf = round(((close / value) - 1) * 100, 2)
+    check = value > maxStop if position == "buy" else value < maxStop
+    performance_checks[key] = {"Performance": pf, "Check": check}
 
-    print()
-    print("Current Stock: " + stock + " Price: " + str(round(close, 2)))
-    print(
-        "21 EMA: "
-        + str(ema21)
-        + " | 50 SMA: "
-        + str(sma50)
-        + " | 200 SMA: "
-        + str(sma200)
-        + " | 5 day Low: "
-        + str(low5)
-    )
-    print("-------------------------------------------------")
-    print("Max Stop: " + str(round(maxStop, 2)))
-    print("Price Targets:")
-    print("1R: " + str(Target1R))
-    print("2R: " + str(Target2R))
-    print("3R: " + str(Target3R))
-    print("From 5 Day Low " + str(pfl) + "% -Within Max Stop: " + str(checkl))
-    print("From 21 day EMA " + str(pf21) + "% -Within Max Stop: " + str(check21))
-    print("From 50 day SMA " + str(pf50) + "% -Within Max Stop: " + str(check50))
-    print(
-        "From 200 Day SMA "
-        + str(pf200)
-        + "% -In Danger Zone (Over 100% from 200 SMA): "
-        + str(check200)
-    )
-    print()
+# Displaying the results
+print(f"\nCurrent Stock: {stock} | Price: {round(close, 2)}")
+print(" | ".join([f"{key}: {value}" for key, value in {**sma_values, **ema_values, 'Low_5': low5}.items()]))
+print("-------------------------------------------------")
+print(f"Max Stop: {round(maxStop, 2)}")
+print(f"Price Targets: 1R: {targets[0]} | 2R: {targets[1]} | 3R: {targets[2]}")
+for key, value in performance_checks.items():
+    print(f"From {key} {value['Performance']}% - {'Within' if value['Check'] else 'Outside'} Max Stop")
