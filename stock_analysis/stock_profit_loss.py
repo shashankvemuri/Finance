@@ -1,61 +1,48 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 import yfinance as yf
 import datetime as dt
+import matplotlib.pyplot as plt
 
-# Set the stock symbol and time frame for the analysis
-symbol = 'MSFT'
-start_date = dt.date.today() - dt.timedelta(days=365)
-end_date = dt.date.today()
+def calculate_stock_profit_loss(symbol, start_date, end_date, initial_investment):
+    # Download stock data
+    dataset = yf.download(symbol, start_date, end_date)
 
-# Set the initial investment
-initial_investment = 5000
+    # Calculate the number of shares and investment values
+    shares = initial_investment / dataset['Adj Close'][0]
+    purchase_price = dataset['Adj Close'][0]
+    current_value = shares * dataset['Adj Close'][-1]
 
-# Download data for the given stock symbol and time frame
-dataset = yf.download(symbol, start_date, end_date)
+    # Calculate profit or loss and related metrics
+    profit_or_loss = current_value - initial_investment
+    percentage_gain_or_loss = (profit_or_loss / current_value) * 100
+    percentage_returns = (current_value - initial_investment) / initial_investment * 100
+    net_gains_or_losses = (dataset['Adj Close'][-1] - dataset['Adj Close'][0]) / dataset['Adj Close'][0] * 100
+    total_return = ((current_value / initial_investment) - 1) * 100
 
-# Calculate the number of shares to buy with the initial investment
-shares = round(int(initial_investment / dataset['Adj Close'][0]), 1)
+    # Calculate profit and loss for each day
+    dataset['PnL'] = shares * (dataset['Adj Close'].diff())
 
-# Calculate the purchase price and the current value of the investment
-purchase_price = dataset['Adj Close'][0]
-current_value = shares * dataset['Adj Close'][-1]
+    # Visualize the profit and loss
+    plt.figure(figsize=(16,8))
+    plt.plot(dataset['PnL'])
+    plt.title(f'Profit and Loss for {symbol} Each Day')
+    plt.xlabel('Date')
+    plt.ylabel('Profit/Loss')
+    plt.show()
 
-# Calculate the profit or loss
-profit_or_loss = current_value - initial_investment
+    # Display financial analysis
+    print(f"Financial Analysis for {symbol}")
+    print('-' * 50)
+    print(f"Profit or Loss: ${profit_or_loss:.2f}")
+    print(f"Percentage Gain or Loss: {percentage_gain_or_loss:.2f}%")
+    print(f"Percentage of Returns: {percentage_returns:.2f}%")
+    print(f"Net Gains or Losses: {net_gains_or_losses:.2f}%")
+    print(f"Total Returns: {total_return:.2f}%")
 
-# Calculate the percentage gain or loss
-percentage_gain_or_loss = (profit_or_loss / current_value) * 100
+# Main execution
+if __name__ == "__main__":
+    symbol = 'MSFT'
+    start_date = dt.date.today() - dt.timedelta(days=365)
+    end_date = dt.date.today()
+    initial_investment = 5000
 
-# Calculate the percentage of returns
-percentage_returns = (current_value - initial_investment) / initial_investment * 100
-
-# Calculate the net gains or losses
-net_gains_or_losses = (dataset['Adj Close'][-1] - dataset['Adj Close'][0]) / dataset['Adj Close'][0] * 100
-
-# Calculate the total returns
-total_return = ((current_value / initial_investment) - 1) * 100
-
-# Add the calculated columns to the dataset
-dataset['Shares'] = dataset['End'] = 0
-dataset['Shares'] = dataset['End'].shift(1) / dataset['Adj Close'].shift(1)
-dataset['PnL'] = dataset['Shares'] * (dataset['Adj Close'] - dataset['Adj Close'].shift(1))
-dataset['End'] = dataset['End'].shift(1) + dataset['PnL']
-
-# Visualize the profit and loss for each day
-plt.figure(figsize=(16,8))
-plt.plot(dataset['PnL'])
-plt.title('Profit and Loss for Each Day')
-plt.xlabel('Date')
-plt.ylabel('Price')
-plt.show()
-
-# Print the financial analysis
-print("Financial Analysis")
-print('-' * 50)
-print(f"{symbol} profit or loss: ${profit_or_loss:.2f}")
-print(f"Percentage gain or loss: {percentage_gain_or_loss:.2f}%")
-print(f"Percentage of returns: {percentage_returns:.2f}%")
-print(f"Net gains or losses: {net_gains_or_losses:.2f}%")
-print(f"Total Returns: {total_return:.2f}%")
+    calculate_stock_profit_loss(symbol, start_date, end_date, initial_investment)
