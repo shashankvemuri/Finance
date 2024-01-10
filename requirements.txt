@@ -8,7 +8,7 @@ fastai==2.7.12
 fbprophet==0.7.1
 finta==1.3
 finviz==1.4.4
-Flask==2.2.3
+Flask==2.3.2
 FundamentalAnalysis==0.2.14
 googletrans==3.0.0
 ipython==8.13.0
