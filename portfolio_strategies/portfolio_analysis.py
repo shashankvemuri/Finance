@@ -1,75 +1,70 @@
-# Import dependencies
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import math
 import yfinance as yf
-from dateutil import relativedelta
 import datetime as dt
 
-# Override yfinance API to enable Pandas Datareader
+# Override yfinance with Pandas Datareader's Yahoo Finance API
 yf.pdr_override()
 
-# Function to get historical stock price data
 def get_historical_prices(symbols, start_date, end_date):
-    df = yf.download(symbols, start=start_date, end=end_date)['Adj Close']
-    return df
+    """Retrieve historical stock prices for specified symbols."""
+    return yf.download(symbols, start=start_date, end=end_date)['Adj Close']
 
-# Example list of symbols to fetch historical data for
-symbols = ['FB', 'JNJ', 'LMT']
-start_date = dt.datetime.now() - dt.timedelta(days=365*7)
+def calculate_daily_returns(prices):
+    """Calculate daily returns from stock prices."""
+    return np.log(prices / prices.shift(1))
+
+def calculate_monthly_returns(daily_returns):
+    """Calculate monthly returns from daily returns."""
+    return np.exp(daily_returns.groupby(lambda date: date.month).sum()) - 1
+
+def calculate_annual_returns(daily_returns):
+    """Calculate annual returns from daily returns."""
+    return np.exp(daily_returns.groupby(lambda date: date.year).sum()) - 1
+
+def portfolio_variance(returns, weights=None):
+    """Calculate the variance of a portfolio."""
+    if weights is None:
+        weights = np.ones(len(returns.columns)) / len(returns.columns)
+    covariance_matrix = np.cov(returns.T)
+    return np.dot(weights, np.dot(covariance_matrix, weights))
+
+def sharpe_ratio(returns, weights=None, risk_free_rate=0.001):
+    """Calculate the Sharpe ratio of a portfolio."""
+    if weights is None:
+        weights = np.ones(len(returns.columns)) / len(returns.columns)
+    port_var = portfolio_variance(returns, weights)
+    port_return = np.dot(returns.mean(), weights)
+    return (port_return - risk_free_rate) / np.sqrt(port_var)
+
+# Example usage
+symbols = ['AAPL', 'MSFT', 'GOOGL']
+start_date = dt.datetime.now() - dt.timedelta(days=365*5)
 end_date = dt.datetime.now()
 
-# Fetch historical closing prices for the given symbols and dates
-closes = get_historical_prices(symbols, start_date, end_date)
+# Fetch historical data
+historical_prices = get_historical_prices(symbols, start_date, end_date)
 
-# Function to calculate daily returns from price data
-def calc_daily_returns(closes):
-    return np.log(closes/closes.shift(1))
+# Calculate returns
+daily_returns = calculate_daily_returns(historical_prices)
+monthly_returns = calculate_monthly_returns(daily_returns)
+annual_returns = calculate_annual_returns(daily_returns)
 
-# Calculate daily returns from historical closing prices
-daily_returns = calc_daily_returns(closes)
+# Calculate portfolio metrics
+portfolio_variance = portfolio_variance(annual_returns)
+portfolio_sharpe_ratio = sharpe_ratio(daily_returns)
 
-# Drop rows with NaN values
-daily_returns = daily_returns.dropna()
+# Display results
+print(f"Portfolio Variance: {portfolio_variance}")
+print(f"Portfolio Sharpe Ratio: {portfolio_sharpe_ratio}")
 
-# Function to calculate monthly returns from daily returns
-def calc_monthly_returns(daily_returns):
-    monthly = np.exp(daily_returns.groupby(lambda date: date.month).sum())-1
-    return monthly
-
-# Calculate monthly returns from daily returns
-month_returns = calc_monthly_returns(daily_returns)
-
-# Function to calculate annual returns from daily returns
-def calc_annual_returns(daily_returns):
-    grouped = np.exp(daily_returns.groupby(lambda date: date.year).sum())-1
-    return grouped
-
-# Calculate annual returns from daily returns
-annual_returns = calc_annual_returns(daily_returns)
-
-# Function to calculate portfolio variance
-def calc_portfolio_var(returns, weights=None):
-    if weights is None:
-        weights = np.ones(returns.columns.size) / returns.columns.size
-    sigma = np.cov(returns.T, ddof=0)
-    var = (weights * sigma * weights.T).sum()
-    return var
-
-# Calculate portfolio variance from annual returns
-portfolio_var = calc_portfolio_var(annual_returns)
-
-# Function to calculate Sharpe ratio
-def calc_sharpe_ratio(returns, weights=None, risk_free_rate=0.001):
-    n = returns.columns.size
-    if weights is None: 
-        weights = np.ones(n)/n
-    var = calc_portfolio_var(returns, weights)
-    means = returns.mean()
-    sharpe_ratio = (means.dot(weights) - risk_free_rate) / np.sqrt(var)
-    return sharpe_ratio
-
-# Calculate Sharpe ratio from daily returns
-sharpe_ratio = calc_sharpe_ratio(daily_returns)
+# Plot historical prices
+plt.figure(figsize=(10, 6))
+historical_prices.plot()
+plt.title("Historical Prices")
+plt.xlabel("Date")
+plt.ylabel("Adjusted Closing Price")
+plt.legend(symbols)
+plt.show()
