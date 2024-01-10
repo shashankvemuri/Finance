@@ -1,113 +1,77 @@
-import yfinance
+import yfinance as yf
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import ttest_ind
 import datetime as dt
+from scipy.stats import ttest_ind
 
-# Define the stock symbol and the number of days forward
+# Define stock symbol and historical data range
 symbol = "TSLA"
-days_forward = 10
-
-# Define the number of years of historical data to use
 num_of_years = 10
-start_date = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
+start_date = dt.datetime.now() - dt.timedelta(days=365.25 * num_of_years)
 end_date = dt.datetime.now()
 
-# Set up the plot size and font size
-plt.rcParams['figure.figsize'] = [15, 7]
-plt.rc('font', size=14)
+# Fetch stock data using yfinance
+data = yf.download(symbol, start=start_date, end=end_date)
 
-# Create a random dataset with noise
-np.random.seed(0)
-y = np.arange(0, 100, 1) + np.random.normal(0, 10, 100)
+# Calculate Simple Moving Averages (SMAs) for different periods
+data['SMA_20'] = data['Close'].rolling(window=20).mean()
+data['SMA_50'] = data['Close'].rolling(window=50).mean()
+data['SMA_200'] = data['Close'].rolling(window=200).mean()
 
-# Calculate the simple moving average (SMA) of the random dataset
-sma = pd.Series(y).rolling(20).mean()
-
-# Get the historical data of the stock from Yahoo Finance API
-ticker = yfinance.Ticker(symbol)
-data = ticker.history(interval="1d", start='2010-01-01', end=end_date)
-
-# Plot the historical stock price and its SMAs
-plt.plot(data['Close'], label=f'{symbol}')
-plt.plot(data['Close'].rolling(20).mean(), label="20-periods SMA")
-plt.plot(data['Close'].rolling(50).mean(), label="50-periods SMA")
-plt.plot(data['Close'].rolling(200).mean(), label="200-periods SMA")
-
-# Set the plot title, labels, and limits
-plt.legend()
-plt.xlim((dt.date(2019, 1, 1), dt.date(2020, 6, 15)))
-plt.ylim((100, 250))
-plt.title('Stock Price and SMAs')
+# Plotting stock price and its SMAs
+plt.figure(figsize=[15, 7])
+plt.plot(data['Close'], label='Close Price')
+plt.plot(data['SMA_20'], label='20-period SMA')
+plt.plot(data['SMA_50'], label='50-period SMA')
+plt.plot(data['SMA_200'], label='200-period SMA')
+plt.title(f'{symbol} Stock Price and SMAs')
 plt.xlabel('Date')
 plt.ylabel('Price')
+plt.legend()
 plt.show()
 
-# Get the historical data of the stock from Yahoo Finance API
-ticker = yfinance.Ticker(symbol)
-data = ticker.history(interval="1d", start=start_date, end=end_date)
+# Analysis to find the best SMA for predicting future returns
+days_forward = 10
+results = []
 
-# Add a column for the forward close price and calculate the forward return
-data['Forward Close'] = data['Close'].shift(-days_forward)
-data['Forward Return'] = (data['Forward Close'] - data['Close']) / data['Close']
-
-result = []
-train_size = 0.6
-
-# Loop through different SMA lengths to find the best one for predicting the forward return
+# Testing different SMA lengths
 for sma_length in range(20, 500):
-    # Calculate the SMA of the stock price and add a binary input based on whether the price is above or below the SMA
     data['SMA'] = data['Close'].rolling(sma_length).mean()
-    data['input'] = [int(x) for x in data['Close'] > data['SMA']]
+    data['Position'] = data['Close'] > data['SMA']
+    data['Forward Close'] = data['Close'].shift(-days_forward)
+    data['Forward Return'] = (data['Forward Close'] - data['Close']) / data['Close']
+    
+    # Splitting into training and test datasets
+    train_data = data[:int(0.6 * len(data))]
+    test_data = data[int(0.6 * len(data)):]
+    
+    # Calculating average forward returns
+    train_return = train_data[train_data['Position']]['Forward Return'].mean()
+    test_return = test_data[test_data['Position']]['Forward Return'].mean()
+    
+    # Statistical test
+    p_value = ttest_ind(train_data[train_data['Position']]['Forward Return'],
+                        test_data[test_data['Position']]['Forward Return'],
+                        equal_var=False)[1]
+    
+    results.append({'SMA Length': sma_length, 
+                    'Train Return': train_return, 
+                    'Test Return': test_return, 
+                    'p-value': p_value})
 
-    # Drop rows with missing values
-    df = data.dropna()
+# Sorting results and printing the best SMA
+best_result = sorted(results, key=lambda x: x['Train Return'], reverse=True)[0]
+print(f"Best SMA Length: {best_result['SMA Length']}")
+print(f"Train Return: {best_result['Train Return']:.4f}")
+print(f"Test Return: {best_result['Test Return']:.4f}")
+print(f"p-value: {best_result['p-value']:.4f}")
 
-    # Split the data into training and test sets
-    training = df.head(int(train_size * df.shape[0]))
-    test = df.tail(int((1 - train_size) * df.shape[0]))
-
-    # Calculate the mean forward return for the training and test sets
-    tr_returns = training[training['input'] == 1]['Forward Return']
-    test_returns = test[test['input'] == 1]['Forward Return']
-    meadays_forward_return_training = tr_returns.mean()
-    meadays_forward_return_test = test_returns.mean()
-
-    # Calculate the p-value of the difference in means between the training and test sets
-    pvalue = ttest_ind(tr_returns,test_returns,equal_var=False)[1]
-
-    result.append({
-        f'Best SMA for {days_forward} days forward':sma_length,
-        'Training Forward Return': meadays_forward_return_training,
-        'Test Forward Return': meadays_forward_return_test,
-        'p-value':pvalue
-    })
-
-# Sort result by training forward return
-result.sort(key = lambda x : -x['Training Forward Return'])
-
-# Print each return %
-for key, value in result[0].items():
-    if key == "Training Forward Return":
-        value = str(round(value, 4) * 100) + '%'
-        print (key + ':', value)
-    elif key == "Test Forward Return":
-        value = str(round(value, 4) * 100) + '%'
-        print (key + ':', value)
-    else:
-        print (key + ':', value)
-        
-# Display best SMA
-best_sma = result[0][f'Best SMA for {days_forward} days forward']
-data['SMA'] = data['Close'].rolling(best_sma).mean()
-
-# Show Best SMA on stock
-plt.subplots()
-plt.gcf()
-plt.plot(data['Close'],label=symbol)
-plt.plot(data['SMA'],label = "{} periods SMA".format(best_sma))
-plt.title('')
+# Plotting the best SMA
+data['Best SMA'] = data['Close'].rolling(best_result['SMA Length']).mean()
+plt.figure(figsize=[15, 7])
+plt.plot(data['Close'], label='Close Price')
+plt.plot(data['Best SMA'], label=f"{best_result['SMA Length']} periods SMA")
+plt.title(f'{symbol} Stock Price and Best SMA')
 plt.xlabel('Date')
 plt.ylabel('Price')
 plt.legend()
