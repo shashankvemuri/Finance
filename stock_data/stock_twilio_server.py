@@ -1,4 +1,4 @@
-# Import dependencies
+# Import necessary libraries
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import pandas_datareader.data as pdr
@@ -6,69 +6,73 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import pandas as pd
 
+# Initialize Flask app
 app = Flask(__name__)
 
+# Define route for incoming SMS messages
 @app.route('/sms', methods=['POST'])
 def sms():
     try:
-        # Get request parameters
+        # Retrieve sender's number and message content
         number = request.form['From']
         message_body = request.form['Body']
         
-        # Initialize Twilio messaging response
+        # Create a Twilio MessagingResponse object
         resp = MessagingResponse()
 
-        # Get stock symbol from message body
+        # Extract stock symbol from the message body
         stock_symbol = message_body.upper()
         
-        # Get live price of the stock
+        # Fetch the latest adjusted close price of the stock
         df = pdr.get_data_yahoo(stock_symbol)
-        price = df['Adj Close'][-1]
-        price = round(price, 2)
+        price = round(df['Adj Close'][-1], 2)
         
-        # Calculate buy and short targets
+        # Calculate buy and short targets using predetermined percentages
         avg_gain = 15
         avg_loss = 5
-        
         max_stop_buy = round(price * ((100 - avg_loss) / 100), 2)
         target_1r_buy = round(price * ((100 + avg_gain) / 100), 2)
-        target_2r_buy = round(price * ((100 + (2 * avg_gain)) / 100), 2)
-        target_3r_buy = round(price * ((100 + (3 * avg_gain)) / 100), 2)
-        
         max_stop_short = round(price * ((100 + avg_loss) / 100), 2)
         target_1r_short = round(price * ((100 - avg_gain) / 100), 2)
+
+        # Additional target calculations
+        target_2r_buy = round(price * ((100 + (2 * avg_gain)) / 100), 2)
+        target_3r_buy = round(price * ((100 + (3 * avg_gain)) / 100), 2)
         target_2r_short = round(price * ((100 - (2 * avg_gain)) / 100), 2)
         target_3r_short = round(price * ((100 - (3 * avg_gain)) / 100), 2)
 
+        # Calculate the percentage change of the stock price
         change = str(round(((price - price) / price) * 100, 4)) + '%'
         
-        # Scrape stock data from finviz.com
-        url = f"https://finviz.com/screener.ashx?v=152&ft=4&t={stock_symbol}&ar=180&c=1,2,3,4,5,6,7,14,17,18,23,26,27,28,29,42,43,44,45,46,47,48,49,51,52,53,54,57,58,59,60,62,63,64,67,68,69"
+        # Scrape and parse stock data from finviz.com
+        url = f"https://finviz.com/screener.ashx?v=152&ft=4&t={stock_symbol}"
         req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(req).read()
         html = BeautifulSoup(webpage, "html.parser")
 
+        # Convert scraped HTML to a pandas DataFrame
         stocks = pd.read_html(str(html))[-2]
-        stocks['Price'] = [f'{price}']
-        stocks['Change'] = [f'{change}']
-        stocks['Risk 1 Buy'] = [f'{target_1r_buy}']
-        stocks['Risk 2 Buy'] = [f'{target_2r_buy}']
-        stocks['Risk 3 Buy'] = [f'{target_3r_buy}']
-        stocks['Max Stop Buy'] = [f'{max_stop_buy}']
-        stocks['Risk 1 Short'] = [f'{target_1r_short}']
-        stocks['Risk 2 Short'] = [f'{target_2r_short}']
-        stocks['Risk 3 Short'] = [f'{target_3r_short}']
-        stocks['Max Stop Short'] = [f'{max_stop_short}']
+        # Update DataFrame with calculated data
+        stocks.update({'Price': price, 'Change': change, 
+                       'Risk 1 Buy': target_1r_buy, 'Risk 2 Buy': target_2r_buy,
+                       'Risk 3 Buy': target_3r_buy, 'Max Stop Buy': max_stop_buy,
+                       'Risk 1 Short': target_1r_short, 'Risk 2 Short': target_2r_short,
+                       'Risk 3 Short': target_3r_short, 'Max Stop Short': max_stop_short})
+
+        # Format the message with stock information
         message = "\n"
         for attr, val in zip(stocks.columns, stocks.iloc[0]):
-            message=message + f"{attr} : {val}\n"
+            message += f"{attr} : {val}\n"
 
+        # Send the formatted message as a response
         resp.message(message)
         return str(resp)
     
     except Exception as e:
-        resp.message(f'\n{e}')
+        # Handle exceptions and send error message as response
+        resp.message(f'\nError: {e}')
         return str(resp)
 
+# Run the Flask app
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
