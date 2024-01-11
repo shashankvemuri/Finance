@@ -1,39 +1,41 @@
-# Import dependencies
 import pandas_datareader.data as pdr
 import yfinance as yf
 import datetime as dt
-import pandas as pd
 import sys
 import os
 parent_dir = os.path.dirname(os.getcwd())
 sys.path.append(parent_dir)
-import tickers as ti
+import tickers as ti  # Import custom module to get S&P 500 tickers
 
-# Set up Yahoo Finance API
+# Override the default pandas_datareader method to use Yahoo Finance as the data source
 yf.pdr_override()
 
-# Get S&P500 tickers from Yahoo Finance
+# Obtain a list of S&P 500 ticker symbols
 tickers = ti.tickers_sp500()
 
-# Replace any periods in ticker names with hyphens
+# Replace any periods in ticker symbols with hyphens for Yahoo Finance compatibility
 tickers = [item.replace('.', '-') for item in tickers]
 
-# Set number of years of historical data to retrieve
+# Define the number of years to look back for historical data
 num_of_years = 10
 
-# Calculate start date for retrieving historical data
-start = dt.date.today() - dt.timedelta(days=int(365.25*num_of_years))
+# Calculate the start date based on the desired number of years of data
+start = dt.date.today() - dt.timedelta(days=int(365.25 * num_of_years))
 
-# Loop through tickers and retrieve historical data using Yahoo Finance API
+# Loop through each ticker symbol to retrieve historical data
 for ticker in tickers:
     try:
+        # Fetch historical data for the ticker from Yahoo Finance
         df = pdr.get_data_yahoo(ticker, start)
 
-        # Save historical data to a CSV file
+        # Define the file path to save the historical data in CSV format
         output_path = f'{ticker}.csv'
         df.to_csv(output_path)
 
+        # Print a message indicating successful data retrieval and saving
         print(f'{ticker} historical data saved to {output_path}')
-    except:
-        # If an error occurs, skip to the next ticker
+
+    except Exception as e:
+        # Print an error message and skip to the next ticker if an error occurs
+        print(f"Error fetching data for {ticker}: {e}")
         continue
