@@ -1,23 +1,33 @@
-# Import dependencies
+# Importing necessary libraries
 import yfinance as yf
 import matplotlib.pyplot as plt
 
-# Define the stock symbol
-symbol = "NKE"
+# Function to download intraday data for a given stock symbol
+def download_intraday_data(stock_symbol):
+    data = yf.download(tickers=stock_symbol, period="1d", interval="1m")
+    return data
 
-# Download the intraday data for the stock
-data = yf.download(tickers=symbol, period="1d", interval="1m")
+# Function to plot close prices of the stock
+def plot_close_prices(stock_data, stock_symbol):
+    close_prices = stock_data['Close']
+    
+    # Creating the plot
+    fig, ax = plt.subplots()
+    ax.plot(close_prices)
+    ax.set_title(f'Price for {stock_symbol}')
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Price')
+    plt.show()
 
-# Print the last 5 rows of the data
-print(data.tail())
+# Main script execution
+if __name__ == "__main__":
+    symbol = "NKE"  # Define the stock symbol
 
-# Extract the close prices from the data
-close_prices = data['Close']
+    # Downloading the intraday data
+    intraday_data = download_intraday_data(symbol)
 
-# Create a plot of the close prices
-fig, ax = plt.subplots()
-ax.plot(close_prices)
-ax.set_title('Price for {}'.format(symbol))
-ax.set_xlabel('Time')
-ax.set_ylabel('Price')
-plt.show()
+    # Printing the last 5 rows of the data
+    print(intraday_data.tail())
+
+    # Plotting the close prices
+    plot_close_prices(intraday_data, symbol)
