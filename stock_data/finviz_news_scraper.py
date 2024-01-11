@@ -1,37 +1,32 @@
-# Import dependencies
 import pandas as pd
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen
-from pandasgui import show
+from datetime import datetime
 
 # Set up scraper
 url = "https://finviz.com/news.ashx"
 req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
 webpage = urlopen(req).read()
-html = soup(webpage, "html.parser")
+html_content = soup(webpage, "html.parser")
 
-# Define function to scrape and process news
-def scrape_news(html, idx):
+# Function to scrape and process news from Finviz
+def scrape_news(html_content, news_index):
     try:
-        news = pd.read_html(str(html))[idx]
-        news.columns = ["0", "Time", "Headlines"]
-        news = news.drop(columns=["0"])
-        news = news.set_index("Time")
-        return news
+        # Extract news table from HTML content
+        news_table = pd.read_html(str(html_content))[news_index]
+        # Set column names and drop unnecessary columns
+        news_table.columns = ["0", "DateTime", "Headlines"]
+        news_table = news_table.drop(columns=['0'])
+        news_table = news_table.set_index('DateTime')
+        # Set 'Date' as the index column
+        return news_table
     except Exception as e:
-        print(f"Error: {e}")
-        return None
+        # Return error message if scraping fails
+        return pd.DataFrame({'Error': [str(e)]})
 
-# Scrape and show general news
-news_df = scrape_news(html, 5)
-if news_df is not None:
-    print("\nGeneral News: ")
-    print(news_df)
-    show(news_df)
+# Scrape and print general and blog news
+print("\nGeneral News:")
+print(scrape_news(html_content, 3))
 
-# Scrape and show blog news
-blog_news_df = scrape_news(html, 6)
-if blog_news_df is not None:
-    print("\nBlog News: ")
-    print(blog_news_df)
-    show(blog_news_df)
+print("\nBlog News:")
+print(scrape_news(html_content, 4))
