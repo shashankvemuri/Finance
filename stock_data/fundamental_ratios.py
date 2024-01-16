@@ -4,42 +4,39 @@ from pandas_datareader import data as pdr
 import yfinance as yf
 from config import financial_model_prep
 
-# Set the Yahoo Finance API key
+# Set the Yahoo Finance API override
 yf.pdr_override()
+
+# Get API key from config
 api_key = financial_model_prep()
 
-# Define a list of stocks to fetch financial data for
+# Define a list of stock tickers
 ticker_list = ['TMUSR', 'AAPL', 'MSFT', 'AMZN', 'FB', 'GOOGL', 'GOOG', 'INTC', 'NVDA', 'ADBE',
                'PYPL', 'CSCO', 'NFLX', 'PEP', 'TSLA']
 
-# Download financial indicators data and output as Excel files for each stock
+# Download and save financial data for each stock
 for ticker in ticker_list:
-    # Get key metrics
-    key_metrics_annually = fa.key_metrics(ticker, api_key, period="annual")
-    # Save key metrics data to an Excel file
-    with pd.ExcelWriter(f'{ticker}_key_metrics.xlsx') as writer:
-        key_metrics_annually.to_excel(writer, ticker)
+    # Get key metrics and financial ratios
+    key_metrics = fa.key_metrics(ticker, api_key, period="annual")
+    financial_ratios = fa.financial_ratios(ticker, api_key, period="annual")
 
-    # Get financial ratios
-    financial_ratios_annually = fa.financial_ratios(ticker, api_key, period="annual")
-    # Save financial ratios data to an Excel file
-    with pd.ExcelWriter(f'{ticker}_financial_ratios.xlsx') as writer:
-        financial_ratios_annually.to_excel(writer, ticker)
+    # Save data to Excel files
+    key_metrics.to_excel(f'{ticker}_key_metrics.xlsx')
+    financial_ratios.to_excel(f'{ticker}_financial_ratios.xlsx')
 
-# Download stock prices for the specified date range
-data = pdr.get_data_yahoo(ticker_list, start="2017-01-01")
-price = data.loc[:, 'Close']
+# Download stock price data for a specified date range
+start_date = "2017-01-01"
+stock_prices = pdr.get_data_yahoo(ticker_list, start=start_date)['Close']
+
 # Save stock prices data to an Excel file
-price.to_excel(f'{ticker}_price.xlsx')
+stock_prices.to_excel('stock_prices.xlsx')
 
-# Print key metrics
-print ('Key Metrics: ')
-print (key_metrics_annually)
+# Print the latest data for each category
+print('Key Metrics for last ticker: ')
+print(key_metrics)
 
-# Print financial ratios
-print ('Financial Ratios: ')
-print (financial_ratios_annually)
+print('Financial Ratios for last ticker: ')
+print(financial_ratios)
 
-# Print price history
-print ('Price History: ')
-print (price)
+print('Price History for tickers since', start_date, ':')
+print(stock_prices)

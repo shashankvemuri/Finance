@@ -1,96 +1,67 @@
-# Import dependencies
 import pandas as pd
 import requests
 import datetime
 import calendar
 
-# set pandas option to display all columns
+# Set pandas option to display all columns
 pd.set_option('display.max_columns', None)
 
 class DividendCalendar:
-    # class attributes
-    calendars = [] # store all calendar DataFrames created
-    url = 'https://api.nasdaq.com/api/calendar/dividends'
-    hdrs = {
-        'Accept': 'text/plain, */*',
-        'DNT': "1",
-        'Origin': 'https://www.nasdaq.com/',
-        'Sec-Fetch-Mode': 'cors',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0)'
-    }
-
     def __init__(self, year, month):
-        # instance attributes
-        self.year = int(year)
-        self.month = int(month)
+        # Initialize with the year and month for the dividend calendar
+        self.year = year
+        self.month = month
+        self.url = 'https://api.nasdaq.com/api/calendar/dividends'
+        self.hdrs = {
+            'Accept': 'text/plain, */*',
+            'DNT': "1",
+            'Origin': 'https://www.nasdaq.com/',
+            'Sec-Fetch-Mode': 'cors',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0)'
+        }
+        self.calendars = []  # Store all calendar DataFrames
 
     def date_str(self, day):
-        # return a string representation of the date in the format YYYY-MM-DD
-        date_obj = datetime.date(self.year, self.month, day)
-        date_str = date_obj.strftime(format='%Y-%m-%d')
-        return date_str
+        # Convert a day number into a formatted date string
+        return datetime.date(self.year, self.month, day).strftime('%Y-%m-%d')
 
     def scraper(self, date_str):
-        # send GET request to the dividend calendar API and return a JSON dictionary
-        params = {'date': date_str}
-        dictionary = requests.get(self.url, headers=self.hdrs, params=params).json()
-        return dictionary
+        # Scrape dividend data from NASDAQ API for a given date
+        response = requests.get(self.url, headers=self.hdrs, params={'date': date_str})
+        return response.json()
 
-    def dict_to_df(self, dicti):
-        # convert a JSON dictionary into a pandas DataFrame and append it to calendars list
-        rows = dicti.get('data').get('calendar').get('rows')
-        calendar = pd.DataFrame(rows)
-        self.calendars.append(calendar)
-        return calendar
+    def dict_to_df(self, dictionary):
+        # Convert the JSON data from the API into a pandas DataFrame
+        rows = dictionary.get('data').get('calendar').get('rows', [])
+        calendar_df = pd.DataFrame(rows)
+        self.calendars.append(calendar_df)
+        return calendar_df
 
     def calendar(self, day):
-        # return a dictionary of dividend calendar data for a specific day
-        day = int(day)
+        # Fetch dividend data for a specific day and convert it to DataFrame
         date_str = self.date_str(day)
         dictionary = self.scraper(date_str)
-        self.dict_to_df(dictionary)
-        return dictionary
+        return self.dict_to_df(dictionary)
 
 def get_dividends(year, month):
     try:
-        year = int(year)
-        month = int(month)
-
-        month_name = datetime.date(1900, month, 1).strftime('%B')
-
+        # Create an instance of DividendCalendar for the given year and month
+        dc = DividendCalendar(year, month)
         days_in_month = calendar.monthrange(year, month)[1]
-        soon = DividendCalendar(year, month)
 
-        # use map to apply the calendar method to each day of the month
-        function = lambda days: soon.calendar(days)
-        iterator = list(range(1, days_in_month+1))
-        objects = list(map(function, iterator))
+        # Iterate through each day of the month and scrape dividend data
+        for day in range(1, days_in_month + 1):
+            dc.calendar(day)
 
-        # concatenate all DataFrames into a single DataFrame
-        concat_df = pd.concat(soon.calendars)
-        final_df = concat_df.dropna(how='any')
-
-        # set the index to companyName and then reset it
-        final_df = final_df.set_index('companyName')
-        final_df = final_df.reset_index()
-
-        # drop the announcement_Date column and rename columns for clarity
-        final_df = final_df.drop(columns=['announcement_Date'])
-        final_df.columns = [
-            'Company Name',
-            'Ticker',
-            'Dividend Date',
-            'Payment Date',
-            'Record Date',
-            'Dividend Rate',
-            'Annual Rate'
-        ]
-
-        # sort the DataFrame by Annual Rate and Dividend Date, drop duplicates
-        final_df = final_df.sort_values(['Annual Rate', 'Dividend Date'], ascending=[False, False])
-        final_df = final_df.drop_duplicates()
-        return final_df
-
+        # Combine all the scraped data into a single DataFrame
+        concat_df = pd.concat(dc.calendars).dropna(how='any')
+        concat_df = concat_df.set_index('companyName').reset_index()
+        concat_df = concat_df.drop(columns=['announcement_Date'])
+        concat_df.columns = ['Company Name', 'Ticker', 'Dividend Date', 'Payment Date', 
+                             'Record Date', 'Dividend Rate', 'Annual Rate']
+        concat_df = concat_df.sort_values(['Annual Rate', 'Dividend Date'], ascending=[False, False])
+        concat_df = concat_df.drop_duplicates()
+        return concat_df
     except Exception as e:
         return e
 

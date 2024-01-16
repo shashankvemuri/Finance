@@ -1,67 +1,68 @@
-# Import necessary libraries
-from pandas_datareader import DataReader
+from pandas_datareader import data as pdr
 import numpy as np
 import pandas as pd
 import datetime
 from socket import gaierror
 from pandas_datareader._utils import RemoteDataError
-import sys
-import os
-parent_dir = os.path.dirname(os.getcwd())
-sys.path.append(parent_dir)
 import tickers as ti
 
-# Define risk-free return rate
-risk_free_return = 0.02
+# Fetches stock data for a given ticker.
+def get_stock_data(ticker, start, end):
+    return pdr.DataReader(ticker, 'yahoo', start, end)
 
-# Set pandas options for display
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
+# Calculates expected return using CAPM.
+def calculate_expected_return(stock, index, risk_free_return):
+    # Resample to monthly data
+    return_stock = stock.resample('M').last()['Adj Close']
+    return_index = index.resample('M').last()['Adj Close']
 
-# Get all tickers in NASDAQ stock exchange
-nasdaq_tickers = ti.tickers_nasdaq()
+    # Create DataFrame with returns
+    df = pd.DataFrame({'stock_close': return_stock, 'index_close': return_index})
+    df[['stock_return', 'index_return']] = np.log(df / df.shift(1))
+    df = df.dropna()
 
-# Define the ticker for index
-index_ticker = '^GSPC'
-
-# Define start and end date
-start = datetime.datetime.now() - datetime.timedelta(days=365)
-end = datetime.date.today()
-
-# List to hold all expected returns
-expected_returns = []
-
-# Loop through each ticker in NASDAQ and calculate expected returns
-for ticker in nasdaq_tickers:
-    try:
-        # Fetch stock and index data
-        stock = DataReader(ticker, 'yahoo', start, end)
-        index = DataReader(index_ticker, 'yahoo', start, end)
-        
-        # Resample to monthly data
-        return_s1 = stock.resample('M').last()
-        return_s2 = index.resample('M').last()
-            
-        # Create a dataframe to hold stock and index returns
-        dataframe = pd.DataFrame({'s_adjclose': return_s1['Adj Close'], 'm_adjclose': return_s2['Adj Close']}, index=return_s1.index)
-        dataframe[['s_returns', 'm_returns']] = np.log(dataframe[['s_adjclose', 'm_adjclose']] / dataframe[['s_adjclose', 'm_adjclose']].shift(1))
-        dataframe = dataframe.dropna()
-        
-        # Calculate beta and alpha using linear regression
-        covmat = np.cov(dataframe["s_returns"], dataframe["m_returns"])
-        beta = covmat[0,1] / covmat[1,1]
-        beta, alpha = np.polyfit(dataframe["m_returns"], dataframe["s_returns"], deg=1)
-        
-        # Calculate expected return using CAPM model
-        expected_return = risk_free_return + beta * (dataframe["m_returns"].mean() * 12 - risk_free_return)
-        
-        # Print expected return for each ticker
-        print('{}:'.format(ticker))
-        print("Expected Return: ", expected_return)
-        
-        # Append expected return to list
-        expected_returns.append(expected_return)
+    # Calculate beta and alpha
+    beta, alpha = np.polyfit(df['index_return'], df['stock_return'], deg=1)
     
-    except (KeyError, RemoteDataError, TypeError, gaierror) as e:
-        # Handle exceptions
-        print(e)
+    # Calculate expected return
+    expected_return = risk_free_return + beta * (df['index_return'].mean() * 12 - risk_free_return)
+    return expected_return
+
+def main():
+    # Risk-free return rate
+    risk_free_return = 0.02
+
+    # Define time period
+    start = datetime.datetime.now() - datetime.timedelta(days=365)
+    end = datetime.date.today()
+
+    # Get all tickers in NASDAQ
+    nasdaq_tickers = ti.tickers_nasdaq()
+
+    # Index ticker
+    index_ticker = '^GSPC'
+
+    # Fetch index data
+    try:
+        index_data = get_stock_data(index_ticker, start, end)
+    except RemoteDataError:
+        print("Failed to fetch index data.")
+        return
+
+    # Loop through NASDAQ tickers
+    for ticker in nasdaq_tickers:
+        try:
+            # Fetch stock data
+            stock_data = get_stock_data(ticker, start, end)
+
+            # Calculate expected return
+            expected_return = calculate_expected_return(stock_data, index_data, risk_free_return)
+
+            # Output expected return
+            print(f'{ticker}: Expected Return: {expected_return}')
+
+        except (RemoteDataError, gaierror):
+            print(f"Data not available for ticker: {ticker}")
+
+if __name__ == "__main__":
+    main()
