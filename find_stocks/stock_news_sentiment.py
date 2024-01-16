@@ -34,8 +34,6 @@ def sentiment_analysis(df):
 for ticker in tickers:
     news_df = fetch_news(ticker)
     news_df['Ticker'] = ticker
-    news_df['Date'] = pd.to_datetime(news_df['Datetime'].str.split(' ').str[0], errors='coerce').fillna(datetime.now().date())
-    news_df = news_df.drop(columns=['Datetime'])
     sentiment_df = sentiment_analysis(news_df)
     print('\nRecent News Headlines and Sentiment for {}: '.format(ticker))
     print(sentiment_df)

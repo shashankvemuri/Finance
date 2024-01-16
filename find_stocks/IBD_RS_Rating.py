@@ -10,54 +10,49 @@ parent_dir = os.path.dirname(os.getcwd())
 sys.path.append(parent_dir)
 import tickers as ti
 
-# Override yfinance API
+# Override yfinance API for pandas datareader
 yf.pdr_override()
 
-# Get tickers for all S&P 500 stocks and replace "." with "-" for compatibility with Yahoo Finance
+# Retrieve S&P 500 tickers and format for Yahoo Finance
 sp500_tickers = ti.tickers_sp500()
 sp500_tickers = [ticker.replace(".", "-") for ticker in sp500_tickers]
 
-# Define S&P 500 index
+# Set S&P 500 index ticker
 sp500_index = '^GSPC'
 
 # Define date range for stock data
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 end_date = datetime.date.today()
 
-# Create empty list to store relative returns for each stock
+# Initialize list for storing relative stock returns
 relative_returns = []
 
-# Retrieve historical price data for the S&P 500 index
+# Fetch and process S&P 500 historical data
 sp500_df = pdr.get_data_yahoo(sp500_index, start_date, end_date)
 sp500_df['Percent Change'] = sp500_df['Adj Close'].pct_change()
-sp500_returns = sp500_df['Percent Change'].cumprod()
-sp500_return = sp500_returns.iloc[-1]
+sp500_cumulative_return = sp500_df['Percent Change'].cumprod().iloc[-1]
 
-# Iterate over all S&P 500 stocks to calculate their relative returns relative to the S&P 500
+# Compute relative returns for each S&P 500 stock
 for ticker in sp500_tickers:
-    # Download historical data as CSV for each stock to speed up the process
-    stock_df = pdr.get_data_yahoo(ticker, start_date, end_date)
-    stock_df.to_csv(f'{ticker}.csv')
+    try:
+        # Download stock data
+        stock_df = pdr.get_data_yahoo(ticker, start_date, end_date)
+        stock_df['Percent Change'] = stock_df['Adj Close'].pct_change()
 
-    # Calculate percent change column
-    stock_df['Percent Change'] = stock_df['Adj Close'].pct_change()
+        # Calculate cumulative return with added emphasis on recent quarter
+        stock_cumulative_return = (stock_df['Percent Change'].cumprod().iloc[-1] * 2 + 
+                                   stock_df['Percent Change'].cumprod().iloc[-63]) / 3
 
-    # Calculate the relative return with double weight for the most recent quarter
-    stock_returns = stock_df['Percent Change'].cumprod()
-    stock_return = (stock_returns.iloc[-1] * 2 + stock_returns.iloc[-63]) / 3  # Double weight for the most recent quarter
+        # Calculate relative return compared to S&P 500
+        relative_return = round(stock_cumulative_return / sp500_cumulative_return, 2)
+        relative_returns.append(relative_return)
 
-    relative_return = round(stock_return / sp500_return, 2)
-    relative_returns.append(relative_return)
+        print(f'Ticker: {ticker}; Relative Return against S&P 500: {relative_return}')
+        time.sleep(1)  # Pause to prevent overloading server
+    except Exception as e:
+        print(f'Error processing {ticker}: {e}')
 
-    # Print relative return for each stock
-    print(f'Ticker: {ticker}; Relative Return against S&P 500: {relative_return}\n')
-
-    # Pause for 1 second to avoid overloading the server with requests
-    time.sleep(1)
-
-# Create dataframe with relative returns and corresponding Relative Strength (RS) rating
-rs_df = pd.DataFrame(list(zip(sp500_tickers, relative_returns)), columns=['Ticker', 'Relative Return'])
-rs_df['RS_Rating'] = rs_df.relative_return.rank(pct=True) * 100
-
-# Print RS ratings for all stocks
+# Create dataframe with relative returns and RS ratings
+rs_df = pd.DataFrame({'Ticker': sp500_tickers, 'Relative Return': relative_returns})
+rs_df['RS_Rating'] = rs_df['Relative Return'].rank(pct=True) * 100
 print(rs_df)
