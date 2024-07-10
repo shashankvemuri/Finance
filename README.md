@@ -1,7 +1,9 @@
 # Finance
 
 ## Introduction
-Welcome to 'Finance' - a comprehensive collection of over 150 Python programs designed for quantitative finance enthusiasts and professionals. This repository is your go-to resource for gathering, manipulating, and analyzing stock market data, leveraging the power of Python to unlock insights in the financial markets.
+Welcome! Finance is a collection of 150+ Python for Finance programs for gathering, manipulating, and analyzing stock market data.
+
+Below you will find more information about how the repository is organized as well as usage and setup instructions! 
 
 ## Organization
 Our repository is organized into several key sections:
