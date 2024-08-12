@@ -33,7 +33,7 @@ scipy==1.11.4
 seaborn==0.13.1
 selenium==4.16.0
 statsmodels==0.14.0
-streamlit==1.29.0
+streamlit==1.37.0
 ta==0.10.2
 tensorflow==2.15.0.post1
 textblob==0.17.1
