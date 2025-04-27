@@ -6,7 +6,6 @@ factor_analyzer==0.5.0
 fastai==2.7.13
 fbprophet==0.7.1
 Flask==2.2.2
-FundamentalAnalysis==0.2.13
 FundamentalAnalysis==0.3.1
 googletrans==3.0.0
 ipython==8.15.0
