@@ -14,7 +14,7 @@ lxml==4.9.3
 matplotlib==3.7.2
 mplfinance==0.12.10b0
 networkx==3.1
-nltk==3.9
+nltk==3.9.3
 numpy==1.24.3
 numpy_financial==1.0.0
 pandas==2.0.3
