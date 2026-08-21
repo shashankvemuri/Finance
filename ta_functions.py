@@ -1,11 +1,6 @@
 import pandas as pd
 import numpy as np
 import datetime as dt
-import pandas_datareader.data as pdr
-import yfinance as yf
-yf.pdr_override()
-import pandas as pd
-import numpy as np
 
 def SMA(data, timeperiod=14):
     """

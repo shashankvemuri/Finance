@@ -1,19 +1,16 @@
 import yfinance as yf
-import pandas_datareader.data as pdr
 import streamlit as st
 import datetime
 import matplotlib.pyplot as plt
-import ta
 import pandas as pd
 import requests
 import sys
 import os
-parent_dir = os.path.dirname(os.getcwd())
-sys.path.append(parent_dir)
-import ta_functions as ta
 
-# Override default pandas datareader's Yahoo Finance method
-yf.pdr_override()
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+repo_root = os.path.dirname(parent_dir)
+sys.path.append(repo_root)
+import ta_functions as ta
 
 # Streamlit web app title and description
 st.write(
@@ -42,8 +39,13 @@ symbol, start, end = user_input_features()
 start = pd.to_datetime(start)
 end = pd.to_datetime(end)
 
-# Download stock data from Yahoo Finance
-data = pdr.get_data_yahoo(symbol, start, end)
+# Download stock data from Yahoo Finance (yf.pdr_override was removed in yfinance 1.x)
+data = yf.download(symbol, start=start, end=end, auto_adjust=False, progress=False)
+if isinstance(data.columns, pd.MultiIndex):
+    data.columns = data.columns.get_level_values(0)
+if data.empty:
+    st.error(f"No price data returned for {symbol}. Check the ticker and date range.")
+    st.stop()
 
 # Display Adjusted Close Price
 st.header(f"Adjusted Close Price\n {symbol}")
