@@ -1,0 +1,31 @@
+name: Bug report
+description: Report an error or incorrect financial result.
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce
+      description: Include the command or a small code example, ticker, dates and relevant inputs. Remove credentials and private data.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: For numerical results, include the expected value and how you calculated it.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the complete traceback or incorrect output.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include your operating system, Python release, installation command and relevant installed packages. Include the commit if known.
+    validations:
+      required: true
