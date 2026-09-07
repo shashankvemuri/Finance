@@ -1,0 +1,1100 @@
+{
+  "technical_indicators/SMA.py": {
+    "concept": "Simple moving average",
+    "destination": "finance.indicators.sma",
+    "decision": "merge",
+    "reason": "Pure rolling calculation; one canonical implementation"
+  },
+  "technical_indicators/EMA.py": {
+    "concept": "Exponential averages of prices or volume",
+    "destination": "finance.indicators.ema, ewma",
+    "decision": "merge",
+    "reason": "Consistent recursive EMA and documented warmup; any numeric series can be averaged"
+  },
+  "technical_indicators/EWMA.py": {
+    "concept": "Exponential averages of prices or volume",
+    "destination": "finance.indicators.ema, ewma",
+    "decision": "merge",
+    "reason": "Consistent recursive EMA and documented warmup; any numeric series can be averaged"
+  },
+  "technical_indicators/EMA_volume.py": {
+    "concept": "Exponential averages of prices or volume",
+    "destination": "finance.indicators.ema, ewma",
+    "decision": "merge",
+    "reason": "Consistent recursive EMA and documented warmup; any numeric series can be averaged"
+  },
+  "technical_indicators/WMA.py": {
+    "concept": "Linearly weighted moving average",
+    "destination": "finance.indicators.wma",
+    "decision": "merge",
+    "reason": "Correct weights 1..N; remove zero warmup and off-by-one lag"
+  },
+  "technical_indicators/linear_weighted_moving_average.py": {
+    "concept": "Linearly weighted moving average",
+    "destination": "finance.indicators.wma",
+    "decision": "merge",
+    "reason": "Correct weights 1..N; remove zero warmup and off-by-one lag"
+  },
+  "technical_indicators/WSMA.py": {
+    "concept": "Wilder/smoothed moving average",
+    "destination": "finance.indicators.smma",
+    "decision": "merge",
+    "reason": "SMA seed and recursive alpha=1/N; WSMA was mixing current price with a different EMA"
+  },
+  "technical_indicators/smoothed_moving_average.py": {
+    "concept": "Wilder/smoothed moving average",
+    "destination": "finance.indicators.smma",
+    "decision": "merge",
+    "reason": "SMA seed and recursive alpha=1/N; WSMA was mixing current price with a different EMA"
+  },
+  "technical_indicators/EWMA_Double.py": {
+    "concept": "Double exponential moving average",
+    "destination": "finance.indicators.dema",
+    "decision": "merge",
+    "reason": "Consolidate duplicate DEMA definitions"
+  },
+  "technical_indicators/double_exp_moving_avg.py": {
+    "concept": "Double exponential moving average",
+    "destination": "finance.indicators.dema",
+    "decision": "merge",
+    "reason": "Consolidate duplicate DEMA definitions"
+  },
+  "technical_indicators/EWMA_Triple.py": {
+    "concept": "Triple exponential moving average",
+    "destination": "finance.indicators.tema",
+    "decision": "merge",
+    "reason": "One coherent three-stage EMA with explicit warmup"
+  },
+  "technical_indicators/TRIMA.py": {
+    "concept": "Triangular moving average",
+    "destination": "finance.indicators.trima",
+    "decision": "merge",
+    "reason": "Use a window-length triangular kernel rather than two full-window SMAs"
+  },
+  "technical_indicators/hull_moving_average.py": {
+    "concept": "Hull moving average",
+    "destination": "finance.indicators.hma",
+    "decision": "merge",
+    "reason": "Fix unsupported timeperiod keyword and float window sizes"
+  },
+  "technical_indicators/GMMA.py": {
+    "concept": "GMMA and SMA/EMA ribbons",
+    "destination": "finance.indicators.ribbon; finance.strategies.ribbon_trend",
+    "decision": "merge",
+    "reason": "Parameterize windows; preserve short/long groups without copied calculations"
+  },
+  "technical_indicators/moving_average_ribbon.py": {
+    "concept": "GMMA and SMA/EMA ribbons",
+    "destination": "finance.indicators.ribbon; finance.strategies.ribbon_trend",
+    "decision": "merge",
+    "reason": "Parameterize windows; preserve short/long groups without copied calculations"
+  },
+  "technical_indicators/MA_high_low.py": {
+    "concept": "Moving averages of highs/lows",
+    "destination": "finance.indicators.sma(high), sma(low)",
+    "decision": "merge",
+    "reason": "Existing canonical SMA accepts any series; no duplicate module needed"
+  },
+  "technical_indicators/moving_average_high_low.py": {
+    "concept": "Moving averages of highs/lows",
+    "destination": "finance.indicators.sma(high), sma(low)",
+    "decision": "merge",
+    "reason": "Existing canonical SMA accepts any series; no duplicate module needed"
+  },
+  "technical_indicators/moving_average_envelopes.py": {
+    "concept": "Percentage moving-average envelopes",
+    "destination": "finance.indicators.envelopes",
+    "decision": "merge",
+    "reason": "Consolidate identical 2.5% envelope scripts"
+  },
+  "technical_indicators/moving_avg_env.py": {
+    "concept": "Percentage moving-average envelopes",
+    "destination": "finance.indicators.envelopes",
+    "decision": "merge",
+    "reason": "Consolidate identical 2.5% envelope scripts"
+  },
+  "technical_indicators/golden_death_cross.py": {
+    "concept": "Golden/death crosses and state signals",
+    "destination": "finance.strategies.moving_average, crossover",
+    "decision": "merge",
+    "reason": "Separate close-time decision from next-open execution"
+  },
+  "technical_indicators/RSI.py": {
+    "concept": "Relative Strength Index",
+    "destination": "finance.indicators.rsi",
+    "decision": "merge",
+    "reason": "Use Wilder smoothing and full index, rather than rolling-only gains/losses"
+  },
+  "technical_indicators/RSI_BollingerBands.py": {
+    "concept": "RSI with Bollinger visualization",
+    "destination": "finance.indicators.rsi, bollinger_bands; examples/plot_indicators.py",
+    "decision": "merge",
+    "reason": "Compose calculations in an optional plot example"
+  },
+  "technical_indicators/stochastic_fast.py": {
+    "concept": "Fast, slow, full stochastic oscillator",
+    "destination": "finance.indicators.stochastic",
+    "decision": "merge",
+    "reason": "Use rolling highs/lows rather than close extrema; parameterized K/D smoothing removes accidental extra smoothing"
+  },
+  "technical_indicators/stochastic_slow.py": {
+    "concept": "Fast, slow, full stochastic oscillator",
+    "destination": "finance.indicators.stochastic",
+    "decision": "merge",
+    "reason": "Use rolling highs/lows rather than close extrema; parameterized K/D smoothing removes accidental extra smoothing"
+  },
+  "technical_indicators/stochastic_full.py": {
+    "concept": "Fast, slow, full stochastic oscillator",
+    "destination": "finance.indicators.stochastic",
+    "decision": "merge",
+    "reason": "Use rolling highs/lows rather than close extrema; parameterized K/D smoothing removes accidental extra smoothing"
+  },
+  "technical_indicators/stochastic_RSI.py": {
+    "concept": "Stochastic RSI",
+    "destination": "finance.indicators.stochastic_rsi",
+    "decision": "merge",
+    "reason": "Explicit 0..100 scale and defined flat-window behavior"
+  },
+  "technical_indicators/MACD.py": {
+    "concept": "MACD, histogram, absolute price oscillator; typical/OHLC price averages",
+    "destination": "finance.indicators.macd, apo",
+    "decision": "merge",
+    "reason": "Correct fast-minus-slow convention; price averages are direct arithmetic on normalized bars"
+  },
+  "technical_indicators/absolute_price_oscillator.py": {
+    "concept": "MACD, histogram, absolute price oscillator; typical/OHLC price averages",
+    "destination": "finance.indicators.macd, apo",
+    "decision": "merge",
+    "reason": "Correct fast-minus-slow convention; price averages are direct arithmetic on normalized bars"
+  },
+  "technical_indicators/momentum.py": {
+    "concept": "Price momentum and rate of change",
+    "destination": "finance.indicators.momentum, roc",
+    "decision": "merge",
+    "reason": "Explicit price-unit momentum and percent ROC"
+  },
+  "technical_indicators/ROC.py": {
+    "concept": "Price momentum and rate of change",
+    "destination": "finance.indicators.momentum, roc",
+    "decision": "merge",
+    "reason": "Explicit price-unit momentum and percent ROC"
+  },
+  "technical_indicators/commodity_channel_index.py": {
+    "concept": "Commodity Channel Index",
+    "destination": "finance.indicators.cci",
+    "decision": "merge",
+    "reason": "Use same-window mean absolute deviation, not standard deviation or rolling deviations about changing means"
+  },
+  "technical_indicators/detrended_price_oscillator.py": {
+    "concept": "Detrended price oscillator",
+    "destination": "finance.indicators.dpo",
+    "decision": "merge",
+    "reason": "Causal trailing output; do not backdate centered chart values"
+  },
+  "technical_indicators/avg_directional_index.py": {
+    "concept": "Directional movement and ADX",
+    "destination": "finance.indicators.adx",
+    "decision": "merge",
+    "reason": "Mutually exclusive positive/negative DM; Wilder smoothing and explicit DI outputs"
+  },
+  "technical_indicators/true_strength_index.py": {
+    "concept": "True Strength Index",
+    "destination": "finance.indicators.tsi",
+    "decision": "merge",
+    "reason": "Consolidated double smoothing with safe zero denominator"
+  },
+  "technical_indicators/ultimate_oscillator.py": {
+    "concept": "Buying-pressure oscillator over 7/14/28 bars",
+    "destination": "finance.indicators.ultimate_oscillator",
+    "decision": "merge",
+    "reason": "Preserve 4/2/1 weighted range ratios"
+  },
+  "technical_indicators/aroon.py": {
+    "concept": "Aroon up/down and difference",
+    "destination": "finance.indicators.aroon",
+    "decision": "merge",
+    "reason": "N+1 observations for N-bar elapsed time; most recent extreme breaks ties"
+  },
+  "technical_indicators/aroon_oscillator.py": {
+    "concept": "Aroon up/down and difference",
+    "destination": "finance.indicators.aroon",
+    "decision": "merge",
+    "reason": "N+1 observations for N-bar elapsed time; most recent extreme breaks ties"
+  },
+  "technical_indicators/dynamic_momentum_index.py": {
+    "concept": "Volatility-adaptive RSI experiment",
+    "destination": "finance.indicators.dynamic_momentum_index",
+    "decision": "rewrite",
+    "reason": "Old code only calculated adaptive length; complete the oscillator with bounded 5..30 lengths, label experimental"
+  },
+  "technical_indicators/avg_true_range.py": {
+    "concept": "True range and ATR",
+    "destination": "finance.indicators.atr, true_range",
+    "decision": "merge",
+    "reason": "One Wilder ATR implementation with explicit first range"
+  },
+  "technical_indicators/realised_volatility.py": {
+    "concept": "Return volatility and rolling price dispersion",
+    "destination": "finance.indicators.realized_volatility, standard_deviation, variance",
+    "decision": "merge",
+    "reason": "Distinguish annualized fractional return volatility from price-unit dispersion"
+  },
+  "technical_indicators/standard_deviation_volatility.py": {
+    "concept": "Return volatility and rolling price dispersion",
+    "destination": "finance.indicators.realized_volatility, standard_deviation, variance",
+    "decision": "merge",
+    "reason": "Distinguish annualized fractional return volatility from price-unit dispersion"
+  },
+  "technical_indicators/variance_indicator.py": {
+    "concept": "Return volatility and rolling price dispersion",
+    "destination": "finance.indicators.realized_volatility, standard_deviation, variance",
+    "decision": "merge",
+    "reason": "Distinguish annualized fractional return volatility from price-unit dispersion"
+  },
+  "technical_indicators/relative_volatility_index.py": {
+    "concept": "Directional relative volatility",
+    "destination": "finance.indicators.relative_volatility_index",
+    "decision": "merge",
+    "reason": "Replace dispersion of gains/losses with smoothed directional standard deviation, explicit variant"
+  },
+  "technical_indicators/bollinger_bands.py": {
+    "concept": "Bollinger bands and bandwidth",
+    "destination": "finance.indicators.bollinger_bands",
+    "decision": "merge",
+    "reason": "Single calculation returns all bands and fractional bandwidth; population deviation convention"
+  },
+  "technical_indicators/bollinger_bandwidth.py": {
+    "concept": "Bollinger bands and bandwidth",
+    "destination": "finance.indicators.bollinger_bands",
+    "decision": "merge",
+    "reason": "Single calculation returns all bands and fractional bandwidth; population deviation convention"
+  },
+  "technical_indicators/keltners_channels.py": {
+    "concept": "Keltner EMA/ATR channel",
+    "destination": "finance.indicators.keltner",
+    "decision": "merge",
+    "reason": "Share EMA and Wilder ATR implementations"
+  },
+  "technical_indicators/donchain_channel.py": {
+    "concept": "Donchian rolling extrema channel",
+    "destination": "finance.indicators.donchian",
+    "decision": "merge",
+    "reason": "Pure trailing extrema; strategies shift breakout levels separately"
+  },
+  "technical_indicators/acceleration_bands.py": {
+    "concept": "Acceleration bands",
+    "destination": "finance.indicators.acceleration_bands",
+    "decision": "merge",
+    "reason": "Preserve high/low expansion formula"
+  },
+  "technical_indicators/price_channels.py": {
+    "concept": "Double-smoothed price momentum oscillator",
+    "destination": "finance.indicators.price_momentum_oscillator",
+    "decision": "merge",
+    "reason": "Actual script computes PMO, not price channels; preserve under accurate name"
+  },
+  "technical_indicators/super_trend.py": {
+    "concept": "ATR trailing trend bands",
+    "destination": "finance.indicators.supertrend",
+    "decision": "merge",
+    "reason": "Replace removed ix, chained assignments and invalid NaN iteration; explicit direction state"
+  },
+  "technical_indicators/VWAP.py": {
+    "concept": "Volume weighted average price and rolling VWAP",
+    "destination": "finance.indicators.vwap, vwma",
+    "decision": "merge",
+    "reason": "Separate session cumulative VWAP from rolling VWMA; remove off-by-one assignment"
+  },
+  "technical_indicators/TWAP.py": {
+    "concept": "Time weighted mean of equally spaced bars",
+    "destination": "finance.indicators.twap",
+    "decision": "merge",
+    "reason": "Document equal spacing; OHLC typical prices can be supplied explicitly"
+  },
+  "technical_indicators/volume_weighted_moving_average.py": {
+    "concept": "Rolling volume weighted mean",
+    "destination": "finance.indicators.vwma",
+    "decision": "merge",
+    "reason": "Correct numerator to full rolling price-volume sum"
+  },
+  "technical_indicators/MFI.py": {
+    "concept": "Money Flow Index",
+    "destination": "finance.indicators.mfi",
+    "decision": "merge",
+    "reason": "Classify flow by typical-price direction, not money-flow amount direction"
+  },
+  "technical_indicators/PVI.py": {
+    "concept": "Positive Volume Index and Price Volume Trend",
+    "destination": "finance.indicators.pvi, pvt",
+    "decision": "merge",
+    "reason": "PVT must cumulatively sum signed flow, not difference it"
+  },
+  "technical_indicators/PVT.py": {
+    "concept": "Positive Volume Index and Price Volume Trend",
+    "destination": "finance.indicators.pvi, pvt",
+    "decision": "merge",
+    "reason": "PVT must cumulatively sum signed flow, not difference it"
+  },
+  "technical_indicators/accum_dist_line.py": {
+    "concept": "Accumulation/distribution and Chaikin metrics",
+    "destination": "finance.indicators.accumulation_distribution, chaikin_money_flow, chaikin_oscillator",
+    "decision": "merge",
+    "reason": "Shared flow calculations and explicit zero-range behavior"
+  },
+  "technical_indicators/chaikin_money_flow.py": {
+    "concept": "Accumulation/distribution and Chaikin metrics",
+    "destination": "finance.indicators.accumulation_distribution, chaikin_money_flow, chaikin_oscillator",
+    "decision": "merge",
+    "reason": "Shared flow calculations and explicit zero-range behavior"
+  },
+  "technical_indicators/chaikin_oscillator.py": {
+    "concept": "Accumulation/distribution and Chaikin metrics",
+    "destination": "finance.indicators.accumulation_distribution, chaikin_money_flow, chaikin_oscillator",
+    "decision": "merge",
+    "reason": "Shared flow calculations and explicit zero-range behavior"
+  },
+  "technical_indicators/force_index.py": {
+    "concept": "Force, Ease of Movement and candle balance",
+    "destination": "finance.indicators.force_index, ease_of_movement, balance_of_power",
+    "decision": "merge",
+    "reason": "Pure aligned calculations with volume/range handling"
+  },
+  "technical_indicators/ease_of_movement.py": {
+    "concept": "Force, Ease of Movement and candle balance",
+    "destination": "finance.indicators.force_index, ease_of_movement, balance_of_power",
+    "decision": "merge",
+    "reason": "Pure aligned calculations with volume/range handling"
+  },
+  "technical_indicators/balance_of_power.py": {
+    "concept": "Force, Ease of Movement and candle balance",
+    "destination": "finance.indicators.force_index, ease_of_movement, balance_of_power",
+    "decision": "merge",
+    "reason": "Pure aligned calculations with volume/range handling"
+  },
+  "technical_indicators/volume_price_confirmation_Indicator.py": {
+    "concept": "Volume Price Confirmation Indicator",
+    "destination": "finance.indicators.vpci",
+    "decision": "merge",
+    "reason": "Full-window VWMA numerator; volume multiplier uses volume averages instead of price averages"
+  },
+  "technical_indicators/beta_indicator.py": {
+    "concept": "Rolling beta, covariance, correlation",
+    "destination": "finance.indicators.beta, covariance, correlation",
+    "decision": "merge",
+    "reason": "Explicitly aligned inputs; return-based beta; no provider globals"
+  },
+  "technical_indicators/covariance.py": {
+    "concept": "Rolling beta, covariance, correlation",
+    "destination": "finance.indicators.beta, covariance, correlation",
+    "decision": "merge",
+    "reason": "Explicitly aligned inputs; return-based beta; no provider globals"
+  },
+  "technical_indicators/correlation_coeff.py": {
+    "concept": "Rolling beta, covariance, correlation",
+    "destination": "finance.indicators.beta, covariance, correlation",
+    "decision": "merge",
+    "reason": "Explicitly aligned inputs; return-based beta; no provider globals"
+  },
+  "technical_indicators/Z_Score_Indicator.py": {
+    "concept": "Price z-score",
+    "destination": "finance.indicators.zscore",
+    "decision": "merge",
+    "reason": "Trailing standardization prevents full-sample future leakage"
+  },
+  "technical_indicators/linear_regression.py": {
+    "concept": "Pairwise OLS, rolling fit and slope",
+    "destination": "finance.analytics.ols; finance.indicators.rolling_regression",
+    "decision": "merge",
+    "reason": "Separate descriptive whole-sample OLS from trailing bar-number regression; old rolling fit used future full-sample coefficients"
+  },
+  "technical_indicators/moving_linear_regression.py": {
+    "concept": "Pairwise OLS, rolling fit and slope",
+    "destination": "finance.analytics.ols; finance.indicators.rolling_regression",
+    "decision": "merge",
+    "reason": "Separate descriptive whole-sample OLS from trailing bar-number regression; old rolling fit used future full-sample coefficients"
+  },
+  "technical_indicators/linear_regression_slope.py": {
+    "concept": "Pairwise OLS, rolling fit and slope",
+    "destination": "finance.analytics.ols; finance.indicators.rolling_regression",
+    "decision": "merge",
+    "reason": "Separate descriptive whole-sample OLS from trailing bar-number regression; old rolling fit used future full-sample coefficients"
+  },
+  "technical_indicators/price_relative.py": {
+    "concept": "Relative price and its change",
+    "destination": "finance.indicators.relative_price; finance.analytics.returns",
+    "decision": "merge",
+    "reason": "Explicit aligned benchmark series"
+  },
+  "technical_indicators/geometric_return_indicator.py": {
+    "concept": "Geometric return",
+    "destination": "finance.indicators.geometric_return",
+    "decision": "merge",
+    "reason": "Old code geometrically averaged prices; compute per-bar geometric return instead"
+  },
+  "technical_indicators/ROI.py": {
+    "concept": "One-period returns and P&L",
+    "destination": "finance.analytics.returns, pnl",
+    "decision": "merge",
+    "reason": "Consolidate percentage-return aliases; fractional return convention"
+  },
+  "technical_indicators/candle_abs_returns.py": {
+    "concept": "One-period returns and P&L",
+    "destination": "finance.analytics.returns, pnl",
+    "decision": "merge",
+    "reason": "Consolidate percentage-return aliases; fractional return convention"
+  },
+  "technical_indicators/high_minus_low.py": {
+    "concept": "Candle range",
+    "destination": "Normalized OHLC high - low",
+    "decision": "merge",
+    "reason": "Direct arithmetic earns no separate function; preserve use in true_range and examples"
+  },
+  "technical_indicators/pivot_point.py": {
+    "concept": "Classic, Woodie, Camarilla, DeMark, Fibonacci pivots and CPR",
+    "destination": "finance.indicators.pivot_points",
+    "decision": "merge",
+    "reason": "Correct Camarilla parentheses; previous completed bar; ordered CPR boundaries; redundant R4/R5 arithmetic omitted"
+  },
+  "technical_indicators/central_pivot_range_cpr.py": {
+    "concept": "Classic, Woodie, Camarilla, DeMark, Fibonacci pivots and CPR",
+    "destination": "finance.indicators.pivot_points",
+    "decision": "merge",
+    "reason": "Correct Camarilla parentheses; previous completed bar; ordered CPR boundaries; redundant R4/R5 arithmetic omitted"
+  },
+  "technical_indicators/new_highs_new_lows.py": {
+    "concept": "Rolling extrema and universe new-high/new-low counts",
+    "destination": "finance.indicators.breadth, donchian",
+    "decision": "merge",
+    "reason": "Old 52 daily bars mislabeled 52 weeks and prices mislabeled stock counts; use explicit 252-bar counts"
+  },
+  "technical_indicators/breadth_indicator.py": {
+    "concept": "Advance/decline breadth, TRIN, McClellan, OBV, Chaikin, force",
+    "destination": "finance.indicators.breadth, mcclellan, arms_index, obv",
+    "decision": "merge",
+    "reason": "Require supplied universe/counts; correct TRIN volume ratio and actual McClellan EMA difference; remove hardwired Quandl series"
+  },
+  "technical_indicators/mcclellan_oscillator.py": {
+    "concept": "Advance/decline breadth, TRIN, McClellan, OBV, Chaikin, force",
+    "destination": "finance.indicators.breadth, mcclellan, arms_index, obv",
+    "decision": "merge",
+    "reason": "Require supplied universe/counts; correct TRIN volume ratio and actual McClellan EMA difference; remove hardwired Quandl series"
+  },
+  "technical_indicators/speed_resistance_lines.py": {
+    "concept": "Fractional retracement visualization",
+    "destination": "finance.indicators.fibonacci_levels, confirmed_extrema",
+    "decision": "replace",
+    "reason": "Legacy draws full-sample extrema and thirds rather than causal speed lines; general retracement math retained; unsupported speed-line predictive interpretation removed"
+  },
+  "technical_indicators/GANN_lines_angles.py": {
+    "concept": "Gann chart-angle overlays",
+    "destination": "None",
+    "decision": "remove",
+    "reason": "Reviewed source: angles array is unused in price construction; degrees of loop index and chart bounds do not define price/time units. Scale-dependent prediction has no validated methodology here; remove concept from supported scope"
+  },
+  "find_stocks/IBD_RS_Rating.py": {
+    "concept": "Weighted relative strength rankings",
+    "destination": "finance.screening.ibd_relative_strength, relative_strength",
+    "decision": "merge",
+    "reason": "Replace product of raw returns (underflow) with gross cumulative returns; label IBD-inspired, not proprietary IBD"
+  },
+  "find_stocks/minervini_screener.py": {
+    "concept": "Minervini trend-template stock screen",
+    "destination": "finance.screening.minervini",
+    "decision": "merge",
+    "reason": "Fix raw-return compounding, missing CSVs, wrong 200-day slope comparison, missing MA ordering and removed DataFrame.append"
+  },
+  "find_stocks/get_rsi_tickers.py": {
+    "concept": "Overbought/oversold RSI screen",
+    "destination": "finance.screening.rsi_screen",
+    "decision": "merge",
+    "reason": "Use latest Wilder RSI; provide values and flags, no silent batch errors"
+  },
+  "find_stocks/correlated_stocks.py": {
+    "concept": "Rank correlated stock-return pairs",
+    "destination": "finance.analytics.correlation_pairs",
+    "decision": "merge",
+    "reason": "Single upper-triangle calculation on explicit returns"
+  },
+  "find_stocks/finviz_growth_screener.py": {
+    "concept": "Quality, value and earnings/revenue growth screens",
+    "destination": "finance.screening.fundamental_screen; finance.data.YahooFinance.company",
+    "decision": "merge",
+    "reason": "Replace page-number scraping and missing config with explicit fractional input ratios; cannot rank nonexistent Debt_Ratio"
+  },
+  "find_stocks/fundamental_screener.py": {
+    "concept": "Quality, value and earnings/revenue growth screens",
+    "destination": "finance.screening.fundamental_screen; finance.data.YahooFinance.company",
+    "decision": "merge",
+    "reason": "Replace page-number scraping and missing config with explicit fractional input ratios; cannot rank nonexistent Debt_Ratio"
+  },
+  "find_stocks/green_line_values.py": {
+    "concept": "Proximity to confirmed record high",
+    "destination": "finance.indicators.green_line",
+    "decision": "merge",
+    "reason": "Unify with actual three-lower-month Green Line rule; screen originally used simple record high without confirmation"
+  },
+  "find_stocks/stock_news_sentiment.py": {
+    "concept": "News sentiment scoring",
+    "destination": "finance.analytics.sentiment; finance.data.YahooFinance.news",
+    "decision": "merge",
+    "reason": "Optional VADER on caller-supplied texts, current provider news schema"
+  },
+  "find_stocks/yahoo_recommendations.py": {
+    "concept": "Analyst recommendation snapshots/change tracking",
+    "destination": "finance.data.YahooFinance.company (analyst_rating)",
+    "decision": "merge",
+    "reason": "Current quote-summary field retained; caller can compare dated snapshots. No implicit missing recommendation-values.csv or scraped fmt assumptions"
+  },
+  "find_stocks/tradingview_signals.py": {
+    "concept": "Vendor technical recommendation summary",
+    "destination": "finance.screening.technical_screen",
+    "decision": "replace",
+    "reason": "Replace opaque browser widget votes with explicit MA/RSI/MACD diagnostics; do not claim TradingView equivalence"
+  },
+  "find_stocks/twitter_screener.py": {
+    "concept": "Social sentiment / movers joins",
+    "destination": "finance.analytics.sentiment; finance.screening.fundamental_screen",
+    "decision": "replace",
+    "reason": "Retain sentiment as an experiment on supplied text; remove unauditable Sentdex/Tradefollowers rankings and brittle multi-page joins"
+  },
+  "find_stocks/price_alert_email.py": {
+    "concept": "SMTP price notifications",
+    "destination": "None (screen outputs remain composable)",
+    "decision": "remove",
+    "reason": "Message delivery and persistent notification services do not belong in quantitative core; user can consume screen results externally"
+  },
+  "portfolio_strategies/sma_trading_strategy.py": {
+    "concept": "SMA/EMA price and moving-average crossovers",
+    "destination": "finance.strategies.moving_average; finance.backtesting.backtest",
+    "decision": "merge",
+    "reason": "Canonical signals and shared next-open cost-aware execution replace duplicated loops"
+  },
+  "portfolio_strategies/moving_avg_strategy.py": {
+    "concept": "SMA/EMA price and moving-average crossovers",
+    "destination": "finance.strategies.moving_average; finance.backtesting.backtest",
+    "decision": "merge",
+    "reason": "Canonical signals and shared next-open cost-aware execution replace duplicated loops"
+  },
+  "portfolio_strategies/moving_average_crossover_signals.py": {
+    "concept": "SMA/EMA price and moving-average crossovers",
+    "destination": "finance.strategies.moving_average; finance.backtesting.backtest",
+    "decision": "merge",
+    "reason": "Canonical signals and shared next-open cost-aware execution replace duplicated loops"
+  },
+  "portfolio_strategies/ema_crossover_strategy.py": {
+    "concept": "SMA/EMA price and moving-average crossovers",
+    "destination": "finance.strategies.moving_average; finance.backtesting.backtest",
+    "decision": "merge",
+    "reason": "Canonical signals and shared next-open cost-aware execution replace duplicated loops"
+  },
+  "portfolio_strategies/rwb_strategy.py": {
+    "concept": "Red/white/blue GMMA trend rule",
+    "destination": "finance.strategies.ribbon_trend",
+    "decision": "merge",
+    "reason": "Preserve short-group minimum above long-group maximum; remove same-close fills"
+  },
+  "portfolio_strategies/rsi_trendline_strategy.py": {
+    "concept": "RSI mean reversion conditioned on long trend",
+    "destination": "finance.strategies.rsi_reversion; finance.screening.rsi_screen",
+    "decision": "merge",
+    "reason": "Compose RSI target with SMA trend filter; no hidden universe download/Excel export"
+  },
+  "portfolio_strategies/backtest_strategies.py": {
+    "concept": "Reusable backtesting, trade/performance summaries, SMA strategy",
+    "destination": "finance.backtesting.backtest; finance.strategies.moving_average",
+    "decision": "merge",
+    "reason": "Replace unbound sellP, broker credentials and duplicate engines; fill journal separates execution from targets"
+  },
+  "portfolio_strategies/backtrader_backtest.py": {
+    "concept": "Reusable backtesting, trade/performance summaries, SMA strategy",
+    "destination": "finance.backtesting.backtest; finance.strategies.moving_average",
+    "decision": "merge",
+    "reason": "Replace unbound sellP, broker credentials and duplicate engines; fill journal separates execution from targets"
+  },
+  "portfolio_strategies/best_moving_averages_analysis.py": {
+    "concept": "Strategy parameter selection and holdout evaluation",
+    "destination": "examples/select_strategy.py; finance.strategies",
+    "decision": "merge",
+    "reason": "Select parameters on training only, freeze for test; remove unpurged forward targets and invalid independent t-tests on overlapping returns"
+  },
+  "portfolio_strategies/optimized_bollinger_bands.py": {
+    "concept": "Strategy parameter selection and holdout evaluation",
+    "destination": "examples/select_strategy.py; finance.strategies",
+    "decision": "merge",
+    "reason": "Select parameters on training only, freeze for test; remove unpurged forward targets and invalid independent t-tests on overlapping returns"
+  },
+  "portfolio_strategies/pairs_trading.py": {
+    "concept": "Cointegration search and pairs research",
+    "destination": "finance.models.cointegration_pairs; finance.strategies.pairs_trade",
+    "decision": "merge",
+    "reason": "Holm correction and training-only selection; deterministic ratio strategy explicitly experimental"
+  },
+  "portfolio_strategies/stock_spread_plotter.py": {
+    "concept": "Pair spread and threshold visualization",
+    "destination": "finance.strategies.pairs_trade; finance.indicators.zscore",
+    "decision": "merge",
+    "reason": "Use causal trailing log-ratio rather than full-sample mean to define historical signals"
+  },
+  "portfolio_strategies/support_resistance_finder.py": {
+    "concept": "Local support and resistance",
+    "destination": "finance.indicators.confirmed_extrema; finance.strategies.breakout",
+    "decision": "merge",
+    "reason": "Emit extrema only after confirming future neighbor bars have arrived"
+  },
+  "portfolio_strategies/astral_timing_signals.py": {
+    "concept": "Lagged price-pattern reversal, misleadingly named Astral Timing",
+    "destination": "finance.strategies.lag_reversal",
+    "decision": "rewrite",
+    "reason": "No astronomical input exists; preserve causal price comparisons under accurate experimental name, remove negative-index future leak and unused completion parameters"
+  },
+  "portfolio_strategies/portfolio_optimization.py": {
+    "concept": "Mean-variance, max Sharpe, frontier, random allocations, whole shares",
+    "destination": "finance.portfolio.optimize, efficient_frontier, discrete_allocation",
+    "decision": "merge",
+    "reason": "Consolidate scipy/PyPortfolioOpt duplicates; enforce bounds actually passed to solver and verify its status"
+  },
+  "portfolio_strategies/optimal_portfolio.py": {
+    "concept": "Mean-variance, max Sharpe, frontier, random allocations, whole shares",
+    "destination": "finance.portfolio.optimize, efficient_frontier, discrete_allocation",
+    "decision": "merge",
+    "reason": "Consolidate scipy/PyPortfolioOpt duplicates; enforce bounds actually passed to solver and verify its status"
+  },
+  "portfolio_strategies/portfolio_analysis.py": {
+    "concept": "Portfolio return, covariance and risk analysis",
+    "destination": "finance.portfolio.portfolio_returns, portfolio_statistics; finance.analytics.performance",
+    "decision": "merge",
+    "reason": "Use labeled weights and consistent annualization"
+  },
+  "portfolio_strategies/long_hold_stats_analysis.py": {
+    "concept": "Long-term holding statistics",
+    "destination": "finance.analytics.performance, pnl; finance.portfolio.discrete_allocation",
+    "decision": "merge",
+    "reason": "Report return net of starting wealth; keep cash from whole-share allocation"
+  },
+  "portfolio_strategies/monte_carlo.py": {
+    "concept": "GBM, Monte Carlo portfolio paths and simulated VaR",
+    "destination": "finance.portfolio.geometric_brownian_motion, simulate_portfolio; finance.analytics.value_at_risk",
+    "decision": "merge",
+    "reason": "Correct log drift, horizon units, correlated shocks, seed and initial row; no returns-of-cumulative-returns or daily/minute mixing"
+  },
+  "portfolio_strategies/geometric_brownian_motion.py": {
+    "concept": "GBM, Monte Carlo portfolio paths and simulated VaR",
+    "destination": "finance.portfolio.geometric_brownian_motion, simulate_portfolio; finance.analytics.value_at_risk",
+    "decision": "merge",
+    "reason": "Correct log drift, horizon units, correlated shocks, seed and initial row; no returns-of-cumulative-returns or daily/minute mixing"
+  },
+  "portfolio_strategies/portfolio_var_simulation.py": {
+    "concept": "GBM, Monte Carlo portfolio paths and simulated VaR",
+    "destination": "finance.portfolio.geometric_brownian_motion, simulate_portfolio; finance.analytics.value_at_risk",
+    "decision": "merge",
+    "reason": "Correct log drift, horizon units, correlated shocks, seed and initial row; no returns-of-cumulative-returns or daily/minute mixing"
+  },
+  "portfolio_strategies/ls_dca_analysis.py": {
+    "concept": "Lump sum versus dollar cost averaging",
+    "destination": "finance.portfolio.lump_sum_vs_dca",
+    "decision": "merge",
+    "reason": "Equal starting budget; track idle cash and invested principal; fix missing arguments and hardcoded 12-installment cutoff"
+  },
+  "portfolio_strategies/risk_management.py": {
+    "concept": "Risk budgets, long/short targets and stop distances",
+    "destination": "finance.analytics.risk_reward, position_size; finance.strategies.trailing_stop",
+    "decision": "merge",
+    "reason": "Explicit cash/risk units and next-open close-based stop semantics"
+  },
+  "portfolio_strategies/factor_analysis.py": {
+    "concept": "Latent factors, loadings and economic factor regression",
+    "destination": "finance.models.pca; finance.analytics.ols",
+    "decision": "replace",
+    "reason": "Replace price-level factor fitting with standardized return PCA and explicit return regressions; KMO/Bartlett selection omitted as unsupported predictive evidence"
+  },
+  "portfolio_strategies/financial_signal_analysis.py": {
+    "concept": "Return moments and Gaussian-mixture regimes",
+    "destination": "finance.analytics.distribution; finance.models.cluster_features, cluster_assets",
+    "decision": "merge",
+    "reason": "Descriptive statistics and clustering retained, no future-fitted regime labels as a trading backtest"
+  },
+  "portfolio_strategies/robinhood_bot.py": {
+    "concept": "Broker holdings automation, order cancellation and execution",
+    "destination": "None",
+    "decision": "remove",
+    "reason": "Live brokerage execution outside v2 purpose; do not run external orders. Portfolio/accounting math preserved elsewhere"
+  },
+  "stock_analysis/risk_vs_returns.py": {
+    "concept": "Return distributions, correlations, risk-return statistics",
+    "destination": "finance.analytics.distribution, correlation_pairs; finance.portfolio.portfolio_statistics",
+    "decision": "merge",
+    "reason": "Use explicit periods and return units; do not imply Gaussianity or predictive edge from a fit"
+  },
+  "stock_analysis/stock_returns_statistical_analysis.py": {
+    "concept": "Return distributions, correlations, risk-return statistics",
+    "destination": "finance.analytics.distribution, correlation_pairs; finance.portfolio.portfolio_statistics",
+    "decision": "merge",
+    "reason": "Use explicit periods and return units; do not imply Gaussianity or predictive edge from a fit"
+  },
+  "stock_analysis/performance_risk_analysis.py": {
+    "concept": "CAPM beta/alpha, OLS, volatility, momentum",
+    "destination": "finance.analytics.capm, ols, performance",
+    "decision": "merge",
+    "reason": "Align actual return periods and excess returns; distinguish annual intercept and expected return"
+  },
+  "stock_analysis/capm_analysis.py": {
+    "concept": "CAPM beta/alpha, OLS, volatility, momentum",
+    "destination": "finance.analytics.capm, ols, performance",
+    "decision": "merge",
+    "reason": "Align actual return periods and excess returns; distinguish annual intercept and expected return"
+  },
+  "stock_analysis/ols_regression.py": {
+    "concept": "CAPM beta/alpha, OLS, volatility, momentum",
+    "destination": "finance.analytics.capm, ols, performance",
+    "decision": "merge",
+    "reason": "Align actual return periods and excess returns; distinguish annual intercept and expected return"
+  },
+  "stock_analysis/stock_profit_loss.py": {
+    "concept": "Investment P&L",
+    "destination": "finance.analytics.pnl, returns",
+    "decision": "merge",
+    "reason": "Return denominator is initial investment, not ending value"
+  },
+  "stock_analysis/view_stock_returns.py": {
+    "concept": "Monthly/yearly returns",
+    "destination": "finance.analytics.period_returns",
+    "decision": "merge",
+    "reason": "Resample closing prices before pct_change; old plot selected individual daily returns at period ends"
+  },
+  "stock_analysis/estimating_returns.py": {
+    "concept": "Return distribution interval probabilities",
+    "destination": "finance.analytics.return_probability, period_returns",
+    "decision": "merge",
+    "reason": "Explicit descriptive Gaussian assumption; annual periods instead of every 253rd opening row"
+  },
+  "stock_analysis/var_analysis.py": {
+    "concept": "Historical/normal VaR and tail losses",
+    "destination": "finance.analytics.value_at_risk, expected_shortfall",
+    "decision": "merge",
+    "reason": "Consistent positive loss fraction and one-period horizon; fitted Student-t density experiment consolidated into distribution diagnostics"
+  },
+  "stock_analysis/kelly_criterion.py": {
+    "concept": "Kelly position sizing",
+    "destination": "finance.analytics.kelly_fraction",
+    "decision": "merge",
+    "reason": "Pure binary payoff formula; no inferred automatic position from one historical sample"
+  },
+  "stock_analysis/intrinsic_value.py": {
+    "concept": "Company DCF, market dividend discount, recovery scenarios",
+    "destination": "finance.analytics.discounted_cash_flow, scenario_valuation",
+    "decision": "merge",
+    "reason": "Input-driven valuation; fix first-year discount timing, unit parsing and stale hardcoded EPS; no scraper inside math"
+  },
+  "stock_analysis/sp500_valuation.py": {
+    "concept": "Company DCF, market dividend discount, recovery scenarios",
+    "destination": "finance.analytics.discounted_cash_flow, scenario_valuation",
+    "decision": "merge",
+    "reason": "Input-driven valuation; fix first-year discount timing, unit parsing and stale hardcoded EPS; no scraper inside math"
+  },
+  "stock_analysis/seasonal_stock_analysis.py": {
+    "concept": "Calendar/holding-period return seasonality",
+    "destination": "finance.analytics.seasonality, period_returns; examples/analyze_stock_returns.py",
+    "decision": "merge",
+    "reason": "Descriptive monthly statistics replace 426-line global Excel workflow; no claims from overlapping forward-return trade counts"
+  },
+  "stock_analysis/sma_histogram.py": {
+    "concept": "Price distance from average and distribution",
+    "destination": "finance.indicators.zscore, sma; finance.analytics.distribution",
+    "decision": "merge",
+    "reason": "Caller computes close/SMA-1; no stale fixed end date or full-sample signal thresholds"
+  },
+  "stock_analysis/ma_backtesting.py": {
+    "concept": "Moving-average equity/cash accounting",
+    "destination": "finance.backtesting.backtest; finance.strategies.moving_average",
+    "decision": "merge",
+    "reason": "Fix holdings confused with order differences, same-bar P&L and inconsistent share sizing"
+  },
+  "stock_analysis/backest_all_indicators.py": {
+    "concept": "Keltner, Bollinger, MA, MACD, RSI, Williams, stochastic, Ichimoku signals, stops, grid search",
+    "destination": "finance.strategies.crossover, threshold_reversion, trailing_stop; finance.indicators; finance.backtesting.backtest; examples/select_strategy.py",
+    "decision": "merge",
+    "reason": "Consolidate 1078-line repeated engine and nine rule families into composable pure rules; borrow and cash accounting explicit; intrabar perfect stop fills replaced by documented close stop"
+  },
+  "stock_analysis/stock_pivot_resistance.py": {
+    "concept": "Confirmed pivot resistance",
+    "destination": "finance.indicators.confirmed_extrema, pivot_points",
+    "decision": "merge",
+    "reason": "Correct pivot state that never updated from zero; publish at confirmation time"
+  },
+  "stock_analysis/earnings_call_sentiment_analysis.py": {
+    "concept": "Transcript/news/social language sentiment",
+    "destination": "finance.analytics.sentiment; examples/analyze_sentiment.py",
+    "decision": "merge",
+    "reason": "Caller-supplied texts, optional VADER; no obsolete Tweepy stream/googletrans or hidden NLP corpus downloads"
+  },
+  "stock_analysis/twitter_sentiment_analysis.py": {
+    "concept": "Transcript/news/social language sentiment",
+    "destination": "finance.analytics.sentiment; examples/analyze_sentiment.py",
+    "decision": "merge",
+    "reason": "Caller-supplied texts, optional VADER; no obsolete Tweepy stream/googletrans or hidden NLP corpus downloads"
+  },
+  "stock_analysis/sp500_cot_sentiment_analysis.py": {
+    "concept": "CFTC financial futures dealer/leveraged positioning",
+    "destination": "finance.data.cot_financial_futures; finance.analytics.net_positioning",
+    "decision": "merge",
+    "reason": "Official tabular API replaces ZIP extraction and Excel renames; report date distinguished from publication date"
+  },
+  "machine_learning/stock_regression_analysis.py": {
+    "concept": "Feature regression, linear/SVR/tree/boosting/neural model comparisons",
+    "destination": "finance.models.forecast_features, evaluate_forecast",
+    "decision": "merge",
+    "reason": "Chronological split, purged horizon labels, training-only scaling, explicit future-return targets and zero-return baseline; fix deleted target column and shuffled time-series evaluation"
+  },
+  "machine_learning/quantitative_indicators_prediction.py": {
+    "concept": "Feature regression, linear/SVR/tree/boosting/neural model comparisons",
+    "destination": "finance.models.forecast_features, evaluate_forecast",
+    "decision": "merge",
+    "reason": "Chronological split, purged horizon labels, training-only scaling, explicit future-return targets and zero-return baseline; fix deleted target column and shuffled time-series evaluation"
+  },
+  "machine_learning/ml_models_accuracy.py": {
+    "concept": "Feature regression, linear/SVR/tree/boosting/neural model comparisons",
+    "destination": "finance.models.forecast_features, evaluate_forecast",
+    "decision": "merge",
+    "reason": "Chronological split, purged horizon labels, training-only scaling, explicit future-return targets and zero-return baseline; fix deleted target column and shuffled time-series evaluation"
+  },
+  "machine_learning/stocker_price_prediction.py": {
+    "concept": "Feature regression, linear/SVR/tree/boosting/neural model comparisons",
+    "destination": "finance.models.forecast_features, evaluate_forecast",
+    "decision": "merge",
+    "reason": "Chronological split, purged horizon labels, training-only scaling, explicit future-return targets and zero-return baseline; fix deleted target column and shuffled time-series evaluation"
+  },
+  "machine_learning/arima_time_series.py": {
+    "concept": "ARIMA, chronological time-series forecasting",
+    "destination": "finance.models.evaluate_arima",
+    "decision": "merge",
+    "reason": "Use maintained statsmodels API and same-origin persistence benchmark; avoid pmdarima and deprecated seasonal_decompose freq"
+  },
+  "machine_learning/neural_network_prediction.py": {
+    "concept": "Neural forecasting experiment and sequence feature learning",
+    "destination": "finance.models.evaluate_forecast(model=\"mlp\")",
+    "decision": "replace",
+    "reason": "Preserve neural experiment with lag features and chronological baseline evaluation. LSTM/CNN machinery had full-data scaling, undefined train_data, shuffled overlapping windows, no baseline, and stale checkpoints; separate sequence architecture not justified by evidence. Brokerage request removed"
+  },
+  "machine_learning/lstm_prediction.py": {
+    "concept": "Neural forecasting experiment and sequence feature learning",
+    "destination": "finance.models.evaluate_forecast(model=\"mlp\")",
+    "decision": "replace",
+    "reason": "Preserve neural experiment with lag features and chronological baseline evaluation. LSTM/CNN machinery had full-data scaling, undefined train_data, shuffled overlapping windows, no baseline, and stale checkpoints; separate sequence architecture not justified by evidence. Brokerage request removed"
+  },
+  "machine_learning/deep_learning_bot.py": {
+    "concept": "Neural forecasting experiment and sequence feature learning",
+    "destination": "finance.models.evaluate_forecast(model=\"mlp\")",
+    "decision": "replace",
+    "reason": "Preserve neural experiment with lag features and chronological baseline evaluation. LSTM/CNN machinery had full-data scaling, undefined train_data, shuffled overlapping windows, no baseline, and stale checkpoints; separate sequence architecture not justified by evidence. Brokerage request removed"
+  },
+  "machine_learning/prophet_price_prediction.py": {
+    "concept": "Trend/seasonality forecast experiment",
+    "destination": "finance.models.evaluate_arima, evaluate_forecast",
+    "decision": "replace",
+    "reason": "Forecasting concept retained with explicit holdout baselines; Prophet calendar extrapolation of stock price fit has no demonstrated value to justify another heavy dependency"
+  },
+  "machine_learning/stock_probabilistic_analysis.py": {
+    "concept": "Gaussian class-conditional direction probabilities",
+    "destination": "finance.models.evaluate_direction",
+    "decision": "merge",
+    "reason": "Replace product underflow and adding test observations to positive class with GaussianNB and held-out Brier/log-loss vs training prior"
+  },
+  "machine_learning/kmeans_clustering.py": {
+    "concept": "K-means, PCA+clustering, Gaussian mixture and indicator clusters",
+    "destination": "finance.models.cluster_assets, cluster_features",
+    "decision": "merge",
+    "reason": "Correct asset/date orientation; scaling, fixed seed, no rolling across ticker boundaries; supplied feature matrix avoids stale universe scraper"
+  },
+  "machine_learning/pca_kmeans_clustering.py": {
+    "concept": "K-means, PCA+clustering, Gaussian mixture and indicator clusters",
+    "destination": "finance.models.cluster_assets, cluster_features",
+    "decision": "merge",
+    "reason": "Correct asset/date orientation; scaling, fixed seed, no rolling across ticker boundaries; supplied feature matrix avoids stale universe scraper"
+  },
+  "machine_learning/technical_indicators_clustering.py": {
+    "concept": "K-means, PCA+clustering, Gaussian mixture and indicator clusters",
+    "destination": "finance.models.cluster_assets, cluster_features",
+    "decision": "merge",
+    "reason": "Correct asset/date orientation; scaling, fixed seed, no rolling across ticker boundaries; supplied feature matrix avoids stale universe scraper"
+  },
+  "machine_learning/sp500_pca_analysis.py": {
+    "concept": "Market PCA, loadings and explained variance",
+    "destination": "finance.models.pca",
+    "decision": "merge",
+    "reason": "Descriptive return PCA retained; do not present same-period PCA weights as out-of-sample portfolio performance"
+  },
+  "machine_learning/etf_graphical_lasso.py": {
+    "concept": "Sparse conditional-dependence network",
+    "destination": "finance.models.partial_correlations",
+    "decision": "merge",
+    "reason": "Fixed-regularization descriptive graph, symmetric partial correlations; avoid in-sample predictive claims and delisted fixed ETF basket"
+  },
+  "machine_learning/sklearn_trading_bot.py": {
+    "concept": "Isolation Forest novelty experiment",
+    "destination": "finance.models.anomaly_scores",
+    "decision": "merge",
+    "reason": "Train only on earlier observations with one consistent scaler; score new data without fitting it; remove unsupported behaviour keyword and unexplained data.csv"
+  },
+  "stock_data/historical_sp500_data.py": {
+    "concept": "Historical universe OHLCV retrieval",
+    "destination": "finance.data.YahooFinance.history, sp500_constituents",
+    "decision": "merge",
+    "reason": "Current membership explicit; provider-separated normalization and no silent per-ticker failures"
+  },
+  "stock_data/yf_intraday_data.py": {
+    "concept": "Intraday OHLCV",
+    "destination": "finance.data.YahooFinance.history(interval=...)",
+    "decision": "replace",
+    "reason": "Preserve working intraday concept via maintained adapter; drop undocumented websocket framing/auth strings"
+  },
+  "stock_data/tradingview_intraday_data.py": {
+    "concept": "Intraday OHLCV",
+    "destination": "finance.data.YahooFinance.history(interval=...)",
+    "decision": "replace",
+    "reason": "Preserve working intraday concept via maintained adapter; drop undocumented websocket framing/auth strings"
+  },
+  "stock_data/dividend_history.py": {
+    "concept": "Historical dividends",
+    "destination": "finance.data.YahooFinance.dividends",
+    "decision": "merge",
+    "reason": "Corporate actions API replaces HTML bytes treated as a filename"
+  },
+  "stock_data/get_dividend_calendar.py": {
+    "concept": "Market ex-dividend calendar",
+    "destination": "finance.data.dividend_calendar",
+    "decision": "rewrite",
+    "reason": "Legacy real execution returned 608 rows; preserve via bounded one-date schema-checked endpoint, correct annual-rate numeric sorting"
+  },
+  "stock_data/stock_earnings.py": {
+    "concept": "Earnings dates and EPS surprises",
+    "destination": "finance.data.YahooFinance.earnings",
+    "decision": "merge",
+    "reason": "Per-company calendar/history retained; market-wide batch calendar deferred without adding another paid provider or obsolete yahoo_earnings_calendar"
+  },
+  "stock_data/fundamental_ratios.py": {
+    "concept": "Fundamentals, analyst snapshot, news and insider tables",
+    "destination": "finance.data.YahooFinance.company, news, insider_transactions, earnings; finance.analytics.fundamental_ratios",
+    "decision": "merge",
+    "reason": "Replace missing trained scraper rules/config and positional HTML tables with provider boundary; full statement exports are not core snapshot API"
+  },
+  "stock_data/finviz_stock_scraper.py": {
+    "concept": "Fundamentals, analyst snapshot, news and insider tables",
+    "destination": "finance.data.YahooFinance.company, news, insider_transactions, earnings; finance.analytics.fundamental_ratios",
+    "decision": "merge",
+    "reason": "Replace missing trained scraper rules/config and positional HTML tables with provider boundary; full statement exports are not core snapshot API"
+  },
+  "stock_data/autoscraper_finviz_data.py": {
+    "concept": "Fundamentals, analyst snapshot, news and insider tables",
+    "destination": "finance.data.YahooFinance.company, news, insider_transactions, earnings; finance.analytics.fundamental_ratios",
+    "decision": "merge",
+    "reason": "Replace missing trained scraper rules/config and positional HTML tables with provider boundary; full statement exports are not core snapshot API"
+  },
+  "stock_data/high_dividend_yield.py": {
+    "concept": "High-dividend screening",
+    "destination": "finance.screening.dividend_screen; finance.data.YahooFinance.company",
+    "decision": "merge",
+    "reason": "Annual dividend divided by current price yields fractional ratio; no hidden FMP key"
+  },
+  "stock_data/finviz_insider_trades.py": {
+    "concept": "Reported insider activity",
+    "destination": "finance.data.YahooFinance.insider_transactions",
+    "decision": "merge",
+    "reason": "Per-company disclosure table with schema checks; timestamps are disclosures, not tradeable historical knowledge"
+  },
+  "stock_data/finviz_news_scraper.py": {
+    "concept": "External market news",
+    "destination": "finance.data.YahooFinance.news",
+    "decision": "merge",
+    "reason": "Provider-owned current news records instead of positional HTML tables"
+  },
+  "stock_data/finviz_home_scraper.py": {
+    "concept": "Market movers, news, futures/FX summaries and calendar dashboard",
+    "destination": "finance.data.YahooFinance.history, news, earnings; finance.screening",
+    "decision": "replace",
+    "reason": "Keep data/analysis concepts through explicit symbols and screens; generic HTML dashboard assembly duplicates presentation and fails silently"
+  },
+  "stock_data/fibonacci_retracement.py": {
+    "concept": "Fibonacci retracements",
+    "destination": "finance.indicators.fibonacci_levels",
+    "decision": "merge",
+    "reason": "Pure numeric levels, caller selects observed extrema"
+  },
+  "stock_data/green_line_test.py": {
+    "concept": "Three-month record-high confirmation",
+    "destination": "finance.indicators.green_line",
+    "decision": "merge",
+    "reason": "Require completed monthly bars; align confirmation output to available month"
+  },
+  "stock_data/pivots_calculator.py": {
+    "concept": "Daily pivots over intraday prices",
+    "destination": "finance.indicators.pivot_points",
+    "decision": "merge",
+    "reason": "Legacy executed successfully; consolidate with explicit prior-period pivot convention"
+  },
+  "stock_data/stock_VWAP.py": {
+    "concept": "Whole-period/cumulative VWAP, OHLC averages",
+    "destination": "finance.indicators.vwap, vwma",
+    "decision": "merge",
+    "reason": "Fix update_VWAP algebra collapsing to current close and duplicated open term; unify weighted numerator/volume"
+  },
+  "stock_data/main_indicators_one_graph.py": {
+    "concept": "Combined indicator chart and interactive stock view",
+    "destination": "examples/plot_indicators.py; examples/calculate_indicators.py",
+    "decision": "replace",
+    "reason": "Keep runnable optional plotting; Streamlit wrapper adds dependency without unique quantitative behavior"
+  },
+  "stock_data/main_indicators_streamlit.py": {
+    "concept": "Combined indicator chart and interactive stock view",
+    "destination": "examples/plot_indicators.py; examples/calculate_indicators.py",
+    "decision": "replace",
+    "reason": "Keep runnable optional plotting; Streamlit wrapper adds dependency without unique quantitative behavior"
+  },
+  "stock_data/tradingview_recommendations.py": {
+    "concept": "Technical recommendation, oscillators, moving averages, pivots",
+    "destination": "finance.screening.technical_screen; finance.indicators",
+    "decision": "replace",
+    "reason": "Transparent local diagnostics replace opaque browser text; no implied equivalence to TradingView"
+  },
+  "stock_data/reddit_scraper.py": {
+    "concept": "Reddit text acquisition",
+    "destination": "finance.analytics.sentiment accepts supplied text",
+    "decision": "remove",
+    "reason": "Generic subreddit scraping is not a finance method; no account-coupled social client in package. Text analysis preserved"
+  },
+  "stock_data/send_top_movers.py": {
+    "concept": "Scheduled email/SMS stock reports and webhook server",
+    "destination": "Screen/data outputs and analytics.risk_reward",
+    "decision": "remove",
+    "reason": "Delivery/server integrations outside quantitative scope; numerical data, sentiment and risk-distance concepts preserved elsewhere"
+  },
+  "stock_data/stock_data_sms.py": {
+    "concept": "Scheduled email/SMS stock reports and webhook server",
+    "destination": "Screen/data outputs and analytics.risk_reward",
+    "decision": "remove",
+    "reason": "Delivery/server integrations outside quantitative scope; numerical data, sentiment and risk-distance concepts preserved elsewhere"
+  },
+  "stock_data/stock_twilio_server.py": {
+    "concept": "Scheduled email/SMS stock reports and webhook server",
+    "destination": "Screen/data outputs and analytics.risk_reward",
+    "decision": "remove",
+    "reason": "Delivery/server integrations outside quantitative scope; numerical data, sentiment and risk-distance concepts preserved elsewhere"
+  },
+  "ta_functions.py": {
+    "concept": "Shared indicators plus arithmetic wrappers",
+    "destination": "finance.indicators; finance.analytics",
+    "decision": "merge",
+    "reason": "Remove work at import and duplicate ATR; correct WMA, CCI, MFI, ADX, true-range bugs. Generic add/divide/rolling extrema use pandas directly"
+  },
+  "tickers.py": {
+    "concept": "SP500, Dow and exchange ticker universes",
+    "destination": "finance.data.sp500_constituents, exchange_universe",
+    "decision": "merge",
+    "reason": "Maintained exchange directory replaces old CSVs; S&P500 snapshot explicit; small Dow list can be supplied by caller, no separate HTML adapter"
+  },
+  "__init__.py": {
+    "concept": "Empty root package marker",
+    "destination": "src/finance/__init__.py",
+    "decision": "replace",
+    "reason": "Replace with proper src-layout package"
+  }
+}

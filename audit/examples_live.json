@@ -1,0 +1,92 @@
+[
+  {
+    "example": "analyze_sentiment.py",
+    "exit_code": 0,
+    "output": "                                    text  neg   neu   pos  compound\nRevenue grew and profitability improved. 0.00 0.366 0.634    0.6369\n  Demand collapsed and losses increased. 0.67 0.106 0.223   -0.4939\n",
+    "stderr": ""
+  },
+  {
+    "example": "analyze_stock_returns.py",
+    "exit_code": 0,
+    "output": "total_return    0.3984\ncagr            0.1189\nvolatility      0.2709\nsharpe          0.5498\nsortino         0.8041\nmax_drawdown   -0.3091\ncalmar          0.3847\nalpha              0.0297\nbeta               1.2101\nexpected_return    0.1193\nr_squared          0.6114\nHistorical daily 95% VaR: 2.72%\n",
+    "stderr": ""
+  },
+  {
+    "example": "backtest_moving_average.py",
+    "exit_code": 0,
+    "output": "total_return          0.1547\ncagr                  0.0493\nvolatility            0.1693\nsharpe                0.3689\nsortino               0.5320\nmax_drawdown         -0.2840\ncalmar                0.1737\ncommissions         161.1959\nborrow_costs          0.0000\nfill_count           17.0000\nbenchmark_return      0.4313\n                     date               signal_date asset   quantity      price  commission phase\n2024-05-09 00:00:00-04:00 2024-05-08 00:00:00-04:00 asset  49.967447 180.591271    9.023685  open\n2024-08-21 00:00:00-04:00 2024-08-20 00:00:00-04:00 asset -49.967447 224.640835   11.224729  open\n2024-08-28 00:00:00-04:00 2024-08-27 00:00:00-04:00 asset  49.561305 226.029198   11.202302  open\n2024-11-20 00:00:00-05:00 2024-11-19 00:00:00-05:00 asset -49.561305 226.416898   11.221517  open\n2024-12-04 00:00:00-05:00 2024-12-03 00:00:00-05:00 asset  46.446115 241.120195   11.199096  open\n",
+    "stderr": ""
+  },
+  {
+    "example": "backtest_pairs_trade.py",
+    "exit_code": 0,
+    "output": "Experimental log-ratio strategy; this pair has not been selected for cointegration.\ntotal_return         -0.0162\ncagr                 -0.0054\nvolatility            0.0592\nsharpe               -0.0625\nsortino              -0.0882\nmax_drawdown         -0.1564\ncalmar               -0.0348\ncommissions         316.4020\nborrow_costs        205.4188\nfill_count           66.0000\nbenchmark_return      0.3428\n                     date               signal_date asset    quantity      price  commission phase\n2024-08-01 00:00:00-04:00 2024-07-31 00:00:00-04:00   BAC  128.040866  38.435001    4.921251  open\n2024-09-11 00:00:00-04:00 2024-09-10 00:00:00-04:00   JPM   24.052640 196.973926    4.737743  open\n2024-09-11 00:00:00-04:00 2024-09-10 00:00:00-04:00   BAC -128.040866  37.298480    4.775730  open\n2024-12-24 00:00:00-05:00 2024-12-23 00:00:00-05:00   JPM  -21.292076 231.183770    4.922382  open\n2024-12-24 00:00:00-05:00 2024-12-23 00:00:00-05:00   BAC  116.484216  42.257935    4.922382  open\n",
+    "stderr": ""
+  },
+  {
+    "example": "calculate_indicators.py",
+    "exit_code": 0,
+    "output": "                             close     rsi    atr    lower   middle    upper  bandwidth   macd  signal  histogram\ndate                                                                                                             \n2024-12-24 00:00:00-05:00  256.340  75.750  4.018  231.846  244.519  257.192      0.104  6.030   5.357      0.673\n2024-12-26 00:00:00-05:00  257.154  76.453  3.906  232.980  245.708  258.437      0.104  6.262   5.538      0.723\n2024-12-27 00:00:00-05:00  253.749  67.626  4.050  234.918  246.734  258.550      0.096  6.100   5.650      0.449\n2024-12-30 00:00:00-05:00  250.383  60.226  4.104  236.730  247.472  258.215      0.087  5.635   5.647     -0.012\n2024-12-31 00:00:00-05:00  248.616  56.716  4.084  238.209  248.010  257.810      0.079  5.066   5.531     -0.465\n",
+    "stderr": ""
+  },
+  {
+    "example": "cluster_assets.py",
+    "exit_code": 0,
+    "output": "AAPL    0\nMSFT    0\nNVDA    0\nJPM     1\nSPY     0\npc1    0.674\npc2    0.156\n",
+    "stderr": ""
+  },
+  {
+    "example": "download_market_data.py",
+    "exit_code": 0,
+    "output": "                                 open        high         low       close      volume\ndate                                                                                 \n2024-12-24 00:00:00-05:00  253.649240  256.349629  253.450669  256.339722  23234700.0\n2024-12-26 00:00:00-05:00  256.329802  258.226044  255.773839  257.153809  27237100.0\n2024-12-27 00:00:00-05:00  255.972371  256.836129  251.236749  253.748520  42355300.0\n2024-12-30 00:00:00-05:00  250.412748  251.673602  248.943415  250.382965  35557500.0\n2024-12-31 00:00:00-05:00  250.621234  251.455179  247.632911  248.615784  39480700.0\nDate\n2024-02-09 00:00:00-05:00    0.24\n2024-05-10 00:00:00-04:00    0.25\n2024-08-12 00:00:00-04:00    0.25\n2024-11-08 00:00:00-05:00    0.25\n",
+    "stderr": ""
+  },
+  {
+    "example": "forecast_time_series.py",
+    "exit_code": 0,
+    "output": "Held-out errors; predictive skill is not assumed.\nTraining ends 2024-04-08 00:00:00-04:00; test starts 2024-04-10 00:00:00-04:00\n                 mae     rmse\nridge        0.01079  0.01500\nzero_return  0.01069  0.01487\nTraining ends 2024-05-24 00:00:00-04:00; test starts 2024-05-28 00:00:00-04:00\n                  mae      rmse\narima        35.40840  38.05381\npersistence  35.47376  38.11531\n",
+    "stderr": ""
+  },
+  {
+    "example": "optimize_portfolio.py",
+    "exit_code": 0,
+    "output": "AAPL    0.0994\nJPM     0.3217\nMSFT    0.0790\nSPY     0.5000\nreturn        0.1354\nvolatility    0.1845\nsharpe        0.7337\n",
+    "stderr": ""
+  },
+  {
+    "example": "plot_indicators.py",
+    "exit_code": 0,
+    "output": "",
+    "stderr": "/Users/shashankvemuri/Documents/Code/quant-finance/examples/plot_indicators.py:19: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown\n  plt.show()\n"
+  },
+  {
+    "example": "screen_minervini.py",
+    "exit_code": 0,
+    "output": "          close    sma50   sma150   sma200  low_52w  high_52w  rs_rank  above_averages  rising_200  above_low  near_high  strong_rank  passed\nticker                                                                                                                                       \nNVDA    134.090  139.676  127.019  117.673   47.236   152.651    100.0           False        True       True       True         True   False\nJPM     231.454  229.576  209.837  203.765  155.897   245.551     75.0            True        True       True       True         True    True\nAAPL    248.616  235.821  223.896  211.528  162.311   258.226     50.0            True        True       True       True        False   False\nMSFT    415.776  422.348  421.260  418.128  358.839   460.237     25.0           False        True      False       True        False   False\n",
+    "stderr": ""
+  },
+  {
+    "example": "screen_relative_strength.py",
+    "exit_code": 0,
+    "output": "      return  relative_strength   rank\nNVDA   1.712              2.172  100.0\nJPM    0.443              1.155   75.0\nAAPL   0.307              1.047   50.0\nMSFT   0.129              0.904   25.0\n",
+    "stderr": ""
+  },
+  {
+    "example": "select_strategy.py",
+    "exit_code": 0,
+    "output": " fast  slow  training_sharpe\n   50   200         0.752824\n   10    50         0.379879\n   20   100         0.327154\n   20    50        -0.220419\nFrozen-parameter chronological holdout:\ntotal_return         0.0589\ncagr                 0.0656\nvolatility           0.1720\nsharpe               0.4554\nsortino              0.6198\nmax_drawdown        -0.1257\ncalmar               0.5220\ncommissions         28.0529\nborrow_costs         0.0000\nfill_count           3.0000\nbenchmark_return     0.3200\n",
+    "stderr": ""
+  },
+  {
+    "example": "simulate_portfolio.py",
+    "exit_code": 0,
+    "output": "count     1000.00\nmean     11521.98\nstd       2360.19\nmin       6099.51\n25%       9903.82\n50%      11201.20\n75%      12915.70\nmax      20812.61\nSimulated one-year 95% VaR: 18.33%\n",
+    "stderr": ""
+  },
+  {
+    "example": "value_a_company.py",
+    "exit_code": 0,
+    "output": "Enterprise value: $1535.22 million\nEquity value per share: $13.85\n                  base     down       up\ndiscount_rate                           \n0.08           1960.24  1568.19  2352.29\n0.10           1461.23  1168.98  1753.47\n0.12           1162.29   929.83  1394.75\n",
+    "stderr": ""
+  }
+]

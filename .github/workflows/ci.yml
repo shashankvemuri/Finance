@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, finance-v2, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.12', '3.13', '3.14']
+        extras: [core, full]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - if: matrix.extras == 'core'
+        run: python -m pip install . pytest
+      - if: matrix.extras == 'full'
+        run: python -m pip install '.[data,portfolio,models,sentiment,plot,dev]'
+      - run: python -m pytest
+      - if: matrix.extras == 'full'
+        run: |
+          ruff check .
+          ruff format --check .
+          python -m build
+          python audit/run_examples.py
+        env:
+          MPLBACKEND: Agg

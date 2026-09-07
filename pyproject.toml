@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "finance-toolkit"
+version = "2.0.0"
+description = "Composable quantitative finance calculations, strategies, and research tools"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [{name = "Shashank Vemuri"}]
+dependencies = ["numpy>=2.0,<3", "pandas>=2.2,<4"]
+
+[project.optional-dependencies]
+data = ["yfinance>=0.2.65,<2", "lxml>=5,<7"]
+portfolio = ["scipy>=1.14,<2"]
+models = ["scikit-learn>=1.5,<2", "statsmodels>=0.14.4,<1"]
+sentiment = ["vaderSentiment>=3.3.2,<4"]
+plot = ["matplotlib>=3.9,<4"]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "build>=1.2,<2", "ta>=0.11,<1"]
+
+[project.urls]
+Repository = "https://github.com/shashankvemuri/Finance"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/finance"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["integration: explicit live provider checks (not part of offline CI)"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+include = ["src/**/*.py", "tests/**/*.py", "examples/**/*.py", "audit/**/*.py", "pyproject.toml"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
