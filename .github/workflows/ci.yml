@@ -26,7 +26,7 @@ jobs:
       - if: matrix.extras == 'core'
         run: python -m pip install . pytest
       - if: matrix.extras == 'full'
-        run: python -m pip install '.[data,portfolio,models,sentiment,plot,dev]'
+        run: python -m pip install '.[data,portfolio,models,sentiment,plot,reports,dev]'
       - run: python -m pytest
       - if: matrix.extras == 'full'
         run: |
@@ -36,3 +36,19 @@ jobs:
           python scripts/check_examples.py
         env:
           MPLBACKEND: Agg
+
+  optional:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install '.[models,neural,prophet,apps,reports,sentiment,dev]'
+      - run: python -m pytest tests/test_research_models_reports.py tests/test_app.py
+        env:
+          MPLBACKEND: Agg
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
