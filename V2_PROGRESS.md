@@ -43,3 +43,10 @@
 - Five return forecasters, ARIMA, GaussianNB, PCA, K-means/mixture, feature clustering, graphical lasso, cointegration and anomalies executed. Most predictors did not outperform their baseline; all retained as research experiments, no alpha claims.
 - All 15 examples executed with live mode; all 14 network-optional examples also executed offline. Output evidence saved in audit/examples_*.json.
 - `ruff check .` passes. Build and clean core-only installation checks underway; hosted CI has not yet been run.
+
+## Legacy retirement
+- Core-only clean installation passed: 99 tests, 13 explicit optional-dependency skips. Wheel and sdist built successfully.
+- Committed the v2 package, tests, examples, CI, methodology, provider docs and all per-file dispositions before legacy deletion (`93a6a61`).
+- Final direct audit rerun materialized original source and ticker CSVs per program, eliminating working-directory artifacts. Initial run retained separately. Legacy audit scripts now recover baseline source from Git after retirement.
+- Removed 183 superseded Python paths, obsolete requirements.txt, five stale ticker CSVs and checked-in chromedriver, only after checking every path against MIGRATION.md.
+- Remaining: final source review, accurate README, post-retirement checks, dedicated-branch push and hosted CI verification.

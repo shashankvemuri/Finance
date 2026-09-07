@@ -13,6 +13,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from _legacy import export_legacy
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -33,7 +35,7 @@ def child(path, fixture_dir):
     yf.pdr_override = lambda: None
     yf.download = download
     pdr.get_data_yahoo = download
-    state = runpy.run_path(str(ROOT / path), run_name="__main__")
+    state = runpy.run_path(str(Path(fixture_dir) / "legacy" / path), run_name="__main__")
     report = {}
     for key in ["df", "dataset", "df1"]:
         data = state.get(key)
@@ -55,6 +57,7 @@ if __name__ == "__main__":
         import yfinance as yf
 
         with tempfile.TemporaryDirectory(prefix="finance-diagnostic-") as folder:
+            export_legacy(Path(folder) / "legacy")
             for ticker in ["AAPL", "QQQ", "SPY", "^GSPC", "META", "CRON", "RIG", "AMD", "NIO"]:
                 data = yf.Ticker(ticker).history(
                     start="2023-01-01",
@@ -74,7 +77,7 @@ if __name__ == "__main__":
                 env = dict(
                     os.environ,
                     MPLBACKEND="Agg",
-                    PYTHONPATH=str(ROOT),
+                    PYTHONPATH=str(Path(folder) / "legacy"),
                     MPLCONFIGDIR=folder,
                     OPENBLAS_NUM_THREADS="1",
                     OMP_NUM_THREADS="1",
@@ -113,7 +116,16 @@ if __name__ == "__main__":
                     }
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-                results = list(pool.map(run, sorted((ROOT / "technical_indicators").glob("*.py"))))
+                results = list(
+                    pool.map(
+                        run,
+                        [
+                            ROOT / item["path"]
+                            for item in json.loads((ROOT / "audit/inventory.json").read_text())
+                            if item["path"].startswith("technical_indicators/")
+                        ],
+                    )
+                )
             (ROOT / "audit/diagnostic_runs.json").write_text(json.dumps(results, indent=2) + "\n")
             from collections import Counter
 
