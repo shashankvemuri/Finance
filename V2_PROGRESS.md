@@ -1,64 +1,78 @@
 # Finance v2 progress
 
-## Completed
-- Clean starting checkout; created `finance-v2` from `12dac57c7f62146f7073ccc17f64bc45fd687b5d`.
-- Enumerated all 183 Python files and tracked assets; initialized per-file migration ledger before deletions.
+Status: implementation complete on `finance-v2`. All eight migration areas are implemented,
+the original code is accounted for, and the hosted core/full CI matrix passes.
 
-## Current work
-- Read legacy calculations and run programs in isolated subprocesses.
-- Establish Python 3.12+ environment and numerical references.
+## Completed migration areas
 
-## Verification
-- `git status --short`, `git ls-files`, source and dependency inventory.
+- **Audit:** inventoried all 183 original Python files before deletion. Directly executed every
+  eligible program with realistic symbols, bounded runtime and isolated original files; recorded
+  ten exclusions for external message/order/browser/server side effects. Inspected successful
+  output rather than equating exit zero with success. Final direct runs found 100 removed
+  `pdr_override` failures and 13 missing `Adj Close` failures, among other recorded causes.
+- **Deeper diagnostics:** 71/82 original indicators executed with explicit downloader shims and
+  real cached 2023–2024 bars. Direct and shimmed evidence remain separate.
+- **Data:** normalized OHLCV and intraday, company snapshots, dividends/calendar, earnings, news,
+  insider records, maintained current universes, CFTC TFF positioning. Timeouts/schema checks.
+- **Indicators:** canonical averages, trend, momentum, volatility, volume, relative/statistical,
+  level and breadth calculations. Corrected numerical definitions and causal availability.
+- **Analytics/screens:** return/risk/performance, CAPM/OLS, valuation/scenarios, seasonality,
+  optional sentiment; relative strength/IBD-inspired, Minervini, RSI, quality/growth/dividend screens.
+- **Strategies/backtesting:** shared pure targets, trend/reversion/breakout/pairs rules and
+  close-based stops; next-open fills, long/short cash accounting, costs, borrow, benchmark metrics.
+- **Portfolio:** labeled return/risk, constrained optimization/frontier, discrete/random allocation,
+  correlated GBM, Monte Carlo risk, comparable-budget DCA/lump sum.
+- **Models:** chronological/purged return forecasting, ARIMA/persistence and probabilistic
+  baselines, PCA, K-means/mixtures, graphical lasso, cointegration and novelty experiments.
+- **Delivery:** NumPy/pandas core, optional extras, Python >=3.12, 15 runnable examples, package
+  builds, Ruff, pytest, six-job CI, concise README, provider/methodology docs and original license.
+- **Retirement:** removed only after per-file decisions and replacement verification were committed:
+  183 superseded Python paths, 46-package requirements.txt, five stale universe CSVs, chromedriver.
+  Baseline `12dac57` remains in Git history and audit scripts recover it automatically.
 
-## Known issues
-- Duplicate ATR definitions; WMA mislabeled; Astral Timing negative indexing.
-- Bundled browser binary and stale ticker snapshots; no tests or package configuration.
+## Verification performed
 
-## Remaining
-- Audit/run all meaningful files; implement all eight package domains and examples.
-- Independent numerical checks, real data workflows, models evaluation, CI, Ruff, tests.
-- Disposition review, remove superseded code, rewrite README last.
+- `python -m pytest -q`: **121 passed** with full extras.
+- Clean core-only installation: **100 passed**, optional suites explicitly skipped. Hosted jobs
+  confirm core and full installs independently on Python **3.12, 3.13 and 3.14**.
+- `ruff check .`, `ruff format --check .`, `python -m build`, `git diff --check`: pass.
+- `python audit/run_examples.py`: all 14 offline-capable examples pass.
+- `python audit/run_examples.py --live`: all 15 entry points pass.
+- `python audit/verify_live.py`: six real assets, 58 indicator APIs, ten provider workflows,
+  screening, backtests, portfolio constraints, simulation, valuation, model baselines/structure.
+- Independent checks: published Wilder RSI; `ta` comparisons including ADX/ATR/CCI/stochastic;
+  hand-computed volume and P&L fixtures; inverse-variance/tangency solutions; OLS/perpetuity
+  identities; prefix causality; cash reconstruction; analytical GBM expectation and variance.
+- Real AAPL 2022–2024 SMA test: 17 fills, 14.495% return, -28.613% max drawdown,
+  independently reconciled final equity **$11,449.51** with .001 commission/.0005 slippage.
+- Real simulation mean **$15,739.75**, analytical mean **$15,652.80** over 10,000 paths.
+- Live providers returned 503 S&P500 constituents, 13,155 exchange listings, 70 calendar rows,
+  312 intraday bars and 105 CFTC positioning reports, plus valid company/news/disclosure records.
+- Final optimizer recheck: two constrained allocations and 20 real-data frontier points;
+  results in `audit/optimizer_verification.json`.
+- Hosted run [34138879212](https://github.com/shashankvemuri/Finance/actions/runs/34138879212)
+  passed all six jobs. Exact validated code revision and jobs are in `audit/ci_verification.json`.
 
-## Implementation checkpoint
-- Isolated audit attempted every non-side-effect legacy program: 98 removed pdr_override failures, 12 missing Adj Close failures, other dependency/API/input failures recorded per file in audit/legacy_runs.json. Notification/order/browser/server programs source-reviewed without executing side effects.
-- Implemented modern packaging (Python >=3.12, NumPy/Pandas core), data normalization/provider boundary, broad indicator families, returns/risk/valuation/regression analytics, concrete screens, shared strategies/backtesting, portfolio optimization/simulation and optional modeling.
-- First live execution: AAPL 2023-01-01 through 2025-01-01, 502 rows. RSI range 22.22..90.12; 20/50 SMA backtest 9 fills, total return .4724, max drawdown -.1309. Preliminary only; independent tests still pending.
-- Commands: `.venv/bin/python audit/run_legacy.py`; `.venv/bin/pip install -e '.[data,portfolio,models,sentiment,dev]'`; initial live API execution; initial Ruff check.
-- Remaining: complete detailed concept dispositions, deeper legacy probes, numerical reference suite and adversarial accounting tests, all runnable examples, live provider verification and model baselines, CI and final docs. No legacy source deleted yet.
+## Correctness issues resolved during verification
 
-## Verification checkpoint
-- 119 deterministic tests pass; Ruff passes for package/tests/examples. Published Wilder RSI, independent `ta` formulas including ADX/ATR, analytical min-variance/max-Sharpe, direct fill accounting, GBM moments and model-prefix checks are covered.
-- All 14 offline examples executed successfully. Live example sweep and comprehensive live verification running.
-- Second legacy diagnostic pass: 71/82 indicator scripts complete with explicit downloader shims and real cached AAPL/QQQ/SPY/GSPC/META/CRON/RIG/AMD/NIO bars. Remaining errors include removed ix/iteritems, bad WMA keyword, undefined variables, broken plot options and unavailable Quandl dependency. Direct execution failures remain separately recorded.
-- All 183 legacy Python paths have explicit reviewed concept dispositions in audit/dispositions.json and rendered MIGRATION.md. Scope removals and formula corrections are documented; no legacy sources removed yet.
-- Found/fixed provider edge: valid Nasdaq ticker NA was parsed as missing; directory now returns 13,155 listings. Nasdaq calendar has mixed numeric/string amounts and indicated_Annual_Dividend field; parser corrected.
-- Added Python 3.12/3.13/3.14 core/full CI matrix and methodology/provider documentation. README remains unchanged pending final implementation review.
+- Valid Nasdaq ticker `NA` parsed as missing; preserve exchange-native symbols.
+- Nasdaq dividend amounts vary between numeric and string values; normalize both.
+- Initial hosted Linux run exposed SLSQP iteration failure at a constrained frontier point.
+  Added analytical objective/equality derivatives and redundant-constraint handling; endpoint
+  and equal-return tests added. Subsequent full matrix passes without loosening constraints.
+- Historical raw-return compounding, future-index reads, same-close fills, cash/position confusion,
+  wrong WMA/CCI/MFI/PVT/ADX formulas and DCF timing are corrected and described per file.
 
-## Live verification completed
-- `python audit/verify_live.py` passed on six real assets over 2022-2024; 58 indicator APIs and ten provider workflows including 105 CFTC reports, 70 calendar rows, 503 S&P500 constituents, 13,155 exchange listings and 312 intraday bars.
-- AAPL 20/50 SMA: 17 fills, 14.495% return, -28.613% maximum drawdown, independently reconciled final equity $11,449.51 (commission .001, slippage .0005).
-- Minervini diagnostics returned JPM as passing within the five-stock test universe; every individual criterion retained for inspection.
-- Portfolio weights/constraints and reported statistics independently checked. Simulation mean $15,739.75 versus analytical $15,652.80 (10,000 paths); no impossible paths.
-- Five return forecasters, ARIMA, GaussianNB, PCA, K-means/mixture, feature clustering, graphical lasso, cointegration and anomalies executed. Most predictors did not outperform their baseline; all retained as research experiments, no alpha claims.
-- All 15 examples executed with live mode; all 14 network-optional examples also executed offline. Output evidence saved in audit/examples_*.json.
-- `ruff check .` passes. Build and clean core-only installation checks underway; hosted CI has not yet been run.
+## Current work and remaining scope
 
-## Legacy retirement
-- Core-only clean installation passed: 99 tests, 13 explicit optional-dependency skips. Wheel and sdist built successfully.
-- Committed the v2 package, tests, examples, CI, methodology, provider docs and all per-file dispositions before legacy deletion (`93a6a61`).
-- Final direct audit rerun materialized original source and ticker CSVs per program, eliminating working-directory artifacts. Initial run retained separately. Legacy audit scripts now recover baseline source from Git after retirement.
-- Removed 183 superseded Python paths, obsolete requirements.txt, five stale ticker CSVs and checked-in chromedriver, only after checking every path against MIGRATION.md.
-- Remaining: final source review, accurate README, post-retirement checks, dedicated-branch push and hosted CI verification.
+No required implementation work remains. Final verification records and branch state are being
+finalized; source code is validated by hosted CI. README and ledger describe the actual v2 API.
 
-## Final local checks
-- README rewritten after implementation and legacy retirement, with branch-specific installation, compact API map, small examples, optional dependencies and original disclaimer.
-- 120 tests pass after adding a regression for mixed numeric/string Nasdaq calendar amounts.
-- Final Ruff lint/format checks, wheel/sdist builds and git whitespace checks pass.
-- GitHub Actions major versions checked against upstream releases and updated to checkout/setup-python v7.
-- Hosted CI verification is the remaining completion gate; final branch is finance-v2.
+Public Yahoo/Nasdaq interfaces, S&P500 HTML and CFTC endpoints remain provider-dependent. Current
+fundamentals/universes are not point-in-time data; intraday retention and schemas can change.
+Most evaluated ML models did not beat their baseline. They are explicitly experiments.
 
-## Hosted CI portability fix
-- First hosted run (34138666996) passed all core jobs on Python 3.12/3.13/3.14 but failed all full jobs at an efficient-frontier endpoint: SLSQP finite-difference constraints reached the iteration limit on Linux.
-- Added analytical objective gradients and equality Jacobians; do not relax financial constraints or accept failed solvers. Added explicit tests for both return endpoints and redundant equal-return constraints.
-- Re-running portfolio tests, live optimization checks and hosted matrix after the correction.
+Intentionally future work: historical licensed universes/statements/transcripts, market-wide
+fundamental/earnings aggregation, richer execution/liquidity/margin modeling and evidence-backed
+sequence architectures. Brokerage/SMS/email/social-crawler integrations and scale-dependent Gann
+predictions are outside v2 scope. These are explicit dispositions, not unfinished supported APIs.
