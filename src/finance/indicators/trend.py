@@ -13,10 +13,6 @@ def ema(close: pd.Series, window: int = 20) -> pd.Series:
     return series(close).ewm(span=window_size(window), adjust=False, min_periods=window).mean()
 
 
-def ewma(close: pd.Series, window: int = 20) -> pd.Series:
-    return ema(close, window)
-
-
 def wma(close: pd.Series, window: int = 20) -> pd.Series:
     window_size(window)
     weights = np.arange(1, window + 1, dtype=float)

@@ -113,4 +113,5 @@ dates similarly do not establish when a filing became available.
 Tests also use hand-computed fixtures, the two-asset inverse-variance/tangency solutions,
 OLS equations, a perpetuity identity, independently reconstructed fills and analytical GBM
 moments. Prefix-invariance tests check that future data does not change prior indicators,
-signals or equity. Provider tests are offline; explicit live verification lives in `audit/`.
+signals or equity. Provider contract tests use mocked responses; `pytest --live -m integration`
+checks real data and financial workflows.

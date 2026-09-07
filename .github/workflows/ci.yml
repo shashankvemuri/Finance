@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [master, main, finance-v2, 'codex/**']
   pull_request:
   workflow_dispatch:
 
@@ -34,6 +33,6 @@ jobs:
           ruff check .
           ruff format --check .
           python -m build
-          python audit/run_examples.py
+          python scripts/check_examples.py
         env:
           MPLBACKEND: Agg

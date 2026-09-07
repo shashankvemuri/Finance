@@ -132,7 +132,7 @@ def aroon(high: pd.Series, low: pd.Series, window: int = 25) -> pd.DataFrame:
 def price_momentum_oscillator(
     close: pd.Series, first: int = 35, second: int = 20, signal: int = 10
 ) -> pd.DataFrame:
-    """Double-smoothed ROC variant preserved from the misnamed price_channels script."""
+    """Ten times the one-bar percentage ROC, smoothed twice with EMA, plus its EMA signal."""
     line = ema(10 * ema(roc(close, 1), first), second)
     return pd.DataFrame({"pmo": line, "signal": ema(line, signal)})
 

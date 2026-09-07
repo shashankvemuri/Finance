@@ -22,7 +22,7 @@ index and FX symbols, not every exchange suffix convention.
 
 `dividend_calendar(date)` returns Nasdaq ex-dividend/payment/record dates and reported
 amounts. `cot_financial_futures(contract_code, start, end)` uses CFTC TFF futures-only
-positioning; for example, `13874A` identifies the E-mini S&P 500 contract in the audit run.
+positioning; for example, `13874A` identifies the E-mini S&P 500 contract.
 The date interval is start-inclusive/end-exclusive and limited responses fail explicitly.
 
 Network operations have timeouts and schemas are checked. These are public/unofficial
@@ -32,8 +32,9 @@ of their client libraries. S&P500 membership still uses a maintained HTML table 
 there is no bundled licensed index feed. There is no automatic cross-provider fallback that
 could silently mix adjustment bases or currencies. Honor provider terms and data licensing.
 
-Ordinary tests mock transport and never require network access. To repeat the recorded
-historical workflow and current snapshots, run `python audit/verify_live.py` after installing
-all indicated extras; `python audit/run_examples.py --live` runs the examples against Yahoo.
-The historical daily period is fixed. Update the explicit intraday date interval when Yahoo's
-retention window expires. These scripts are opt-in integration diagnostics, not scheduled CI.
+Ordinary tests mock transport and never require network access. After installing
+`.[data,portfolio,models,dev]`, run `python -m pytest --live -m integration` to check provider
+schemas and financial workflows against real data. Daily checks use a fixed historical
+period; intraday checks use the last two weeks. Use `python scripts/check_examples.py --live`
+to run examples with Yahoo data (install the extras listed in the README). Live checks are
+opt-in and excluded from CI; provider failures are reported as test failures.

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "finance-toolkit"
-version = "2.0.0"
+version = "0.0.0"
 description = "Composable quantitative finance calculations, strategies, and research tools"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -34,7 +34,7 @@ markers = ["integration: explicit live provider checks (not part of offline CI)"
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-include = ["src/**/*.py", "tests/**/*.py", "examples/**/*.py", "audit/**/*.py", "pyproject.toml"]
+include = ["src/**/*.py", "tests/**/*.py", "examples/**/*.py", "scripts/**/*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]

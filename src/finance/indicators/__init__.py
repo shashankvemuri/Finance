@@ -35,7 +35,7 @@ from .statistics import (
     rolling_regression,
     zscore,
 )
-from .trend import dema, ema, ewma, hma, ribbon, sma, smma, tema, trima, wma
+from .trend import dema, ema, hma, ribbon, sma, smma, tema, trima, wma
 from .volatility import (
     acceleration_bands,
     atr,
@@ -101,7 +101,6 @@ __all__ = [
     "geometric_return",
     "sma",
     "ema",
-    "ewma",
     "wma",
     "smma",
     "dema",

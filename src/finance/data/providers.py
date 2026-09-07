@@ -22,7 +22,7 @@ class PriceProvider(Protocol):
 def fetch_text(url: str, *, timeout: float = 15) -> str:
     if timeout <= 0:
         raise ValueError("timeout must be positive")
-    request = Request(url, headers={"User-Agent": "FinanceToolkit/2.0 research"})
+    request = Request(url, headers={"User-Agent": "FinanceToolkit research"})
     try:
         with urlopen(request, timeout=timeout) as response:
             return response.read().decode("utf-8")

@@ -2,16 +2,15 @@
 
 Finance is a Python toolkit for market data, technical indicators, financial analysis,
 stock screening, strategy research, backtesting, portfolios and statistical models.
-Version 2 consolidates the original collection into reusable calculations with explicit
-inputs, small dependencies and tested execution conventions. Models and trading rules are
-research tools; runnable examples are the starting point.
+Calculations use explicit inputs, a small dependency set and tested execution conventions.
+Models and trading rules are research tools; runnable examples are the starting point.
 
 ## Install
 
 Python 3.12 or newer:
 
 ```bash
-git clone --branch finance-v2 https://github.com/shashankvemuri/Finance.git
+git clone https://github.com/shashankvemuri/Finance.git
 cd Finance
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
@@ -95,17 +94,16 @@ python -m pip install -e '.[data,portfolio,models,sentiment,plot,dev]'
 ruff check .
 ruff format --check .
 python -m pytest
-python audit/run_examples.py
+python scripts/check_examples.py
 ```
 
 CI runs core and optional-feature tests on Python 3.12–3.14 without live network requests.
-[Verification evidence](audit/README.md) includes independent numerical comparisons and real
-executions. [MIGRATION.md](MIGRATION.md) accounts for every original Python file; old sources
-remain in Git history. Keep calculations separate from providers and add regression tests
-for numerical or execution changes.
+Use `python -m pytest --live -m integration` for opt-in provider and market-data workflows.
+Keep calculations separate from providers and add regression tests for numerical or execution
+changes.
 
 Created by [Shashank Vemuri](https://github.com/shashankvemuri). [MIT License](LICENSE).
-The original technical-indicator collection drew on
+Technical-indicator references include
 [Stock_Analysis_For_Quant](https://github.com/LastAncientOne/Stock_Analysis_For_Quant/tree/master/Python_Stock/Technical_Indicators)
 by LastAncientOne.
 

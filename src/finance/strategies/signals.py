@@ -127,7 +127,7 @@ def trailing_stop(close: pd.Series, targets: pd.Series, fraction: float = 0.1) -
 def lag_reversal(
     high: pd.Series, low: pd.Series, close: pd.Series, step: int = 1, confirmation: int = 5
 ) -> pd.Series:
-    """Experimental price-pattern rule recovered from 'Astral Timing'; no astronomical inputs."""
+    """Contrarian experiment: long on lower close/low, short on higher close/high versus lagged bars."""
     high, low, close = aligned(high, low, close)
     window_size(step)
     window_size(confirmation)
