@@ -149,3 +149,56 @@ def ichimoku(
     return pd.DataFrame(
         {"conversion": short, "base": long, "span_a": (short + long) / 2, "span_b": midpoint(span)}
     )
+
+
+def gann_fan(
+    bars: int,
+    anchor_price: float,
+    price_per_bar: float,
+    ratios: tuple[float, ...] = (0.125, 0.25, 0.5, 1, 2, 4, 8),
+) -> pd.DataFrame:
+    """Geometric drawing in explicit price/bar units; slopes are not chart-screen angles."""
+    window_size(bars)
+    finite(anchor_price, "anchor_price", minimum=0)
+    finite(price_per_bar, "price_per_bar")
+    if not ratios or not np.isfinite(ratios).all() or any(r <= 0 for r in ratios):
+        raise ValueError("positive finite slope ratios required")
+    steps = np.arange(bars)
+    return pd.DataFrame(
+        {f"{ratio:g}": anchor_price + price_per_bar * ratio * steps for ratio in ratios},
+        index=pd.Index(steps, name="bars_from_anchor"),
+    )
+
+
+def speed_resistance(
+    start_price: float, end_price: float, duration: int, bars: int
+) -> pd.DataFrame:
+    """One-third/two-thirds speed lines from a completed swing, available only at its end."""
+    window_size(duration)
+    window_size(bars)
+    finite(start_price, "start_price", minimum=0)
+    finite(end_price, "end_price", minimum=0)
+    result = gann_fan(bars, start_price, (end_price - start_price) / duration, (1 / 3, 2 / 3, 1))
+    result.iloc[: min(duration, bars)] = np.nan
+    return result
+
+
+def pivot_midpoints(levels: pd.DataFrame) -> pd.DataFrame:
+    """Midpoints between adjacent named support/pivot/resistance levels, preserving input timing."""
+    if "pivot" not in levels or levels.columns.has_duplicates:
+        raise ValueError("provide pivot_points output")
+    support = sorted(
+        [c for c in levels if c.startswith("s") and c[1:].isdigit()],
+        key=lambda c: int(c[1:]),
+        reverse=True,
+    )
+    resistance = sorted(
+        [c for c in levels if c.startswith("r") and c[1:].isdigit()], key=lambda c: int(c[1:])
+    )
+    names = [*support, "pivot", *resistance]
+    return pd.DataFrame(
+        {
+            f"{a}_{b}": (levels[a] + levels[b]) / 2
+            for a, b in zip(names[:-1], names[1:], strict=True)
+        }
+    )

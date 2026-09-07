@@ -30,12 +30,20 @@ def backtest(
     periods: int = 252,
     rebalance: bool = False,
     liquidate: bool = False,
+    high_prices: pd.Series | pd.DataFrame | None = None,
+    low_prices: pd.Series | pd.DataFrame | None = None,
+    stop_loss: float | None = None,
+    take_profit: float | None = None,
+    trailing_fraction: float | None = None,
 ) -> BacktestResult:
     """Close signals execute next open. Gross target <=1; fractional shares, no cash interest.
 
     Rebalance on target changes (or every bar with rebalance=True). Trade rows are fills,
     including partial adjustments. Adjusted OHLC must share a basis. Short borrow is charged
-    on each held bar's opening notional. No intrabar stops, margin loans, or volume limits.
+    on each held bar's opening notional. Optional protective orders require high/low data.
+    Ambiguous same-bar stop/target hits use stop first; gaps fill at open. Trailing levels
+    update after the bar and stopped positions rearm only when the source target changes.
+    No margin loans or volume limits.
     """
 
     def as_frame(data):
@@ -61,11 +69,34 @@ def backtest(
         finite(cost, name, minimum=0)
         if cost >= 1:
             raise ValueError(f"{name} must be below 1")
+    protective = any(x is not None for x in (stop_loss, take_profit, trailing_fraction))
+    for fraction in (stop_loss, take_profit, trailing_fraction):
+        if fraction is not None and (not np.isfinite(fraction) or not 0 < fraction < 1):
+            raise ValueError("protective order fractions must be in (0,1)")
+    if protective:
+        if high_prices is None or low_prices is None:
+            raise ValueError("protective orders require high_prices and low_prices")
+        highs, lows = (
+            frame(as_frame(high_prices), positive=True),
+            frame(as_frame(low_prices), positive=True),
+        )
+        for data in (highs, lows):
+            if not data.index.equals(opens.index) or not data.columns.equals(opens.columns):
+                raise ValueError("protective OHLC must align exactly")
+        if (
+            ((highs < opens) | (highs < closes) | (lows > opens) | (lows > closes) | (lows > highs))
+            .any()
+            .any()
+        ):
+            raise ValueError("inconsistent OHLC bounds")
     window_size(periods)
     cash, shares = float(initial_cash), np.zeros(opens.shape[1])
     cash_rows, equity_rows, holding_rows, fills = [], [], [], []
     prior_target = np.zeros(opens.shape[1])
     fees_total = borrow_total = 0.0
+    stopped = np.zeros(opens.shape[1], dtype=bool)
+    entries = np.zeros(opens.shape[1])
+    extremes = np.zeros(opens.shape[1])
     open_values, close_values = opens.to_numpy(), closes.to_numpy()
     # At bar t only the signal from t-1 is available.
     delayed = targets.shift(1, fill_value=0).to_numpy()
@@ -93,11 +124,14 @@ def backtest(
             )
 
     for i, timestamp in enumerate(opens.index):
-        price, close, target = open_values[i], close_values[i], delayed[i]
+        price, close, source_target = open_values[i], close_values[i], delayed[i]
+        stopped[source_target != prior_target] = False
+        target = np.where(stopped, 0, source_target)
+        previous_shares = shares.copy()
         equity_at_open = cash + shares @ price
         if equity_at_open <= 0:
             raise ValueError(f"account insolvent at {timestamp}; short losses exceeded equity")
-        if rebalance or not np.array_equal(target, prior_target):
+        if rebalance or not np.array_equal(source_target, prior_target):
             # Solve for post-cost equity so a fully invested long never overspends cash.
             def residual(equity, target=target, price=price, equity_at_open=equity_at_open):
                 quantity = target * equity / price - shares
@@ -116,10 +150,51 @@ def backtest(
                     lower = middle
             desired = target * ((lower + upper) / 2) / price
             execute(desired - shares, price, timestamp, opens.index[i - 1] if i else pd.NaT, "open")
-        prior_target = target.copy()
+        prior_target = source_target.copy()
+        new_position = (shares != 0) & (np.sign(shares) != np.sign(previous_shares))
+        entries[new_position] = price[new_position] * (1 + np.sign(shares[new_position]) * slippage)
+        extremes[new_position] = entries[new_position]
         borrow = np.maximum(-shares, 0) @ price * borrow_rate / periods
         cash -= borrow
         borrow_total += borrow
+        if protective:
+            high, low = highs.iloc[i].to_numpy(), lows.iloc[i].to_numpy()
+            for j in range(len(shares)):
+                side = np.sign(shares[j])
+                if not side:
+                    continue
+                stop = entries[j] * (1 - side * stop_loss) if stop_loss else None
+                if trailing_fraction:
+                    trail = extremes[j] * (1 - side * trailing_fraction)
+                    stop = (
+                        trail
+                        if stop is None
+                        else (max(stop, trail) if side > 0 else min(stop, trail))
+                    )
+                profit = entries[j] * (1 + side * take_profit) if take_profit else None
+                stop_hit = stop is not None and (low[j] <= stop if side > 0 else high[j] >= stop)
+                profit_hit = profit is not None and (
+                    high[j] >= profit if side > 0 else low[j] <= profit
+                )
+                profit_gap = profit is not None and (
+                    price[j] >= profit if side > 0 else price[j] <= profit
+                )
+                if stop_hit or profit_hit:
+                    if profit_gap:
+                        fill, phase = price[j], "take_profit"
+                    elif stop_hit:
+                        fill = min(price[j], stop) if side > 0 else max(price[j], stop)
+                        phase = "stop"
+                    else:
+                        fill, phase = profit, "take_profit"
+                    quantity, prices = np.zeros(len(shares)), price.copy()
+                    quantity[j], prices[j] = -shares[j], fill
+                    execute(quantity, prices, timestamp, pd.NaT, phase)
+                    stopped[j] = True
+                else:
+                    extremes[j] = (
+                        max(extremes[j], high[j]) if side > 0 else min(extremes[j], low[j])
+                    )
         if liquidate and i == len(opens) - 1:
             execute(-shares.copy(), close, timestamp, pd.NaT, "final_close")
         equity = cash + shares @ close

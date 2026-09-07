@@ -1,3 +1,12 @@
+from .research import (
+    StrategySelection,
+    ichimoku_trend,
+    keltner_breakout,
+    macd_trend,
+    select_strategy,
+    stochastic_reversion,
+    williams_reversion,
+)
 from .signals import (
     bollinger_reversion,
     breakout,
@@ -22,4 +31,11 @@ __all__ = [
     "breakout",
     "trailing_stop",
     "lag_reversal",
+    "StrategySelection",
+    "select_strategy",
+    "macd_trend",
+    "stochastic_reversion",
+    "williams_reversion",
+    "keltner_breakout",
+    "ichimoku_trend",
 ]
