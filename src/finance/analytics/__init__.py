@@ -1,4 +1,12 @@
 from .regression import RegressionResult, capm, correlation_pairs, ols
+from .research import (
+    company_cash_flows,
+    company_scenarios,
+    index_scenarios,
+    seasonal_entries,
+    seasonal_summary,
+    statement_ratios,
+)
 from .returns import (
     cumulative_returns,
     distribution,
@@ -18,7 +26,7 @@ from .risk import (
     risk_reward,
     value_at_risk,
 )
-from .sentiment import sentiment
+from .sentiment import sentence_sentiment, sentiment, social_mentions
 from .valuation import Valuation, discounted_cash_flow, fundamental_ratios, scenario_valuation
 
 __all__ = [
@@ -46,4 +54,13 @@ __all__ = [
     "discounted_cash_flow",
     "scenario_valuation",
     "fundamental_ratios",
+    "seasonal_entries",
+    "seasonal_summary",
+    "company_cash_flows",
+    "company_scenarios",
+    "index_scenarios",
+    "sentence_sentiment",
+    "social_mentions",
 ]
+
+__all__ += ["statement_ratios"]

@@ -1,3 +1,5 @@
+from .content import article_text, reddit_posts, rss_news, transcript_index
+from .finviz import Finviz
 from .normalize import normalize_ohlcv, normalize_ticker
 from .providers import (
     PriceProvider,
@@ -9,6 +11,8 @@ from .providers import (
     exchange_universe,
     sp500_constituents,
 )
+from .research import BatchResult, earnings_calendar, fetch_many, snapshot_changes
+from .tradingview import TradingView
 
 __all__ = [
     "normalize_ticker",
@@ -21,4 +25,14 @@ __all__ = [
     "close_matrix",
     "dividend_calendar",
     "cot_financial_futures",
+    "Finviz",
+    "BatchResult",
+    "fetch_many",
+    "snapshot_changes",
+    "earnings_calendar",
+    "article_text",
+    "reddit_posts",
+    "rss_news",
+    "transcript_index",
+    "TradingView",
 ]

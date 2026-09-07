@@ -59,7 +59,6 @@ class YahooFinance:
                 auto_adjust=self.adjusted,
                 actions=False,
                 timeout=self.timeout,
-                raise_errors=True,
             )
             result = normalize_ohlcv(raw)
         except Exception as exc:
@@ -80,7 +79,6 @@ class YahooFinance:
                 auto_adjust=False,
                 actions=True,
                 timeout=self.timeout,
-                raise_errors=True,
             )
             if raw.empty or "Dividends" not in raw:
                 raise ValueError("missing dividend history")
@@ -124,6 +122,33 @@ class YahooFinance:
             return result
         except Exception as exc:
             raise ProviderError(f"Yahoo company failed for {ticker}: {exc}") from exc
+
+    def statements(
+        self, ticker: str, kind: str = "income", frequency: str = "annual"
+    ) -> pd.DataFrame:
+        """Period-end rows, provider statement labels, reported currency units; restatements possible."""
+        names = {"income": "income_stmt", "balance": "balance_sheet", "cashflow": "cashflow"}
+        if kind not in names or frequency not in ("annual", "quarterly"):
+            raise ValueError("kind: income/balance/cashflow; frequency: annual/quarterly")
+        handle = self._ticker(ticker)
+        attribute = ("quarterly_" if frequency == "quarterly" else "") + names[kind]
+        try:
+            raw = getattr(handle, attribute)
+            if not isinstance(raw, pd.DataFrame) or raw.empty or raw.index.has_duplicates:
+                raise ValueError("missing or duplicate statement fields")
+            result = raw.T.apply(pd.to_numeric, errors="raise").sort_index().dropna(how="all")
+            result.index = pd.DatetimeIndex(result.index, name="period_end")
+            result.attrs.update(
+                provider="Yahoo Finance",
+                ticker=ticker,
+                frequency=frequency,
+                retrieved_at=pd.Timestamp.now(tz="UTC").isoformat(),
+                currency=handle.get_info().get("financialCurrency"),
+                restated=True,
+            )
+            return result
+        except Exception as exc:
+            raise ProviderError(f"Yahoo {kind} statement failed for {ticker}: {exc}") from exc
 
     def earnings(self, ticker: str) -> pd.DataFrame:
         return self._table(ticker, "get_earnings_dates", ["EPS Estimate", "Reported EPS"])
