@@ -91,3 +91,14 @@ def test_cashflows_and_random_allocations():
     random = random_allocations(mean, cov, 100)
     assert_allclose(random[["a", "b"]].sum(axis=1), 1)
     assert_allclose(random["return"], random[["a", "b"]] @ mean)
+
+
+def test_frontier_endpoints_and_redundant_target():
+    pytest.importorskip("scipy")
+    mean, cov = inputs()
+    assert_allclose(optimize(mean, cov, target_return=mean.max()).weights, [0, 1], atol=1e-9)
+    assert_allclose(optimize(mean, cov, target_return=mean.min()).weights, [1, 0], atol=1e-9)
+    same_return = mean * 0 + 0.1
+    allocation = optimize(same_return, cov, target_return=0.1)
+    assert_allclose(allocation.weights, [0.09 / 0.13, 0.04 / 0.13], atol=1e-6)
+    assert_allclose(efficient_frontier(same_return, cov, 3)["return"], 0.1)

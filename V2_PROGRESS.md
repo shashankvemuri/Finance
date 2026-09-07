@@ -57,3 +57,8 @@
 - Final Ruff lint/format checks, wheel/sdist builds and git whitespace checks pass.
 - GitHub Actions major versions checked against upstream releases and updated to checkout/setup-python v7.
 - Hosted CI verification is the remaining completion gate; final branch is finance-v2.
+
+## Hosted CI portability fix
+- First hosted run (34138666996) passed all core jobs on Python 3.12/3.13/3.14 but failed all full jobs at an efficient-frontier endpoint: SLSQP finite-difference constraints reached the iteration limit on Linux.
+- Added analytical objective gradients and equality Jacobians; do not relax financial constraints or accept failed solvers. Added explicit tests for both return endpoints and redundant equal-return constraints.
+- Re-running portfolio tests, live optimization checks and hosted matrix after the correction.

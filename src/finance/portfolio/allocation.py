@@ -98,14 +98,30 @@ def optimize(
             return variance
         return -(weights @ mu - risk_free) / np.sqrt(max(variance, 1e-18))
 
-    constraints = [{"type": "eq", "fun": lambda w: w.sum() - 1}]
+    def gradient(weights):
+        cov_weights = cov @ weights
+        if objective == "minimum_variance":
+            return 2 * cov_weights
+        variance = max(float(weights @ cov_weights), 1e-18)
+        excess = weights @ mu - risk_free
+        return -mu / np.sqrt(variance) + excess * cov_weights / variance**1.5
+
+    constraints = [{"type": "eq", "fun": lambda w: w.sum() - 1, "jac": lambda w: np.ones(size)}]
     if target_return is not None:
         finite(target_return, "target_return")
-        constraints.append({"type": "eq", "fun": lambda w: w @ mu - target_return})
+        if target_return < mu.min() - 1e-10 or target_return > mu.max() + 1e-10:
+            raise ValueError("target return is outside the feasible asset-return range")
+        # A constant return vector makes this equality redundant with sum-to-one.
+        if np.ptp(mu) > 1e-12:
+            constraints.append(
+                {"type": "eq", "fun": lambda w: w @ mu - target_return, "jac": lambda w: mu}
+            )
+    # Exact Jacobians avoid finite-difference rank errors at frontier endpoints.
     result = minimize(
         loss,
         np.full(size, 1 / size),
         method="SLSQP",
+        jac=gradient,
         bounds=[bounds] * size,
         constraints=constraints,
         options={"ftol": 1e-12, "maxiter": 1000},
