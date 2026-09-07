@@ -120,6 +120,12 @@ REFERENCE_FUNCTIONS = [
         lambda t, p: t.volume.chaikin_money_flow(p.high, p.low, p.close, p.volume, 20),
     ),
     ("force_index", lambda t, p: t.volume.force_index(p.close, p.volume, 13)),
+    ("bollinger_bands", lambda t, p: t.volatility.bollinger_hband(p.close)),
+    ("atr", lambda t, p: t.volatility.average_true_range(p.high, p.low, p.close)),
+    ("stochastic", lambda t, p: t.momentum.stoch(p.high, p.low, p.close)),
+    ("tsi", lambda t, p: t.momentum.tsi(p.close)),
+    ("ultimate_oscillator", lambda t, p: t.momentum.ultimate_oscillator(p.high, p.low, p.close)),
+    ("adx", lambda t, p: t.trend.adx(p.high, p.low, p.close)),
 ]
 
 
@@ -131,8 +137,14 @@ def test_independent_ta_reference(ohlcv, name, reference):
     args = {k: ohlcv[k] for k in parameters if k in ohlcv}
     actual = function(**args)
     expected = reference(ta, ohlcv)
-    # ta seeds PVT with NaN rather than zero at t0; compare all subsequent bars.
-    assert_allclose(actual.iloc[1:], expected.iloc[1:], rtol=1e-10, atol=1e-8, equal_nan=True)
+    column = {"bollinger_bands": "upper", "stochastic": "k", "adx": "adx"}.get(name)
+    if column is not None:
+        actual = actual[column]
+    # ta uses a different missing-value convention before ATR/ADX initialize and at PVT t0.
+    start = {"atr": 13, "adx": 27, "pvt": 1}.get(name, 0)
+    assert_allclose(
+        actual.iloc[start:], expected.iloc[start:], rtol=1e-10, atol=1e-8, equal_nan=True
+    )
 
 
 @pytest.mark.parametrize(

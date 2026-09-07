@@ -87,20 +87,7 @@ Public providers can throttle or change schemas; see [provider contracts](docs/p
 Forecast experiments report held-out errors against simple baselines and make no claim of
 predictive advantage. No brokerage execution or notification service is included.
 
-## Contribute
-
-```bash
-python -m pip install -e '.[data,portfolio,models,sentiment,plot,dev]'
-ruff check .
-ruff format --check .
-python -m pytest
-python scripts/check_examples.py
-```
-
-CI runs core and optional-feature tests on Python 3.12–3.14 without live network requests.
-Use `python -m pytest --live -m integration` for opt-in provider and market-data workflows.
-Keep calculations separate from providers and add regression tests for numerical or execution
-changes.
+[Contributing](CONTRIBUTING.md)
 
 Created by [Shashank Vemuri](https://github.com/shashankvemuri). [MIT License](LICENSE).
 Technical-indicator references include

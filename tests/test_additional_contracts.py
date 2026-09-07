@@ -12,7 +12,6 @@ from finance.analytics import (
     seasonality,
     sentiment,
 )
-from finance.indicators import adx, atr, bollinger_bands, stochastic, tsi, ultimate_oscillator
 from finance.models import cointegration_pairs
 from finance.strategies import (
     bollinger_reversion,
@@ -22,34 +21,6 @@ from finance.strategies import (
     rsi_reversion,
     threshold_reversion,
 )
-
-
-def test_independent_reference_families(ohlcv):
-    ta = pytest.importorskip("ta")
-    p = ohlcv
-    assert_allclose(
-        bollinger_bands(p.close).upper, ta.volatility.bollinger_hband(p.close), equal_nan=True
-    )
-    assert_allclose(
-        atr(p.high, p.low, p.close).iloc[13:],
-        ta.volatility.average_true_range(p.high, p.low, p.close).iloc[13:],
-    )
-    assert_allclose(
-        stochastic(p.high, p.low, p.close).k,
-        ta.momentum.stoch(p.high, p.low, p.close),
-        equal_nan=True,
-    )
-    assert_allclose(tsi(p.close), ta.momentum.tsi(p.close), equal_nan=True)
-    assert_allclose(
-        ultimate_oscillator(p.high, p.low, p.close),
-        ta.momentum.ultimate_oscillator(p.high, p.low, p.close),
-        equal_nan=True,
-    )
-    assert_allclose(
-        adx(p.high, p.low, p.close).adx.iloc[27:],
-        ta.trend.adx(p.high, p.low, p.close).iloc[27:],
-        rtol=1e-10,
-    )
 
 
 @pytest.mark.parametrize("name", ["bollinger", "breakout", "ribbon", "rsi", "lag"])
@@ -76,7 +47,7 @@ def test_threshold_state_hand_fixture():
     assert_allclose(result, [0, 1, 1, 0, -1, -1, 0])
 
 
-def test_descriptive_statistics_and_sentiment(ohlcv):
+def test_descriptive_statistics(ohlcv):
     data = pd.Series([-1.0, 0, 1])
     assert distribution(data)["mean"] == 0
     assert return_probability(data, -1, 1) == pytest.approx(0.682689492)
@@ -91,6 +62,9 @@ def test_descriptive_statistics_and_sentiment(ohlcv):
     seasonal = seasonality(ohlcv.close)
     assert seasonal["count"].sum() > 12
     assert seasonal.win_rate.between(0, 1).all()
+
+
+def test_sentiment():
     pytest.importorskip("vaderSentiment")
     result = sentiment(["Great profit and excellent growth!", "Terrible losses and bankruptcy."])
     assert result.compound.iloc[0] > 0 and result.compound.iloc[1] < 0

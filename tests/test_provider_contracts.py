@@ -59,15 +59,16 @@ def test_bad_provider_schema_fails_explicitly(monkeypatch, ohlcv):
     assert len(aligned) == len(ohlcv) - 1
 
 
-def test_calendar_and_cot_normalization(monkeypatch):
+@pytest.mark.parametrize("dividend,annual", [("$0.26", "1.04"), (0.26, 1.04)])
+def test_calendar_normalization(monkeypatch, dividend, annual):
     row = {
         "symbol": "AAPL",
         "companyName": "Apple",
         "dividend_Ex_Date": "09/04/2026",
         "payment_Date": "09/20/2026",
         "record_Date": "09/05/2026",
-        "dividend_Rate": "$0.26",
-        "indicated_Annual_Dividend": "1.04",
+        "dividend_Rate": dividend,
+        "indicated_Annual_Dividend": annual,
     }
     monkeypatch.setattr(
         providers,
@@ -78,6 +79,9 @@ def test_calendar_and_cot_normalization(monkeypatch):
     assert result.dividend.iloc[0] == 0.26
     assert result.annual_dividend.iloc[0] == 1.04
     assert result.ex_date.iloc[0] == pd.Timestamp("2026-09-04")
+
+
+def test_cot_normalization(monkeypatch):
     cot = [
         {
             "report_date_as_yyyy_mm_dd": "2023-01-03",
@@ -104,21 +108,3 @@ def test_sp500_schema_validation(monkeypatch):
     )
     with pytest.raises(ProviderError):
         sp500_constituents()
-
-
-def test_calendar_accepts_numeric_amounts(monkeypatch):
-    row = {
-        "symbol": "AAPL",
-        "companyName": "Apple",
-        "dividend_Ex_Date": "09/04/2026",
-        "payment_Date": "09/20/2026",
-        "record_Date": "09/05/2026",
-        "dividend_Rate": 0.26,
-        "indicated_Annual_Dividend": 1.04,
-    }
-    monkeypatch.setattr(
-        providers,
-        "urlopen",
-        lambda *a, **k: BytesIO(json.dumps({"data": {"calendar": {"rows": [row]}}}).encode()),
-    )
-    assert dividend_calendar("2026-09-04").dividend.iloc[0] == 0.26
