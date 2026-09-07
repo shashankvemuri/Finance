@@ -1,0 +1,2755 @@
+[
+  {
+    "path": "__init__.py",
+    "lines": 0,
+    "imports": [],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/IBD_RS_Rating.py",
+    "lines": 58,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "sys",
+      "tickers",
+      "time",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/correlated_stocks.py",
+    "lines": 72,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "sys",
+      "tickers",
+      "yfinance"
+    ],
+    "functions": [
+      "visualize_correlation_matrix",
+      "get_redundant_pairs",
+      "get_top_abs_correlations"
+    ]
+  },
+  {
+    "path": "find_stocks/finviz_growth_screener.py",
+    "lines": 44,
+    "imports": [
+      "bs4",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "growth_screener"
+    ]
+  },
+  {
+    "path": "find_stocks/fundamental_screener.py",
+    "lines": 67,
+    "imports": [
+      "config",
+      "pandas",
+      "requests"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/get_rsi_tickers.py",
+    "lines": 51,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas_datareader",
+      "sys",
+      "ta_functions",
+      "tickers"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/green_line_values.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "sys",
+      "tickers"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/minervini_screener.py",
+    "lines": 81,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "sys",
+      "tickers",
+      "time",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/price_alert_email.py",
+    "lines": 52,
+    "imports": [
+      "datetime",
+      "email",
+      "os",
+      "pandas_datareader",
+      "smtplib",
+      "time",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/stock_news_sentiment.py",
+    "lines": 48,
+    "imports": [
+      "datetime",
+      "nltk",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "fetch_news",
+      "sentiment_analysis"
+    ]
+  },
+  {
+    "path": "find_stocks/tradingview_signals.py",
+    "lines": 59,
+    "imports": [
+      "datetime",
+      "pandas",
+      "pandas_datareader",
+      "selenium",
+      "time",
+      "webdriver_manager"
+    ],
+    "functions": []
+  },
+  {
+    "path": "find_stocks/twitter_screener.py",
+    "lines": 77,
+    "imports": [
+      "bs4",
+      "pandas",
+      "requests"
+    ],
+    "functions": [
+      "scrape_most_active_stocks",
+      "scrape_sentdex",
+      "scrape_twitter"
+    ]
+  },
+  {
+    "path": "find_stocks/yahoo_recommendations.py",
+    "lines": 47,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas",
+      "requests",
+      "sys",
+      "tickers",
+      "time"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/arima_time_series.py",
+    "lines": 110,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pmdarima",
+      "sklearn",
+      "statsmodels"
+    ],
+    "functions": [
+      "test_stationarity"
+    ]
+  },
+  {
+    "path": "machine_learning/deep_learning_bot.py",
+    "lines": 129,
+    "imports": [
+      "datetime",
+      "keras",
+      "numpy",
+      "pandas",
+      "requests",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": [
+      "setup_data",
+      "normalize_data",
+      "split_sequences",
+      "initialize_network",
+      "train_model",
+      "load_keras_model",
+      "evaluate_model",
+      "create_order"
+    ]
+  },
+  {
+    "path": "machine_learning/etf_graphical_lasso.py",
+    "lines": 67,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "networkx",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "seaborn",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/kmeans_clustering.py",
+    "lines": 51,
+    "imports": [
+      "datetime",
+      "math",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "sklearn",
+      "tickers",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/lstm_prediction.py",
+    "lines": 85,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "sklearn",
+      "tensorflow",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/ml_models_accuracy.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "sklearn"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/neural_network_prediction.py",
+    "lines": 54,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "sklearn",
+      "tensorflow",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/pca_kmeans_clustering.py",
+    "lines": 57,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "sklearn"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/prophet_price_prediction.py",
+    "lines": 36,
+    "imports": [
+      "datetime",
+      "fbprophet",
+      "matplotlib",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/quantitative_indicators_prediction.py",
+    "lines": 79,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "sklearn"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/sklearn_trading_bot.py",
+    "lines": 79,
+    "imports": [
+      "backtrader",
+      "datetime",
+      "numpy",
+      "pandas",
+      "pyfolio",
+      "sklearn"
+    ],
+    "functions": [
+      "IsolationModel",
+      "IsolationStrategy",
+      "backtesting_engine",
+      "__init__",
+      "predict_outlier",
+      "__init__",
+      "log",
+      "next"
+    ]
+  },
+  {
+    "path": "machine_learning/sp500_pca_analysis.py",
+    "lines": 65,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/stock_probabilistic_analysis.py",
+    "lines": 61,
+    "imports": [
+      "numpy",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": [
+      "calculate_prereq",
+      "calculate_distribution",
+      "extrapolate",
+      "values_to_norm",
+      "compare_possibilities"
+    ]
+  },
+  {
+    "path": "machine_learning/stock_regression_analysis.py",
+    "lines": 44,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/stocker_price_prediction.py",
+    "lines": 77,
+    "imports": [
+      "fastai",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "sklearn",
+      "tensorflow",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "machine_learning/technical_indicators_clustering.py",
+    "lines": 115,
+    "imports": [
+      "bs4",
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "requests",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": [
+      "fetch_sp100_tickers",
+      "download_stock_data",
+      "add_technical_indicators",
+      "perform_clustering",
+      "plot_clusters",
+      "analyze_clusters"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/astral_timing_signals.py",
+    "lines": 44,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "astral"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/backtest_strategies.py",
+    "lines": 86,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "get_stock_data",
+      "calculate_trading_statistics",
+      "calculate_statistics_from_percent_change",
+      "sma_strategy_logic",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/backtrader_backtest.py",
+    "lines": 146,
+    "imports": [
+      "alpaca_trade_api",
+      "backtrader",
+      "config",
+      "matplotlib"
+    ],
+    "functions": [
+      "run_backtest",
+      "strategy_statistics",
+      "SmaCross",
+      "__init__",
+      "next",
+      "notify_trade",
+      "stop"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/best_moving_averages_analysis.py",
+    "lines": 78,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/ema_crossover_strategy.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": [
+      "print_portfolio_statistics"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/factor_analysis.py",
+    "lines": 53,
+    "imports": [
+      "datetime",
+      "factor_analyzer",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/financial_signal_analysis.py",
+    "lines": 63,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "sklearn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/geometric_brownian_motion.py",
+    "lines": 68,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pylab"
+    ],
+    "functions": [
+      "GBM",
+      "__init__",
+      "simulate"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/long_hold_stats_analysis.py",
+    "lines": 53,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": [
+      "download_stock_data",
+      "calculate_investment_stats"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/ls_dca_analysis.py",
+    "lines": 62,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": [
+      "fetch_stock_data",
+      "lump_sum_investment",
+      "dca_investment"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/monte_carlo.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": [
+      "download_data",
+      "annual_volatility",
+      "cagr",
+      "monte_carlo_simulation",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/moving_average_crossover_signals.py",
+    "lines": 65,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": [
+      "get_stock_data",
+      "calculate_sma",
+      "generate_signals",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/moving_avg_strategy.py",
+    "lines": 38,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "download_stock_data",
+      "calculate_moving_averages",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/optimal_portfolio.py",
+    "lines": 59,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "scipy",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": [
+      "annual_returns",
+      "portfolio_var",
+      "sharpe_ratio",
+      "optimize_portfolio",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/optimized_bollinger_bands.py",
+    "lines": 42,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "get_stock_data",
+      "add_bollinger_bands",
+      "plot_with_bollinger_bands",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/pairs_trading.py",
+    "lines": 59,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "seaborn",
+      "statsmodels",
+      "yfinance"
+    ],
+    "functions": [
+      "download_stock_data",
+      "find_cointegrated_pairs",
+      "plot_cointegration_heatmap",
+      "main"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/portfolio_analysis.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": [
+      "get_historical_prices",
+      "calculate_daily_returns",
+      "calculate_monthly_returns",
+      "calculate_annual_returns",
+      "portfolio_variance",
+      "sharpe_ratio"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/portfolio_optimization.py",
+    "lines": 220,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pypfopt",
+      "scipy"
+    ],
+    "functions": [
+      "random_portfolios",
+      "neg_sharpe_ratio",
+      "max_sharpe_ratio",
+      "portfolio_performance",
+      "portfolio_volatility",
+      "min_variance",
+      "efficient_return",
+      "efficient_frontier",
+      "display_calculated_ef_with_random",
+      "display_ef_with_selected"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/portfolio_var_simulation.py",
+    "lines": 67,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "pypfopt",
+      "scipy"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/risk_management.py",
+    "lines": 62,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/robinhood_bot.py",
+    "lines": 62,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "robin_stocks"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/rsi_trendline_strategy.py",
+    "lines": 59,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "sys",
+      "ta_functions",
+      "tickers",
+      "time",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "portfolio_strategies/rwb_strategy.py",
+    "lines": 61,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "get_stock_data",
+      "rwb_strategy"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/sma_trading_strategy.py",
+    "lines": 106,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "yfinance"
+    ],
+    "functions": [
+      "get_stock_data",
+      "sma_trading_strategy"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/stock_spread_plotter.py",
+    "lines": 45,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "pandas_datareader",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": [
+      "fetch_stock_data",
+      "plot_stock_spread"
+    ]
+  },
+  {
+    "path": "portfolio_strategies/support_resistance_finder.py",
+    "lines": 54,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "fetch_stock_data",
+      "identify_levels",
+      "is_support",
+      "is_resistance",
+      "plot_support_resistance"
+    ]
+  },
+  {
+    "path": "stock_analysis/backest_all_indicators.py",
+    "lines": 1079,
+    "imports": [
+      "IPython",
+      "datetime",
+      "itertools",
+      "pandas",
+      "ta",
+      "yfinance"
+    ],
+    "functions": [
+      "get_stock_backtest_data",
+      "strategy_KeltnerChannel_origin",
+      "strategy_BollingerBands",
+      "strategy_MA",
+      "strategy_MACD",
+      "strategy_RSI",
+      "strategy_WR",
+      "strategy_Stochastic_fast",
+      "strategy_Stochastic_slow",
+      "strategy_Ichmoku",
+      "prepare_stock_ta_backtest_data",
+      "run_stock_ta_backtest",
+      "test_func"
+    ]
+  },
+  {
+    "path": "stock_analysis/capm_analysis.py",
+    "lines": 68,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "socket",
+      "tickers"
+    ],
+    "functions": [
+      "get_stock_data",
+      "calculate_expected_return",
+      "main"
+    ]
+  },
+  {
+    "path": "stock_analysis/earnings_call_sentiment_analysis.py",
+    "lines": 58,
+    "imports": [
+      "numpy",
+      "requests",
+      "textblob"
+    ],
+    "functions": [
+      "get_earnings_call_transcript",
+      "analyze_sentiment",
+      "count_sentiments",
+      "main"
+    ]
+  },
+  {
+    "path": "stock_analysis/estimating_returns.py",
+    "lines": 52,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "scipy"
+    ],
+    "functions": [
+      "get_stock_returns",
+      "plot_return_distribution",
+      "estimate_return_probability",
+      "main"
+    ]
+  },
+  {
+    "path": "stock_analysis/intrinsic_value.py",
+    "lines": 108,
+    "imports": [
+      "bs4",
+      "datetime",
+      "json",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "requests",
+      "urllib"
+    ],
+    "functions": [
+      "json_data",
+      "get_financial_statements",
+      "get_finviz_data",
+      "calc_intrinsic_value"
+    ]
+  },
+  {
+    "path": "stock_analysis/kelly_criterion.py",
+    "lines": 35,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/ma_backtesting.py",
+    "lines": 56,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/ols_regression.py",
+    "lines": 51,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "scipy",
+      "statsmodels"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/performance_risk_analysis.py",
+    "lines": 47,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/risk_vs_returns.py",
+    "lines": 72,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/seasonal_stock_analysis.py",
+    "lines": 427,
+    "imports": [
+      "bs4",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "pickle",
+      "requests",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": [
+      "convert_prices_to_periods",
+      "separate_date_column",
+      "pivot_the_table",
+      "add_calculated_items",
+      "sortbydate_resetindex_export",
+      "calc_trading_stats",
+      "filter_and_append_stats",
+      "calc_3month_returns",
+      "calc_2month_returns",
+      "calc_1month_returns",
+      "export_to_excel"
+    ]
+  },
+  {
+    "path": "stock_analysis/sma_histogram.py",
+    "lines": 55,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_analysis/sp500_cot_sentiment_analysis.py",
+    "lines": 60,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "os",
+      "pandas",
+      "shutil",
+      "urllib",
+      "zipfile"
+    ],
+    "functions": [
+      "download_and_extract_cot_file"
+    ]
+  },
+  {
+    "path": "stock_analysis/sp500_valuation.py",
+    "lines": 307,
+    "imports": [
+      "matplotlib",
+      "numpy",
+      "numpy_financial",
+      "pandas",
+      "pylab"
+    ],
+    "functions": [
+      "get_value"
+    ]
+  },
+  {
+    "path": "stock_analysis/stock_pivot_resistance.py",
+    "lines": 65,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "plot_stock_pivot_resistance"
+    ]
+  },
+  {
+    "path": "stock_analysis/stock_profit_loss.py",
+    "lines": 48,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "yfinance"
+    ],
+    "functions": [
+      "calculate_stock_profit_loss"
+    ]
+  },
+  {
+    "path": "stock_analysis/stock_returns_statistical_analysis.py",
+    "lines": 42,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": [
+      "analyze_stock_returns"
+    ]
+  },
+  {
+    "path": "stock_analysis/twitter_sentiment_analysis.py",
+    "lines": 218,
+    "imports": [
+      "config",
+      "csv",
+      "googletrans",
+      "matplotlib",
+      "nltk",
+      "numpy",
+      "pandas",
+      "re",
+      "requests",
+      "seaborn",
+      "time",
+      "tweepy",
+      "vaderSentiment",
+      "wordcloud"
+    ],
+    "functions": [
+      "get_symbol",
+      "word_cloud",
+      "sentiment_analyzer_scores",
+      "list_tweets",
+      "remove_pattern",
+      "clean_tweets",
+      "sentiment_analyzer_scores",
+      "anl_tweets",
+      "twitter_stream_listener",
+      "CustomStreamListener",
+      "__init__",
+      "on_status",
+      "on_error",
+      "on_timeout"
+    ]
+  },
+  {
+    "path": "stock_analysis/var_analysis.py",
+    "lines": 38,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": [
+      "calculate_var"
+    ]
+  },
+  {
+    "path": "stock_analysis/view_stock_returns.py",
+    "lines": 54,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "view_stock_returns"
+    ]
+  },
+  {
+    "path": "stock_data/autoscraper_finviz_data.py",
+    "lines": 29,
+    "imports": [
+      "autoscraper",
+      "pandas"
+    ],
+    "functions": [
+      "fetch_finviz_data"
+    ]
+  },
+  {
+    "path": "stock_data/dividend_history.py",
+    "lines": 58,
+    "imports": [
+      "datetime",
+      "lxml",
+      "pandas",
+      "requests",
+      "time"
+    ],
+    "functions": [
+      "format_date",
+      "subdomain",
+      "header",
+      "scrape_page",
+      "clean_dividends"
+    ]
+  },
+  {
+    "path": "stock_data/fibonacci_retracement.py",
+    "lines": 46,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "pandas_datareader"
+    ],
+    "functions": [
+      "fetch_stock_data",
+      "fibonacci_levels",
+      "plot_fibonacci_retracement"
+    ]
+  },
+  {
+    "path": "stock_data/finviz_home_scraper.py",
+    "lines": 57,
+    "imports": [
+      "bs4",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "scrape_section"
+    ]
+  },
+  {
+    "path": "stock_data/finviz_insider_trades.py",
+    "lines": 45,
+    "imports": [
+      "bs4",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "fetch_html",
+      "extract_insider_trades",
+      "process_insider_trades",
+      "scrape_insider_trades"
+    ]
+  },
+  {
+    "path": "stock_data/finviz_news_scraper.py",
+    "lines": 32,
+    "imports": [
+      "bs4",
+      "datetime",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "scrape_news"
+    ]
+  },
+  {
+    "path": "stock_data/finviz_stock_scraper.py",
+    "lines": 84,
+    "imports": [
+      "bs4",
+      "pandas",
+      "urllib"
+    ],
+    "functions": [
+      "get_fundamentals",
+      "get_news",
+      "get_insider",
+      "get_price_targets"
+    ]
+  },
+  {
+    "path": "stock_data/fundamental_ratios.py",
+    "lines": 42,
+    "imports": [
+      "FundamentalAnalysis",
+      "config",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/get_dividend_calendar.py",
+    "lines": 69,
+    "imports": [
+      "calendar",
+      "datetime",
+      "pandas",
+      "requests"
+    ],
+    "functions": [
+      "DividendCalendar",
+      "get_dividends",
+      "__init__",
+      "date_str",
+      "scraper",
+      "dict_to_df",
+      "calendar"
+    ]
+  },
+  {
+    "path": "stock_data/green_line_test.py",
+    "lines": 77,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/high_dividend_yield.py",
+    "lines": 58,
+    "imports": [
+      "config",
+      "os",
+      "pandas",
+      "requests",
+      "sys",
+      "tickers"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/historical_sp500_data.py",
+    "lines": 41,
+    "imports": [
+      "datetime",
+      "os",
+      "pandas_datareader",
+      "sys",
+      "tickers",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/main_indicators_one_graph.py",
+    "lines": 82,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "pandas",
+      "pandas_datareader",
+      "pylab",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/main_indicators_streamlit.py",
+    "lines": 81,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "requests",
+      "streamlit",
+      "sys",
+      "ta",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": [
+      "user_input_features"
+    ]
+  },
+  {
+    "path": "stock_data/pivots_calculator.py",
+    "lines": 54,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/reddit_scraper.py",
+    "lines": 34,
+    "imports": [
+      "config",
+      "pandas",
+      "praw"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/send_top_movers.py",
+    "lines": 82,
+    "imports": [
+      "bs4",
+      "datetime",
+      "email",
+      "os",
+      "pandas",
+      "requests",
+      "schedule",
+      "smtplib",
+      "time"
+    ],
+    "functions": [
+      "scrape_top_winners",
+      "send_email"
+    ]
+  },
+  {
+    "path": "stock_data/stock_VWAP.py",
+    "lines": 82,
+    "imports": [
+      "datetime",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "get_symbol",
+      "VWAP",
+      "update_VWAP",
+      "add_VWAP_column"
+    ]
+  },
+  {
+    "path": "stock_data/stock_data_sms.py",
+    "lines": 84,
+    "imports": [
+      "bs4",
+      "datetime",
+      "email",
+      "nltk",
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "smtplib",
+      "sys",
+      "ta_functions",
+      "urllib"
+    ],
+    "functions": [
+      "send_message",
+      "get_data"
+    ]
+  },
+  {
+    "path": "stock_data/stock_earnings.py",
+    "lines": 79,
+    "imports": [
+      "datetime",
+      "dateutil",
+      "pandas",
+      "pandas_datareader",
+      "yahoo_earnings_calendar",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "stock_data/stock_twilio_server.py",
+    "lines": 78,
+    "imports": [
+      "bs4",
+      "flask",
+      "pandas",
+      "pandas_datareader",
+      "twilio",
+      "urllib"
+    ],
+    "functions": [
+      "sms"
+    ]
+  },
+  {
+    "path": "stock_data/tradingview_intraday_data.py",
+    "lines": 103,
+    "imports": [
+      "csv",
+      "datetime",
+      "json",
+      "random",
+      "re",
+      "string",
+      "websocket"
+    ],
+    "functions": [
+      "filter_raw_message",
+      "generateSession",
+      "generateChartSession",
+      "prependHeader",
+      "constructMessage",
+      "createMessage",
+      "sendRawMessage",
+      "sendMessage",
+      "generate_csv"
+    ]
+  },
+  {
+    "path": "stock_data/tradingview_recommendations.py",
+    "lines": 124,
+    "imports": [
+      "os",
+      "pandas",
+      "pandas_datareader",
+      "selenium",
+      "sys",
+      "tickers",
+      "time",
+      "webdriver_manager",
+      "yfinance"
+    ],
+    "functions": [
+      "parse_recommendation",
+      "display_recommendations",
+      "scrape_tables",
+      "print_tables"
+    ]
+  },
+  {
+    "path": "stock_data/yf_intraday_data.py",
+    "lines": 33,
+    "imports": [
+      "matplotlib",
+      "yfinance"
+    ],
+    "functions": [
+      "download_intraday_data",
+      "plot_close_prices"
+    ]
+  },
+  {
+    "path": "ta_functions.py",
+    "lines": 357,
+    "imports": [
+      "datetime",
+      "numpy",
+      "pandas",
+      "pandas_datareader",
+      "yfinance"
+    ],
+    "functions": [
+      "SMA",
+      "EMA",
+      "WMA",
+      "ATR",
+      "BBANDS",
+      "STOCH",
+      "RSI",
+      "CCI",
+      "MACD",
+      "WILLR",
+      "OBV",
+      "AD",
+      "ADOSC",
+      "MFI",
+      "ADX",
+      "ATR",
+      "NATR",
+      "BETA",
+      "STDDEV",
+      "TRANGE",
+      "MOM",
+      "ROC",
+      "AVGPRICE",
+      "LINEARREG",
+      "ADD",
+      "DIV",
+      "MAX",
+      "MAXINDEX",
+      "MIN",
+      "MININDEX",
+      "MINMAX",
+      "MINMAXINDEX",
+      "MULT",
+      "SUB",
+      "SUM",
+      "linreg"
+    ]
+  },
+  {
+    "path": "technical_indicators/EMA.py",
+    "lines": 58,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/EMA_volume.py",
+    "lines": 74,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/EWMA.py",
+    "lines": 72,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/EWMA_Double.py",
+    "lines": 75,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/EWMA_Triple.py",
+    "lines": 82,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/GANN_lines_angles.py",
+    "lines": 108,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/GMMA.py",
+    "lines": 144,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/MACD.py",
+    "lines": 191,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/MA_high_low.py",
+    "lines": 58,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/MFI.py",
+    "lines": 84,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/PVI.py",
+    "lines": 78,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/PVT.py",
+    "lines": 67,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/ROC.py",
+    "lines": 73,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/ROI.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/RSI.py",
+    "lines": 115,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/RSI_BollingerBands.py",
+    "lines": 91,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "pylab",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/SMA.py",
+    "lines": 57,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/TRIMA.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/TWAP.py",
+    "lines": 73,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/VWAP.py",
+    "lines": 64,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "VWAP"
+    ]
+  },
+  {
+    "path": "technical_indicators/WMA.py",
+    "lines": 75,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "WMA"
+    ]
+  },
+  {
+    "path": "technical_indicators/WSMA.py",
+    "lines": 61,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "WSMA"
+    ]
+  },
+  {
+    "path": "technical_indicators/Z_Score_Indicator.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/absolute_price_oscillator.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/acceleration_bands.py",
+    "lines": 64,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/accum_dist_line.py",
+    "lines": 87,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/aroon.py",
+    "lines": 94,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/aroon_oscillator.py",
+    "lines": 112,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/avg_directional_index.py",
+    "lines": 115,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/avg_true_range.py",
+    "lines": 73,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/balance_of_power.py",
+    "lines": 111,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/beta_indicator.py",
+    "lines": 75,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/bollinger_bands.py",
+    "lines": 87,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/bollinger_bandwidth.py",
+    "lines": 86,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/breadth_indicator.py",
+    "lines": 107,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "os",
+      "pandas",
+      "quandl",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": [
+      "ForceIndex",
+      "Chaikin"
+    ]
+  },
+  {
+    "path": "technical_indicators/candle_abs_returns.py",
+    "lines": 72,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/central_pivot_range_cpr.py",
+    "lines": 60,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/chaikin_money_flow.py",
+    "lines": 89,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/chaikin_oscillator.py",
+    "lines": 103,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/commodity_channel_index.py",
+    "lines": 74,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/correlation_coeff.py",
+    "lines": 73,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/covariance.py",
+    "lines": 73,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/detrended_price_oscillator.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/donchain_channel.py",
+    "lines": 69,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/double_exp_moving_avg.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/dynamic_momentum_index.py",
+    "lines": 67,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/ease_of_movement.py",
+    "lines": 108,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "EVM"
+    ]
+  },
+  {
+    "path": "technical_indicators/force_index.py",
+    "lines": 86,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/geometric_return_indicator.py",
+    "lines": 74,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "scipy",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/golden_death_cross.py",
+    "lines": 148,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "plot_colors"
+    ]
+  },
+  {
+    "path": "technical_indicators/high_minus_low.py",
+    "lines": 64,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/hull_moving_average.py",
+    "lines": 77,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/keltners_channels.py",
+    "lines": 69,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/linear_regression.py",
+    "lines": 83,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/linear_regression_slope.py",
+    "lines": 90,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/linear_weighted_moving_average.py",
+    "lines": 76,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "linear_weight_moving_average"
+    ]
+  },
+  {
+    "path": "technical_indicators/mcclellan_oscillator.py",
+    "lines": 95,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "os",
+      "pandas",
+      "quandl",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/momentum.py",
+    "lines": 68,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/moving_average_envelopes.py",
+    "lines": 72,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/moving_average_high_low.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/moving_average_ribbon.py",
+    "lines": 85,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/moving_avg_env.py",
+    "lines": 72,
+    "imports": [
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/moving_linear_regression.py",
+    "lines": 89,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/new_highs_new_lows.py",
+    "lines": 109,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/pivot_point.py",
+    "lines": 151,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "numpy",
+      "pandas",
+      "seaborn",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/price_channels.py",
+    "lines": 84,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/price_relative.py",
+    "lines": 78,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/realised_volatility.py",
+    "lines": 71,
+    "imports": [
+      "datetime",
+      "math",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/relative_volatility_index.py",
+    "lines": 81,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/smoothed_moving_average.py",
+    "lines": 69,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/speed_resistance_lines.py",
+    "lines": 156,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": [
+      "connectpoints",
+      "connectpoints2",
+      "connectpoints3"
+    ]
+  },
+  {
+    "path": "technical_indicators/standard_deviation_volatility.py",
+    "lines": 65,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/stochastic_RSI.py",
+    "lines": 113,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/stochastic_fast.py",
+    "lines": 82,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/stochastic_full.py",
+    "lines": 88,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/stochastic_slow.py",
+    "lines": 83,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/super_trend.py",
+    "lines": 127,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/true_strength_index.py",
+    "lines": 81,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/ultimate_oscillator.py",
+    "lines": 83,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/variance_indicator.py",
+    "lines": 70,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/volume_price_confirmation_Indicator.py",
+    "lines": 102,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "pandas",
+      "yfinance"
+    ],
+    "functions": []
+  },
+  {
+    "path": "technical_indicators/volume_weighted_moving_average.py",
+    "lines": 77,
+    "imports": [
+      "datetime",
+      "matplotlib",
+      "mplfinance",
+      "numpy",
+      "os",
+      "pandas",
+      "sys",
+      "ta_functions",
+      "yfinance"
+    ],
+    "functions": [
+      "VWMA"
+    ]
+  },
+  {
+    "path": "tickers.py",
+    "lines": 47,
+    "imports": [
+      "pandas",
+      "requests"
+    ],
+    "functions": [
+      "tickers_sp500",
+      "tickers_nasdaq",
+      "tickers_nyse",
+      "tickers_dow",
+      "tickers_amex"
+    ]
+  }
+]
