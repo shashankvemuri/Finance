@@ -11,7 +11,35 @@ start_date = dt.datetime.now() - dt.timedelta(days=365.25 * num_of_years)
 end_date = dt.datetime.now()
 
 # Fetch stock data using yfinance
-data = yf.download(symbol, start=start_date, end=end_date)
+data = yf.download(
+    symbol,
+    start=start_date,
+    end=end_date,
+    auto_adjust=False,
+)
+
+# Recent yfinance versions include a ticker level even for a single symbol.
+if isinstance(data.columns, pd.MultiIndex):
+    if data.columns.nlevels != 2 or data.columns.names.count("Ticker") != 1:
+        raise ValueError("Expected two-level single-ticker yfinance columns")
+
+    tickers = data.columns.get_level_values("Ticker").unique().tolist()
+    if tickers != [symbol]:
+        raise ValueError(
+            f"Expected single-ticker yfinance columns for {symbol}; "
+            f"received tickers: {tickers}"
+        )
+
+    data = data.droplevel("Ticker", axis="columns")
+    if (
+        isinstance(data.columns, pd.MultiIndex)
+        or not data.columns.is_unique
+        or "Close" not in data.columns
+        or not isinstance(data["Close"], pd.Series)
+    ):
+        raise ValueError(
+            "Expected unique flat single-ticker yfinance columns with one Close series"
+        )
 
 # Calculate Simple Moving Averages (SMAs) for different periods
 data['SMA_20'] = data['Close'].rolling(window=20).mean()
