@@ -1,9 +1,11 @@
 """Bounded public-page retrieval; parsing stays in each provider."""
 
 import json
+import math
 import time
 from dataclasses import dataclass, field
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from finance.data.providers import ProviderError
@@ -18,8 +20,16 @@ class PublicWeb:
     _last_request: float = field(default=0, init=False, repr=False)
 
     def text(self, url: str) -> str:
-        if self.timeout <= 0 or self.interval < 0 or self.cache_seconds < 0:
+        if (
+            not all(math.isfinite(x) for x in (self.timeout, self.interval, self.cache_seconds))
+            or self.timeout <= 0
+            or self.interval < 0
+            or self.cache_seconds < 0
+        ):
             raise ValueError("positive timeout and nonnegative interval/cache required")
+        parsed = urlparse(url)
+        if parsed.scheme not in ("https", "http") or not parsed.netloc:
+            raise ValueError("public data requires an HTTP(S) URL")
         cached = self._cache.get(url)
         if cached and time.monotonic() - cached[0] < self.cache_seconds:
             return cached[1]

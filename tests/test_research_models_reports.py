@@ -144,3 +144,18 @@ def test_excel_timestamp_roundtrip(tmp_path):
     path = export_table(data, tmp_path / "prices.xlsx")
     loaded = pd.read_excel(path, index_col=0)
     assert loaded.price.iloc[0] == 100 and "+00:00" in loaded.index[0]
+
+
+def test_latest_forecast_rejects_impossible_price(ohlcv, monkeypatch):
+    import finance.models.forecasting as module
+
+    class Model:
+        def fit(self, *args):
+            return self
+
+        def predict(self, *args):
+            return [-2.0]
+
+    monkeypatch.setattr(module, "_forecast_pipeline", lambda *args: Model())
+    with pytest.raises(ValueError, match="nonpositive"):
+        forecast_latest(ohlcv.close)

@@ -168,6 +168,8 @@ def forecast_latest(
     pipeline = _forecast_pipeline(model, seed)
     pipeline.fit(training[features.columns], training.target)
     prediction = float(pipeline.predict(features.iloc[[-1]])[0])
+    if not np.isfinite(prediction) or prediction <= -1:
+        raise ValueError("model predicted a nonfinite return or a nonpositive implied price")
     return pd.Series(
         {
             "as_of": close.index[-1],

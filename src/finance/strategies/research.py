@@ -83,9 +83,12 @@ def select_strategy(
     *,
     train_fraction: float = 0.7,
     commission: float = 0.001,
+    metric: str = "total_return",
     stop_losses: tuple[float | None, ...] = (None,),
 ) -> StrategySelection:
-    """Select on training total return, execute one untouched holdout; functions receive history only."""
+    """Rank training performance, execute one untouched holdout; callbacks receive observed history."""
+    if metric not in ("total_return", "sharpe", "sortino"):
+        raise ValueError("metric must be total_return, sharpe or sortino")
     prices = normalize_ohlcv(prices)
     if not candidates or not 0.2 < train_fraction < 0.9:
         raise ValueError("provide candidates and a split in (.2,.9)")
@@ -112,7 +115,9 @@ def select_strategy(
                 stop_loss=stop,
             )
             scores.append({"candidate": name, "stop_loss": stop, **result.metrics.to_dict()})
-    table = pd.DataFrame(scores).sort_values("total_return", ascending=False, ignore_index=True)
+    table = pd.DataFrame(scores).sort_values(metric, ascending=False, ignore_index=True)
+    if not np.isfinite(table[metric].iloc[0]):
+        raise ValueError("no candidate has a finite training score")
     selected = table.candidate.iloc[0]
     stop_loss = table.stop_loss.iloc[0]
     stop_loss = None if pd.isna(stop_loss) else float(stop_loss)
