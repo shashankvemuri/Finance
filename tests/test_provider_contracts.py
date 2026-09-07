@@ -104,3 +104,21 @@ def test_sp500_schema_validation(monkeypatch):
     )
     with pytest.raises(ProviderError):
         sp500_constituents()
+
+
+def test_calendar_accepts_numeric_amounts(monkeypatch):
+    row = {
+        "symbol": "AAPL",
+        "companyName": "Apple",
+        "dividend_Ex_Date": "09/04/2026",
+        "payment_Date": "09/20/2026",
+        "record_Date": "09/05/2026",
+        "dividend_Rate": 0.26,
+        "indicated_Annual_Dividend": 1.04,
+    }
+    monkeypatch.setattr(
+        providers,
+        "urlopen",
+        lambda *a, **k: BytesIO(json.dumps({"data": {"calendar": {"rows": [row]}}}).encode()),
+    )
+    assert dividend_calendar("2026-09-04").dividend.iloc[0] == 0.26

@@ -50,3 +50,10 @@
 - Final direct audit rerun materialized original source and ticker CSVs per program, eliminating working-directory artifacts. Initial run retained separately. Legacy audit scripts now recover baseline source from Git after retirement.
 - Removed 183 superseded Python paths, obsolete requirements.txt, five stale ticker CSVs and checked-in chromedriver, only after checking every path against MIGRATION.md.
 - Remaining: final source review, accurate README, post-retirement checks, dedicated-branch push and hosted CI verification.
+
+## Final local checks
+- README rewritten after implementation and legacy retirement, with branch-specific installation, compact API map, small examples, optional dependencies and original disclaimer.
+- 120 tests pass after adding a regression for mixed numeric/string Nasdaq calendar amounts.
+- Final Ruff lint/format checks, wheel/sdist builds and git whitespace checks pass.
+- GitHub Actions major versions checked against upstream releases and updated to checkout/setup-python v7.
+- Hosted CI verification is the remaining completion gate; final branch is finance-v2.
