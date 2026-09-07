@@ -41,7 +41,9 @@ def main():
             if "EMA" in overlays:
                 lines["EMA"] = ema(prices.close)
             if "Bollinger" in overlays:
-                lines = lines.join(bollinger_bands(prices.close).add_prefix("BB "))
+                lines = lines.join(
+                    bollinger_bands(prices.close)[["lower", "middle", "upper"]].add_prefix("BB ")
+                )
             st.pyplot(candles(prices.tail(120), lines.tail(120)))
             for name in overlays:
                 if name == "MACD":
