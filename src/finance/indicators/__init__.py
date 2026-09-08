@@ -3,10 +3,13 @@ from .levels import (
     breadth,
     confirmed_extrema,
     fibonacci_levels,
+    gann_fan,
     green_line,
     ichimoku,
     mcclellan,
+    pivot_midpoints,
     pivot_points,
+    speed_resistance,
 )
 from .momentum import (
     adx,
@@ -43,6 +46,7 @@ from .volatility import (
     donchian,
     envelopes,
     keltner,
+    natr,
     realized_volatility,
     relative_volatility_index,
     standard_deviation,
@@ -134,4 +138,9 @@ __all__ = [
     "ease_of_movement",
     "balance_of_power",
     "vpci",
+    "gann_fan",
+    "speed_resistance",
+    "natr",
 ]
+
+__all__ += ["pivot_midpoints"]

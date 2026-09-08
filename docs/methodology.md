@@ -46,14 +46,20 @@ The engine solves for post-transaction equity before sizing orders, including co
 and directional slippage. Short proceeds are credited to cash and the liability is marked
 at each close. Annual borrow charges accrue per held bar using opening short notional.
 Cash earns zero interest; the engine raises on insolvency. This is a research engine without
-margin loans, intrabar order sequencing, dividends as separate cash flows, market impact,
+margin loans, tick-level order sequencing, dividends as separate cash flows, market impact,
 liquidity constraints or a borrow-availability model. Short simulations therefore need
 additional execution assumptions before any real-world interpretation.
 
 The optional final close liquidation is precommitted, independent of that day's signal.
 Trade rows are fills, including reversals and partial rebalances, not inferred round trips.
 The benchmark is a cost-free equal-dollar buy-and-hold basket bought at the first open.
-Close-based trailing stops execute at the next open, which may gap past the threshold.
+Close-based signal stops execute at the next open, which may gap past the threshold.
+Optional engine protective orders require high/low inputs. Gap fills use the opening price;
+when both thresholds occur within a bar, stops take priority unless the open already crosses
+the profit threshold. Trailing levels use extrema from completed bars. Stops are anchored at
+the initial fill of a position, including through partial rebalances. Rearming requires a
+source-target change. Borrow is charged for the opening short exposure even if stopped that bar.
+FIFO completed-lot reports allocate commissions by quantity; borrow stays at account level.
 
 Performance uses compounded simple returns and includes initial capital in the drawdown
 peak. Volatility is annualized sample deviation; Sharpe subtracts an annual risk-free rate
@@ -80,7 +86,10 @@ forecast year; discount rate must exceed terminal growth. Unlevered enterprise c
 are discounted at WACC, then cash is added and debt subtracted. Per-share dividends can use
 the same formula with equity discount rate and zero debt/cash adjustments. Do not treat
 Yahoo's reported free cash flow as automatically unlevered cash flow. Scenario examples
-state assumptions; their values are not investment recommendations.
+state assumptions; their values are not investment recommendations. The statement workflow
+estimates operating-company FCFF as after-tax operating income plus depreciation, signed capex
+and working-capital cash changes. Stock compensation is not added back. This approximation
+is inappropriate for banks. Annual scenario growth requires annual base cash flow.
 
 ## Models and provider dates
 
@@ -113,5 +122,5 @@ dates similarly do not establish when a filing became available.
 Tests also use hand-computed fixtures, the two-asset inverse-variance/tangency solutions,
 OLS equations, a perpetuity identity, independently reconstructed fills and analytical GBM
 moments. Prefix-invariance tests check that future data does not change prior indicators,
-signals or equity. Provider contract tests use mocked responses; `pytest --live -m integration`
+signals or equity, including protective orders. Provider contract tests use mocked responses; `pytest --live -m integration`
 checks real data and financial workflows.

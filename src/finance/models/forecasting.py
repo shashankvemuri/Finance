@@ -49,13 +49,6 @@ def evaluate_forecast(
     seed: int = 0,
 ) -> ForecastEvaluation:
     """Fixed-model chronological holdout with purged labels and a zero-return baseline."""
-    from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
-    from sklearn.linear_model import Ridge
-    from sklearn.neural_network import MLPRegressor
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.svm import SVR
-
     if not 0.2 < train_fraction < 0.95:
         raise ValueError("train_fraction must be between .2 and .95")
     features, target = forecast_features(close, horizon=horizon)
@@ -64,22 +57,7 @@ def evaluate_forecast(
     train, test = data.iloc[: split - horizon], data.iloc[split:]
     if len(train) < 40 or len(test) < 10:
         raise ValueError("insufficient history after warmup, purging and chronological split")
-    estimators = {
-        "ridge": Ridge(alpha=1),
-        "forest": RandomForestRegressor(
-            n_estimators=100, max_depth=4, min_samples_leaf=10, random_state=seed
-        ),
-        "boosting": HistGradientBoostingRegressor(
-            max_iter=100, max_leaf_nodes=7, early_stopping=False, random_state=seed
-        ),
-        "svr": SVR(C=0.1),
-        "mlp": MLPRegressor(
-            hidden_layer_sizes=(16,), max_iter=1000, shuffle=False, random_state=seed
-        ),
-    }
-    if model not in estimators:
-        raise ValueError(f"model must be one of {list(estimators)}")
-    pipeline = make_pipeline(StandardScaler(), estimators[model])
+    pipeline = _forecast_pipeline(model, seed)
     columns = features.columns
     pipeline.fit(train[columns], train.target)
     predictions = pd.DataFrame(
@@ -151,3 +129,55 @@ def evaluate_direction(close: pd.Series, train_fraction: float = 0.75) -> Foreca
         }
     ).T
     return ForecastEvaluation(predictions, metrics, train.index[-1], test.index[0])
+
+
+def _forecast_pipeline(model: str, seed: int):
+    from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
+    from sklearn.linear_model import Ridge
+    from sklearn.neural_network import MLPRegressor
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.svm import SVR
+
+    estimators = {
+        "ridge": Ridge(alpha=1),
+        "forest": RandomForestRegressor(
+            n_estimators=100, max_depth=4, min_samples_leaf=10, random_state=seed
+        ),
+        "boosting": HistGradientBoostingRegressor(
+            max_iter=100, max_leaf_nodes=7, early_stopping=False, random_state=seed
+        ),
+        "svr": SVR(C=0.1),
+        "mlp": MLPRegressor(
+            hidden_layer_sizes=(16,), max_iter=1000, shuffle=False, random_state=seed
+        ),
+    }
+    if model not in estimators:
+        raise ValueError(f"model must be one of {list(estimators)}")
+    return make_pipeline(StandardScaler(), estimators[model])
+
+
+def forecast_latest(
+    close: pd.Series, *, horizon: int = 1, model: str = "ridge", seed: int = 0
+) -> pd.Series:
+    """Fit known labels and predict the next horizon return at the latest close; evaluate separately."""
+    features, target = forecast_features(close, horizon=horizon)
+    training = features.join(target).dropna()
+    if len(training) < 40 or features.iloc[-1].isna().any():
+        raise ValueError("insufficient complete history")
+    pipeline = _forecast_pipeline(model, seed)
+    pipeline.fit(training[features.columns], training.target)
+    prediction = float(pipeline.predict(features.iloc[[-1]])[0])
+    if not np.isfinite(prediction) or prediction <= -1:
+        raise ValueError("model predicted a nonfinite return or a nonpositive implied price")
+    return pd.Series(
+        {
+            "as_of": close.index[-1],
+            "horizon_bars": horizon,
+            "predicted_return": prediction,
+            "implied_price": close.iloc[-1] * (1 + prediction),
+            "baseline_return": 0.0,
+            "training_end": training.index[-1],
+            "model": model,
+        }
+    )

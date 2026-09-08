@@ -155,6 +155,9 @@ def test_independent_ta_reference(ohlcv, name, reference):
         if n
         not in (
             "fibonacci_levels",
+            "gann_fan",
+            "speed_resistance",
+            "pivot_midpoints",
             "breadth",
             "green_line",
             "arms_index",

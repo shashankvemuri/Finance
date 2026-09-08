@@ -20,9 +20,10 @@ python -m pip install -e .
 Core dependencies are NumPy and pandas. Add only the features you need:
 
 ```bash
-python -m pip install -e '.[data]'             # Yahoo Finance and constituent tables
+python -m pip install -e '.[data]'             # Public data, Finviz and financial statements
 python -m pip install -e '.[portfolio,models]' # Optimization and statistical/ML experiments
 python -m pip install -e '.[plot,sentiment]'   # Charts and VADER text scoring
+python -m pip install -e '.[apps,reports]'     # Interactive app and Excel exports
 ```
 
 ## Use
@@ -63,29 +64,35 @@ costs. Read the [calculation and execution conventions](docs/methodology.md) bef
 
 | Area | Capabilities |
 | --- | --- |
-| `data` | OHLCV/intraday, dividends, earnings, company snapshots, news, insiders, universes, CFTC positioning |
+| `data` | OHLCV/intraday, Finviz discovery, statements, calendars, analysts, news, transcripts, insiders and universes |
 | `indicators` | Moving averages, momentum, volatility/channels, volume, rolling statistics, pivots and breadth |
-| `analytics` | Returns, performance, CAPM/OLS, VaR, Kelly, valuation, seasonality and optional text sentiment |
-| `screening` | Relative strength, Minervini diagnostics, RSI, growth/value and dividend screens |
-| `strategies` | Crossovers, trend, mean reversion, breakouts, close-based stops and pairs experiments |
-| `backtesting` | Shared next-open execution, fill journal, equity/cash accounting and benchmark metrics |
+| `analytics` | Returns, CAPM/OLS, risk, statement ratios, company/index valuation, seasonal studies and sentiment |
+| `screening` | Relative strength, Minervini, Green Line, RSI/trend, growth/ownership and dividend screens |
+| `strategies` | Crossovers, MACD, Keltner, Ichimoku, oscillator reversion, pairs and chronological strategy selection |
+| `backtesting` | Next-open execution, long/short protective orders, FIFO trade reports, cash accounting and benchmarks |
 | `portfolio` | Allocation, constrained optimization/frontier, correlated simulation and lump sum versus DCA |
-| `models` | Chronological baseline evaluations, ARIMA, PCA, clustering, cointegration and anomalies |
+| `models` | Forecasts/baselines, ARIMA diagnostics, PCA/factors, regimes, clustering, networks and optional neural/Prophet experiments |
+| `reports` | Candlesticks, heatmaps, equity charts, CSV/Excel, HTML reports and graph exports |
+| `integrations` | Explicit notification transports, order previews and an optional Alpaca client |
 
-[Examples](examples) use seeded synthetic bars by default. Add `--live` for Yahoo data;
+[Examples](examples) use synthetic inputs by default. Add `--live` for public data;
 `download_market_data.py` always uses the network.
 
 ```bash
 python examples/calculate_indicators.py
 python examples/backtest_moving_average.py --live
 python examples/optimize_portfolio.py
-python examples/forecast_time_series.py
+python examples/research_watchlist.py --live
+python examples/research_models.py
+streamlit run apps/research.py
 ```
 
 Current constituents and fundamentals are snapshots, not historical point-in-time inputs.
 Public providers can throttle or change schemas; see [provider contracts](docs/providers.md).
 Forecast experiments report held-out errors against simple baselines and make no claim of
-predictive advantage. No brokerage execution or notification service is included.
+predictive advantage. Heavy models and apps are optional; brokerage and delivery require
+separate credentials. See [research workflows](docs/workflows.md) for full examples,
+optional installs and provider limitations.
 
 [Contributing](CONTRIBUTING.md)
 

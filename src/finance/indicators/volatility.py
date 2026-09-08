@@ -123,3 +123,9 @@ def supertrend(
             direction[i] = -1 if prices[i] < lower[i] else 1
         line[i] = lower[i] if direction[i] == 1 else upper[i]
     return pd.DataFrame({"supertrend": line, "direction": direction}, index=close.index)
+
+
+def natr(high: pd.Series, low: pd.Series, close: pd.Series, window: int = 14) -> pd.Series:
+    """Normalized ATR in percentage points (100 × ATR / close)."""
+    close = series(close, positive=True)
+    return (100 * atr(high, low, close, window) / close).rename("natr")

@@ -141,3 +141,87 @@ def technical_screen(close: pd.Series) -> pd.Series:
             "rsi": rsi(close).iloc[-1],
         }
     )
+
+
+def growth_screen(
+    companies: pd.DataFrame,
+    *,
+    growth: float = 0.1,
+    margin: float = 0.1,
+    institutional_change: float = 0,
+    maximum_pe: float = 40,
+) -> pd.DataFrame:
+    """Explain each growth/quality/ownership/value criterion; missing fields fail."""
+    required = [
+        "earnings_growth",
+        "revenue_growth",
+        "profit_margin",
+        "institutional_transactions",
+        "pe",
+    ]
+    if not set(required) <= set(companies):
+        raise ValueError(f"required columns: {required}")
+    if not np.isfinite([growth, margin, institutional_change, maximum_pe]).all() or maximum_pe <= 0:
+        raise ValueError("finite thresholds and positive maximum_pe required")
+    values = companies[required].apply(pd.to_numeric, errors="raise")
+    checks = pd.DataFrame(
+        {
+            "earnings_pass": values.earnings_growth >= growth,
+            "revenue_pass": values.revenue_growth >= growth,
+            "margin_pass": values.profit_margin >= margin,
+            "ownership_pass": values.institutional_transactions >= institutional_change,
+            "valuation_pass": values.pe.between(0, maximum_pe, inclusive="right"),
+            "complete_data": np.isfinite(values).all(axis=1),
+        }
+    )
+    return companies.join(checks).assign(passed=checks.all(axis=1))
+
+
+def green_line_screen(
+    prices: dict[str, pd.DataFrame], *, tolerance: float = 0.05, confirmations: int = 3
+) -> pd.DataFrame:
+    """Proximity to confirmed monthly record highs; exclude the current observation's month."""
+    from finance.indicators import green_line
+
+    if not prices or not 0 <= tolerance < 1:
+        raise ValueError("provide prices and tolerance in [0,1)")
+    rows = []
+    for ticker, raw in prices.items():
+        data = normalize_ohlcv(raw)
+        monthly = data.high.resample("ME").max()
+        # The final month may still be open, even when the last supplied bar is old.
+        current_month = data.index[-1].tz_localize(None).to_period("M")
+        monthly = monthly[monthly.index.tz_localize(None).to_period("M") < current_month].dropna()
+        level = green_line(monthly, confirmations).iloc[-1] if len(monthly) else np.nan
+        distance = data.close.iloc[-1] / level - 1
+        rows.append(
+            {
+                "ticker": ticker,
+                "price": data.close.iloc[-1],
+                "green_line": level,
+                "distance": distance,
+                "passed": bool(abs(distance) <= tolerance),
+            }
+        )
+    return pd.DataFrame(rows).set_index("ticker")
+
+
+def rsi_trend_screen(
+    prices: pd.DataFrame, *, rsi_window: int = 14, threshold: float = 33, average_window: int = 200
+) -> pd.DataFrame:
+    """Close above its SMA and average of the latest two RSI observations below threshold."""
+    prices = frame(prices, positive=True)
+    window_size(average_window)
+    window_size(rsi_window)
+    if not 0 <= threshold <= 100 or len(prices) < max(average_window, rsi_window + 2):
+        raise ValueError("insufficient history or invalid RSI threshold")
+    strength = prices.apply(lambda p: rsi(p, rsi_window).iloc[-2:].mean(skipna=False))
+    average = prices.rolling(average_window).mean().iloc[-1]
+    return pd.DataFrame(
+        {
+            "price": prices.iloc[-1],
+            "sma": average,
+            "rsi_two_day": strength,
+            "passed": (prices.iloc[-1] > average) & (strength < threshold),
+        }
+    )
