@@ -13,7 +13,11 @@ def normalize_ticker(ticker: str) -> str:
 
 
 def normalize_ohlcv(raw: pd.DataFrame) -> pd.DataFrame:
-    """Validate one ticker's OHLCV. Never fill gaps or mix adjusted and raw prices."""
+    """Return float open/high/low/close/volume on a sorted, unique DatetimeIndex.
+
+    Preserve timezone and price basis; this function does not adjust prices or fill gaps.
+    Missing values, nonpositive prices, negative volume or inconsistent OHLC raise ValueError.
+    """
     if not isinstance(raw, pd.DataFrame) or raw.empty:
         raise ValueError("provider returned no price rows")
     data = raw.copy()

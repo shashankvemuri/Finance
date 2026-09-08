@@ -75,7 +75,14 @@ def optimize(
     bounds: tuple[float, float] = (0, 1),
     target_return: float | None = None,
 ) -> Allocation:
-    """Long-only SLSQP optimization, with explicit solver and constraint verification."""
+    """Find long-only weights summing to one within the shared asset bounds.
+
+    mean and both covariance axes must have the same asset labels. Use fractional
+    returns and a consistent time basis for mean, covariance, risk_free and target_return.
+    objective is minimum_variance or maximum_sharpe; target_return is an equality.
+    Return Allocation with asset-indexed weights and return/volatility/sharpe statistics.
+    Requires the portfolio extra; invalid inputs or failed constraints raise ValueError.
+    """
     from scipy.optimize import minimize
 
     mean, covariance = _inputs(mean, covariance)

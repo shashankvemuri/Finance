@@ -48,6 +48,12 @@ class YahooFinance:
         )
 
     def history(self, ticker: str, start: str, end: str, *, interval: str = "1d") -> pd.DataFrame:
+        """Return float open/high/low/close/volume columns for [start, end).
+
+        The sorted, unique DatetimeIndex retains the provider timezone. Missing or
+        invalid OHLCV raises ProviderError. attrs['adjusted'] records the price basis;
+        the default includes split and dividend adjustments in all OHLC prices.
+        """
         if pd.Timestamp(start) >= pd.Timestamp(end):
             raise ValueError("start must precede end")
         handle = self._ticker(ticker)

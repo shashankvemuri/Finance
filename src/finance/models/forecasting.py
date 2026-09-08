@@ -27,7 +27,12 @@ def _scores(predictions: pd.DataFrame) -> pd.DataFrame:
 def forecast_features(
     close: pd.Series, lags: int = 5, horizon: int = 1
 ) -> tuple[pd.DataFrame, pd.Series]:
-    """Features known at close t, target close[t+h]/close[t]-1. Keep the final unknown labels missing."""
+    """Return features known at close t and fractional target close[t+h]/close[t]-1.
+
+    Both outputs retain the input index. Warm-up features and final unknown labels stay
+    NaN. Feature RSI is scaled to 0–1; volatility is per-bar return standard deviation.
+    horizon and lags count observations, not calendar days.
+    """
     close = series(close, positive=True, missing=False)
     window_size(lags)
     window_size(horizon)
@@ -48,7 +53,13 @@ def evaluate_forecast(
     model: str = "ridge",
     seed: int = 0,
 ) -> ForecastEvaluation:
-    """Fixed-model chronological holdout with purged labels and a zero-return baseline."""
+    """Fixed-model chronological holdout with purged labels and a zero-return baseline.
+
+    Predictions are indexed by signal origin, with actual, model-named and zero_return
+    columns in fractional return units. Metrics are MAE/RMSE in those same units.
+    Scaling is fitted on training data; horizon overlapping labels are purged before
+    the holdout. Requires the models extra; a successful fit does not imply an advantage.
+    """
     if not 0.2 < train_fraction < 0.95:
         raise ValueError("train_fraction must be between .2 and .95")
     features, target = forecast_features(close, horizon=horizon)
