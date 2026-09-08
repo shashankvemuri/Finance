@@ -66,6 +66,8 @@ def _stamp(result, url):
 
 @dataclass
 class Finviz:
+    """Public snapshots requiring the data extra; attrs record source and retrieval time."""
+
     web: PublicWeb = field(default_factory=PublicWeb)
 
     def _get(self, path, **params):
@@ -75,7 +77,13 @@ class Finviz:
     def screen(
         self, filters: list[str] | None = None, *, order: str = "ticker", limit: int = 100
     ) -> pd.DataFrame:
-        """Provider filter codes, e.g. cap_largeover,fa_epsqoq_o10. Explicit limit; attrs show completeness."""
+        """Fetch up to limit rows using Finviz filter codes, e.g. ['cap_largeover'].
+
+        Index: source ticker. Columns: name, sector, industry, country, market_cap,
+        pe, price, change, volume. Percent change is fractional; missing numbers are NaN.
+        Inspect attrs['complete'] and attrs['total_matches'] before treating this as
+        the full result. These are current snapshots, not historical constituents.
+        """
         if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 10000:
             raise ValueError("limit must be an integer in [1,10000]")
         if any(not re.fullmatch(r"[\w.-]+", item) for item in [order, *(filters or [])]):
@@ -147,12 +155,22 @@ class Finviz:
         return _stamp(result, url)
 
     def universe(self, index: str, *, limit: int = 3000) -> pd.DataFrame:
+        """Return screen rows for sp500, dow, nasdaq100 or russell2000.
+
+        Membership follows Finviz's current classification. The index contains tickers;
+        attrs['complete'] reports whether all provider matches fit within limit.
+        """
         codes = {"sp500": "sp500", "dow": "dji", "nasdaq100": "ndx", "russell2000": "rut"}
         if index not in codes:
             raise ValueError(f"index must be one of {list(codes)}")
         return self.screen([f"idx_{codes[index]}"], limit=limit)
 
     def company(self, ticker: str) -> pd.Series:
+        """Numeric snapshot named by ticker; growth, yield and ownership are fractions.
+
+        RSI uses 0–100. Unavailable numbers are NaN; source-absent optional fields may
+        be omitted. attrs['raw_fields'] retains source labels and duplicate values.
+        """
         root, url = self._get("quote.ashx", t=ticker)
         fields = {
             "Market Cap": "market_cap",
@@ -231,6 +249,10 @@ class Finviz:
         return _stamp(output, url)
 
     def analysts(self, ticker: str) -> pd.DataFrame:
+        """Rows of date, action, analyst, rating_change and target_change.
+
+        Dates are timezone-naive; rating and target changes retain provider text.
+        """
         root, url = self._get("quote.ashx", t=ticker)
         headers, rows = _table(
             root, ["Date", "Action", "Analyst", "Rating Change", "Price Target Change"]
@@ -242,6 +264,11 @@ class Finviz:
         return _stamp(result, url)
 
     def insiders(self) -> pd.DataFrame:
+        """Recent market-wide transactions, not a complete filing history.
+
+        Columns: ticker, owner, relationship, date, transaction, price, shares, value,
+        filing. date is the transaction date; filing retains the source display text.
+        """
         root, url = self._get("insidertrading.ashx")
         headers, rows = _table(
             root, ["Ticker", "Owner", "Transaction", "Cost", "#Shares", "Value ($)"]
@@ -272,6 +299,11 @@ class Finviz:
         return _stamp(result, url)
 
     def news(self, ticker: str | None = None) -> pd.DataFrame:
+        """Company or market headlines: ticker, title, url and source_time columns.
+
+        source_time retains display text, not a normalized publication timestamp.
+        Rows are deduplicated by URL; article bodies are not included.
+        """
         root, url = self._get("quote.ashx", t=ticker) if ticker else self._get("news.ashx")
         selector = (
             '//table[@id="news-table"]//tr'

@@ -20,6 +20,10 @@ def moving_average(
     exponential: bool = False,
     short: bool = False,
 ) -> pd.Series:
+    """Close-time targets: 1 when fast > slow, otherwise 0 (or -1 with short=True).
+
+    Keep the close index; warm-up targets are zero. Pass targets unshifted to backtest.
+    """
     if fast >= slow:
         raise ValueError("fast must be smaller than slow")
     average = ema if exponential else sma

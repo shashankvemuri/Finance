@@ -9,7 +9,12 @@ from finance.indicators import rsi, sma
 def relative_strength(
     prices: pd.DataFrame, benchmark: pd.Series, window: int = 252
 ) -> pd.DataFrame:
-    """Gross-return ratio and percentile rank within the supplied universe."""
+    """Rank assets by gross-return ratio against an exactly aligned benchmark.
+
+    prices has timestamp rows and asset columns, with window+1 complete positive rows.
+    Output is asset-indexed: return is fractional, relative_strength is a gross-return
+    ratio and rank is a percentile on a 0–100 scale within the supplied universe.
+    """
     prices, benchmark = (
         frame(prices, positive=True),
         series(benchmark, positive=True, missing=False),
@@ -46,7 +51,12 @@ def ibd_relative_strength(prices: pd.DataFrame) -> pd.DataFrame:
 def minervini(
     prices: dict[str, pd.DataFrame], benchmark: pd.Series, *, minimum_rank: float = 70
 ) -> pd.DataFrame:
-    """Trend-template diagnostics for every ticker; select passed rows explicitly."""
+    """Trend-template diagnostics for every ticker; select passed rows explicitly.
+
+    Supply ticker-to-OHLCV frames with at least 253 common observations and an exactly
+    aligned benchmark Series. Output is ticker-indexed, with prices, averages, relative
+    strength rank, individual Boolean checks and the combined passed column.
+    """
     if not 0 <= minimum_rank <= 100 or not prices:
         raise ValueError("provide prices and a rank threshold in [0,100]")
     normalized = {ticker: normalize_ohlcv(data) for ticker, data in prices.items()}

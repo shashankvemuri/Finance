@@ -9,6 +9,12 @@ from finance.analytics import performance
 
 @dataclass(frozen=True)
 class BacktestResult:
+    """Bar-indexed equity/cash, share holdings, fractional returns and benchmark equity.
+
+    trades contains individual fills, including partial position adjustments;
+    metrics contains aggregate performance and cost statistics.
+    """
+
     equity: pd.Series
     cash: pd.Series
     holdings: pd.DataFrame
@@ -37,6 +43,11 @@ def backtest(
     trailing_fraction: float | None = None,
 ) -> BacktestResult:
     """Close signals execute next open. Gross target <=1; fractional shares, no cash interest.
+
+    Inputs are one-asset Series or timestamp-by-asset DataFrames with identical ordered
+    indices/columns and no missing values. Targets are signed equity fractions at signal
+    close; pass them unshifted. Commission/slippage are per-fill fractions; borrow_rate
+    is annualized using periods bars per year. Output holdings are share quantities.
 
     Rebalance on target changes (or every bar with rebalance=True). Trade rows are fills,
     including partial adjustments. Adjusted OHLC must share a basis. Short borrow is charged

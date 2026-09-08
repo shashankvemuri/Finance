@@ -86,7 +86,13 @@ def select_strategy(
     metric: str = "total_return",
     stop_losses: tuple[float | None, ...] = (None,),
 ) -> StrategySelection:
-    """Rank training performance, execute one untouched holdout; callbacks receive observed history."""
+    """Rank training performance, then execute the selected candidate on one holdout.
+
+    candidates maps names to callbacks taking OHLCV history and returning aligned,
+    unshifted target Series. Callbacks must be causal within their input history;
+    holdout evaluation calls them on expanding observed prefixes. training_scores
+    contains training metrics, while holdout contains the selected backtest result.
+    """
     if metric not in ("total_return", "sharpe", "sortino"):
         raise ValueError("metric must be total_return, sharpe or sortino")
     prices = normalize_ohlcv(prices)

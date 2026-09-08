@@ -21,7 +21,12 @@ class BatchResult:
 
 
 def fetch_many(tickers: Iterable[str], fetch: Callable) -> BatchResult:
-    """Sequential requests respect the provider's rate limits; no silent dropped symbols."""
+    """Fetch each distinct ticker sequentially using fetch(ticker).
+
+    Successful values remain in result.data; ProviderError messages are indexed by
+    failed ticker in result.errors. Other exceptions propagate. Use result.table()
+    for company Series snapshots; price histories remain separate DataFrames in data.
+    """
     if isinstance(tickers, str):
         raise ValueError("provide a sequence of tickers")
     data, errors = {}, {}
