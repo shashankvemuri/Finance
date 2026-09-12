@@ -1,5 +1,6 @@
 import json
 from io import BytesIO
+from urllib.parse import parse_qs, urlsplit
 
 import pandas as pd
 import pytest
@@ -92,9 +93,20 @@ def test_cot_normalization(monkeypatch):
             "lev_money_positions_short": "20",
         }
     ]
-    monkeypatch.setattr(providers, "fetch_text", lambda *a, **k: json.dumps(cot))
-    result = cot_financial_futures("13874A", "2023-01-01", "2024-01-01")
+    queries = []
+
+    def fetch_cot(url, **kwargs):
+        queries.append(parse_qs(urlsplit(url).query))
+        return json.dumps(cot)
+
+    monkeypatch.setattr(providers, "fetch_text", fetch_cot)
+    result = cot_financial_futures("13874A", "2023-01-03", "2023-01-10")
     assert result.open_interest_all.iloc[0] == 100
+    assert queries[0]["$where"] == [
+        "cftc_contract_market_code='13874A'"
+        " AND report_date_as_yyyy_mm_dd >= '2023-01-03T00:00:00'"
+        " AND report_date_as_yyyy_mm_dd < '2023-01-10T00:00:00'"
+    ]
     with pytest.raises(ValueError):
         cot_financial_futures("' OR 1=1", "2023-01-01", "2024-01-01")
 
