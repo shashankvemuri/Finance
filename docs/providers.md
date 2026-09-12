@@ -42,7 +42,8 @@ opt-in and excluded from CI; provider failures are reported as test failures.
 
 Finviz provides public screener, company, analyst, insider and news snapshots. Fetching uses
 bounded retries for throttling/transient server errors, per-client request spacing and a
-short in-memory cache. Pagination rejects duplicate rows and changing result counts;
+short in-memory cache. Every results page must report the same parseable total count.
+Pagination rejects duplicate rows and missing or changing result counts;
 explicit limits are reported through `complete` and `total_matches` attributes. An HTTP 200
 response without the expected table is an error, not an empty result. Percentages normalize
 to fractions; multiple measures inside a cell remain distinct. Native ticker symbols are

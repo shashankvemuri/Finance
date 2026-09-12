@@ -96,11 +96,14 @@ class Finviz:
             )
             text = _text(root)
             match = re.search(r"/\s*([\d,]+)\s+Total", text)
-            if match:
-                count = int(match[1].replace(",", ""))
-                if total is not None and count != total:
-                    raise ProviderError("Screener changed during pagination; retry the snapshot")
-                total = count
+            if match is None:
+                raise ProviderError(
+                    f"Finviz total count missing at offset {offset}; completeness cannot be established"
+                )
+            count = int(match[1].replace(",", ""))
+            if total is not None and count != total:
+                raise ProviderError("Screener changed during pagination; retry the snapshot")
+            total = count
             if total == 0:
                 break
             headers, rows = _table(root, ["Ticker", "Company", "Market Cap", "Price"])
@@ -127,7 +130,7 @@ class Finviz:
             if not page:
                 raise ProviderError("Finviz returned no parseable screener rows")
             records.extend(page)
-            if total is not None and len(records) >= total:
+            if len(records) >= total:
                 break
         result = pd.DataFrame(
             records,
@@ -146,8 +149,6 @@ class Finviz:
         ).set_index("ticker")
         if result.index.has_duplicates:
             raise ProviderError("Duplicate tickers across screener pages; retry the snapshot")
-        if total is None:
-            raise ProviderError("Finviz total count missing; completeness cannot be established")
         result = result.iloc[:limit]
         result.attrs.update(
             total_matches=total, complete=len(result) == total, filters=filters or []
