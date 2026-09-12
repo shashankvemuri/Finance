@@ -84,6 +84,41 @@ def test_pagination_completeness_and_schema():
         Finviz(Broken()).screen()
 
 
+@pytest.mark.parametrize("missing_offset", [1, 21])
+def test_pagination_requires_total_on_every_page(missing_offset):
+    pytest.importorskip("lxml")
+
+    class Web:
+        def __init__(self):
+            self.offsets = []
+
+        def text(self, url):
+            offset = 21 if "r=21" in url else 1
+            self.offsets.append(offset)
+            body = screen_page(["LAST"] if offset == 21 else [f"A{i}" for i in range(20)])
+            if offset == missing_offset:
+                return body.replace("<p>#1 / 21 Total</p>", "")
+            return body
+
+    web = Web()
+    with pytest.raises(ProviderError, match="total count missing"):
+        Finviz(web).universe("sp500", limit=21)
+    assert web.offsets == ([1] if missing_offset == 1 else [1, 21])
+
+
+def test_explicit_zero_total_is_complete():
+    pytest.importorskip("lxml")
+
+    class Web:
+        def text(self, url):
+            return screen_page([], total=0)
+
+    result = Finviz(Web()).screen()
+    assert result.empty and result.attrs["complete"]
+    assert result.attrs["total_matches"] == 0
+    assert result.index.name == "ticker" and "price" in result
+
+
 def test_duplicate_pages_fail():
     pytest.importorskip("lxml")
 
