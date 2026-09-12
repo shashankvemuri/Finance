@@ -3,7 +3,7 @@ from scipy import stats
 import numpy as np
 
 # Download historical data for AMD stock
-data = yfinance.download('AMD', '2015-09-08', '2020-09-08')
+data = yfinance.download('HDFC.NS', '2025-09-08', '2026-07-29')
 
 def calculate_prereq(values):
     # Calculate standard deviation and mean
