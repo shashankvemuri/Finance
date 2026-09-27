@@ -1,5 +1,18 @@
 # Data providers
 
+`adanos_sentiment(ticker, start, end, source="reddit")` is an optional Adanos
+Market Sentiment API reader for US stocks. Set `ADANOS_API_KEY` (or pass
+`api_key`) before calling it. Sources are `reddit`, `x`, `news`, and
+`polymarket`; account-tier access varies by source. `start` and `end` are
+**inclusive UTC dates** in `YYYY-MM-DD` form. The resulting DataFrame has a
+sorted UTC date index and retains the API's `sentiment_score`, `buzz_score`,
+`bullish_pct`, and `bearish_pct` units. Reddit, X, and News rows have attributed
+`mentions`; Polymarket rows have `trade_count` instead. An empty frame is not
+neutral sentiment. This is research data, not a price feed or trading signal.
+See [Adanos API documentation](https://api.adanos.org/docs) for endpoint and
+account-plan details. Offline tests mock the HTTP response; live calls use an
+account's quota and are not part of CI.
+
 Install `.[data]` for Yahoo Finance, Finviz and HTML parsing. Pure calculations need no data
 extra. `YahooFinance.history(ticker, start, end, interval='1d')` returns one normalized OHLCV
 frame with a date index, lowercase columns, positive prices and nonnegative volume. End is

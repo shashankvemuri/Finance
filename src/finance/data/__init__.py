@@ -1,3 +1,4 @@
+from .adanos import adanos_sentiment
 from .content import article_text, reddit_posts, rss_news, transcript_index
 from .finviz import Finviz
 from .normalize import normalize_ohlcv, normalize_ticker
@@ -15,6 +16,7 @@ from .research import BatchResult, earnings_calendar, fetch_many, snapshot_chang
 from .tradingview import TradingView
 
 __all__ = [
+    "adanos_sentiment",
     "normalize_ticker",
     "normalize_ohlcv",
     "ProviderError",
